@@ -3,7 +3,7 @@
     "path": "~/GitHub/vaccine_group_buy/scripts/0_load_data.r",
     "project_path": "scripts/0_load_data.r",
     "type": "r_source",
-    "hash": "0",
+    "hash": "279837562",
     "contents": "",
     "dirty": false,
     "created": 1737446391935.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "0,0",
-        "scrollLine": "0"
+        "cursorPosition": "38,13",
+        "scrollLine": "26"
     },
     "folds": "",
-    "lastKnownWriteTime": 1737445784,
+    "lastKnownWriteTime": 1737541348,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1737445784,
+    "last_content_update": 1737541348163,
     "read_only": false,
     "read_only_alternatives": []
 }

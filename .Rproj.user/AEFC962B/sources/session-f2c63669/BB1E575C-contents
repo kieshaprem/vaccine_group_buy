@@ -1,0 +1,26 @@
+setwd("C:/Users/dorot/OneDrive - National University of Singapore/DSA4199/data/test_plots")
+library(grid)
+data = read.csv("data_input.csv")
+
+n_rows <- 6000000
+
+set.seed(4199)
+filename <- paste("test_plots/test_hist1.png")
+data_input <- data.frame(index = seq(1:n_rows), 
+                         vacc_date1 = round(runif(n_rows, min = -1, max=105)),
+                         vacc_date2 = round(runif(n_rows, min = -1, max=105)),
+                         vacc_date3 = round(runif(n_rows, min = -1, max=105)),
+                         inf_date = round(runif(n_rows, min = -1, max=105))
+                         )
+upper <- 57218
+lower <- 0
+png(file=filename, height = 8, width=8, units="cm",
+    res=300, pointsize=10)
+pushViewport(plotViewport(c(3,4,1,1),xscale=c(0,106),yscale=c(lower,upper)))
+hist(data_input$vacc_date1, breaks=20)
+#grid.yaxis(at=c(lower,(upper+lower)/2,upper),label=c(round(lower),round((upper+lower)/2),round(upper,3)),gp=gpar(fontsize=6))
+#grid.xaxis(at=c(0,2000,4000,6000,8000,10000),label=c(0,2,4,6,8,10),gp=gpar(fontsize=6))
+#grid.text("Vaccination Week",y=unit(-3,"lines"),gp=gpar(fontsize=8))
+#grid.text("Histogram", x=unit(-3.1,"lines"),gp=gpar(fontsize=8))
+popViewport()
+dev.off()

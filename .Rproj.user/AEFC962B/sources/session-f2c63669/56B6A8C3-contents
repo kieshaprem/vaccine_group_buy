@@ -1,0 +1,132 @@
+library(grid)
+setwd("C:/Users/dorot/OneDrive - National University of Singapore/DSA4199/DSA4199-modelling")
+data <- read.csv("parameters_run_1.csv")
+
+param_names <- names(current)
+
+#Non-hazard params
+for (i in (1:non_hazard_params)){
+  param_name <- param_names[weeks+i]
+  ylabel <- as.expression(bquote(param_name))
+  df <- data.frame(index = seq(1:MCMCITS),vals = data[weeks+i])
+  upper <- max(df$vals)+sd(df$vals)
+  lower <- min(df$vals)-sd(df$vals)
+  filename <- paste(paste("plots/", param_name, sep=""),".png",sep="")
+  png(file=filename, height = 8, width=8, units="cm",
+      res=300, pointsize=10)
+  pushViewport(plotViewport(c(3,4,1,1),xscale=c(0,100),yscale=c(lower,upper)))
+  grid.lines(df$index,df$vals, default.units = "native",
+             gp=gpar(col="orange",lwd=1))
+  grid.yaxis(at=c(lower,mean(df$vals),upper),
+             label=c(round(lower,3),round(mean(df$vals),3),round(upper,3)),
+             gp=gpar(fontsize=8))
+  grid.xaxis(at=c(0,20,40,60,80,100),label=c(0,2,4,6,8,10),gp=gpar(fontsize=8))
+  grid.text("Iteration ('000)",y=unit(-3,"lines"),gp=gpar(fontsize=8))
+  grid.text(ylabel, x=unit(-3.1,"lines"))
+  popViewport()
+  dev.off()
+}
+
+#hazard params
+for (i in (1:hazard_params)){
+  param_name <- param_names[i]
+  ylabel <- as.expression(bquote(param_name))
+  df <- data.frame(index = seq(1:MCMCITS),vals = data[i])
+  upper <- max(df$vals)+sd(df$vals)
+  lower <- min(df$vals)-sd(df$vals)
+  filename <- paste(paste("plots/", param_name, sep=""),".png",sep="")
+  png(file=filename, height = 8, width=8, units="cm",
+      res=300, pointsize=10)
+  pushViewport(plotViewport(c(3,4,1,1),xscale=c(0,100),yscale=c(lower,upper)))
+  grid.lines(df$index,df$vals, default.units = "native",
+             gp=gpar(col="orange",lwd=1))
+  grid.yaxis(at=c(lower,mean(df$vals),upper),
+             label=c(round(lower,3),round(mean(df$vals),3),round(upper,3)),
+             gp=gpar(fontsize=8))
+  grid.xaxis(at=c(0,20,40,60,80,100),label=c(0,2,4,6,8,10),gp=gpar(fontsize=8))
+  grid.text("Iteration ('000)",y=unit(-3,"lines"),gp=gpar(fontsize=8))
+  grid.text(ylabel, x=unit(-3.1,"lines"))
+  popViewport()
+  dev.off()
+}
+
+param_mean_val <- numeric(weeks)
+for (i in (1:weeks)){
+  param_mean_val[i] <- mean(data[i])
+}
+#distribution of h params
+ylabel <- "H_x"
+filename <- paste("plots/plot_h.png")
+png(file=filename, height = 8, width=8, units="cm",
+    res=300, pointsize=10)
+pushViewport(plotViewport(c(3,4,1,1),xscale=c(0,weeks),yscale=c(0,0.006)))
+grid.points(seq(1:days),param_mean_val, default.units = "native",gp=gpar(col="black",cex=0.25))
+grid.lines(t,h,default.units="native",gp=gpar(col="red"))
+grid.yaxis(at=c(0, 0.001, 0.002, 0.003, 0.004, 0.005),
+           label=c(0, 0.001, 0.002, 0.003, 0.004, 0.005),
+           gp=gpar(fontsize=6))
+grid.xaxis(at=x_ticks,label=x_ticks_labels,gp=gpar(fontsize=6))
+grid.text("Time (weeks)",y=unit(-3,"lines"),gp=gpar(fontsize=8))
+grid.text(ylabel, x=unit(-3.8,"lines"),gp=gpar(fontsize=7))
+popViewport()
+dev.off()
+
+
+
+#vaccine-related multiplier
+#getting proportion of ppl vaccinated over the days
+V_prop <- numeric(days)
+for (i in (1:length(data[,1]))){
+  if (data[i,]$Vi==1){
+    day_vac <- data[i,]$tvi
+    V_prop[day_vac] <- V_prop[day_vac]+1
+  }
+}
+V_prop <- cumsum(V_prop)
+V_prop <- V_prop/length(data[,1])
+
+#getting proportion of ppl vaccinated over the days
+V_multiplier_est <- (1-V_prop)+V_prop*exp(storage_params11[366,MCMCITS])
+V_multiplier_act <- (1-V_prop)+V_prop*exp(-1.1)
+
+#11/12/23
+ylabel <- "Vaccine-\nrelated\nmultiplier"
+data <- data.frame(time = seq(1:days), V_est = V_multiplier_est, V_act = V_multiplier_act)
+filename <- paste("run11/plot_V_multiplier.png")
+png(file=filename, height = 8, width=8, units="cm",
+    res=300, pointsize=10)
+pushViewport(plotViewport(c(3,4,1,1),xscale=c(0,365),yscale=c(0,1)))
+grid.text('Actual',unit(21,'lines'),unit(8,'lines'),gp=gpar(fontsize=6))
+grid.text('Estimated',unit(21,'lines'),unit(10,'lines'),gp=gpar(fontsize=6))
+grid.lines(data$time,data$V_act, default.units = "native",
+           gp=gpar(col="orange",lwd=1))
+grid.lines(data$time,data$V_est, default.units = "native",
+           gp=gpar(col="blue",lwd=1))
+grid.yaxis(at=c(0, 0.2, 0.4, 0.6, 0.8, 1),
+           label=c(0, 0.2, 0.4, 0.6, 0.8, 1),
+           gp=gpar(fontsize=6))
+grid.xaxis(at=x_ticks,label=x_ticks_labels,gp=gpar(fontsize=6))
+grid.text("Time (day)",y=unit(-3,"lines"),gp=gpar(fontsize=8))
+grid.text(ylabel, x=unit(-3.7,"lines"),gp=gpar(fontsize=7))
+popViewport()
+dev.off()
+
+#12/12/23
+ylabel <- "Average\nSurvival"
+data <- data.frame(time = seq(1:days), survival = S_avg)
+filename <- paste("run11/plot_survival_avg.png")
+png(file=filename, height = 8, width=8, units="cm",
+    res=300, pointsize=10)
+pushViewport(plotViewport(c(3,4,1,1),xscale=c(0,365),yscale=c(0,1)))
+grid.lines(data$time,data$survival, default.units = "native",
+           gp=gpar(col="orange",lwd=1))
+grid.yaxis(at=c(0, 0.2, 0.4, 0.6, 0.8, 1),
+           label=c(0, 0.2, 0.4, 0.6, 0.8, 1),
+           gp=gpar(fontsize=6))
+grid.xaxis(at=x_ticks,label=x_ticks_labels,gp=gpar(fontsize=6))
+grid.text("Time (day)",y=unit(-3,"lines"),gp=gpar(fontsize=8))
+grid.text(ylabel, x=unit(-3.8,"lines"),gp=gpar(fontsize=7))
+popViewport()
+dev.off()
+
+
