@@ -1,0 +1,26 @@
+{
+    "id": "23C1D891",
+    "path": "~/GitHub/vaccine_group_buy/scripts/1_plot_healthexp_gdp.r",
+    "project_path": "scripts/1_plot_healthexp_gdp.r",
+    "type": "r_source",
+    "hash": "2849551161",
+    "contents": "",
+    "dirty": false,
+    "created": 1738579254939.0,
+    "source_on_save": false,
+    "relative_order": 4,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "118,0",
+        "scrollLine": "90"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1738579242,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1738579242,
+    "read_only": false,
+    "read_only_alternatives": []
+}

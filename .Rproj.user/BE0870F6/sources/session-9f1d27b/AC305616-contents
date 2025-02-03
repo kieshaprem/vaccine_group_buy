@@ -1,0 +1,574 @@
+setwd("C:/Users/dorot/OneDrive - National University of Singapore/DSA4199")
+
+logpost_output <- read.csv("data/MCMC_output/logpost_3_10000.csv")
+params_output <- read.csv("data/MCMC_output/parameters_3_10000.csv")
+
+library(grid)
+
+MCMCITS <- 10000
+weeks <- 105
+alpha_i <- 3
+gamma_i <- 10
+
+burnin <- 0
+
+run <- 4
+
+### get posterior means and credible interval
+mean_vals <- numeric(weeks+alpha_i+gamma_i)
+
+for (i in 1:(weeks+alpha_i+gamma_i)){
+  mean_vals[i] <- mean(params_output[1:MCMCITS,i])
+}
+means_df <- data.frame(means = mean_vals)
+row.names(means_df) <- c(paste("h",seq(1:weeks),sep=""),
+                         "alpha0", "alpha1", "alpha3",
+                         "gamma1", "gamma2", "gamma3",
+                         "gamma4", "gamma5", "gamma6", "gamma7",
+                         "gamma8", "gamma9", "gamma10")
+
+
+CI <- matrix(0,ncol=2,nrow = weeks+alpha_i+gamma_i)
+for (i in (1:(weeks+alpha_i+gamma_i))){
+  CI[i,] <- quantile(params_output[1:MCMCITS,i],c(0.025,0.975))
+}
+
+
+
+### get trace plots
+
+## hazard params
+for (i in (1:weeks)){
+  filename <- paste("DSA4199-modelling/plots/final_run_",run,"/plot_h_", i, ".png", sep="")
+  par_name <- paste("h", i, sep="")
+  ylabel <- as.expression((bquote(h[.(i)])))
+  data <- data.frame(index=seq((burnin+1):MCMCITS), h=params_output[(burnin+1):MCMCITS, i])
+  upper <- max(data$h)+sd(data$h)
+  png(file=filename, height = 7, width = 7, units ="cm",
+      res=300, pointsize=10)
+  pushViewport(plotViewport(c(4.5,5,1,1), xscale=c(0, (MCMCITS-burnin)), yscale=c(0, upper)))
+  grid.lines(data$index, data$h, default.units = "native",
+             gp=gpar(col="navy", lwd=1))
+  grid.yaxis(gp=gpar(fontsize=10))
+  grid.xaxis(gp=gpar(fontsize=10))
+  grid.text("Iteration ('000)", y=unit(-2.7, "lines"), gp=gpar(fontsize=12))
+  grid.text(ylabel, x=unit(-2,"lines"), gp=gpar(fontsize=12))
+  popViewport()
+  dev.off()
+}
+
+
+## alpha params
+for (i in c(0,1,3)){
+  filename <- paste("DSA4199-modelling/plots/final_run_",run,"/plot_alpha_", i, ".png", sep="")
+  par_name <- paste("alpha", i)
+  index <- weeks+i+1
+  if (i==3){
+    index <- weeks+i
+  }
+  ylabel <- as.expression((bquote(alpha[.(i)])))
+  data <- data.frame(index=seq((burnin+1):(MCMCITS)), alpha=params_output[(burnin+1):MCMCITS, index])
+  upper <- max(data$alpha)+var(data$alpha)
+  lower <- min(data$alpha)-var(data$alpha)
+  if (upper!=lower){
+    png(file=filename, height = 7, width = 7, units ="cm",
+        res=300, pointsize=10)
+    pushViewport(plotViewport(c(3.5,3,1,1), xscale=c(0, (MCMCITS-burnin)), yscale=c(lower, upper)))
+    grid.rect()
+    grid.lines(data$index, data$alpha, default.units = "native",
+               gp=gpar(col="navy", lwd=1))
+    grid.yaxis(gp=gpar(fontsize=10))
+    grid.xaxis(gp=gpar(fontsize=10))
+    grid.text("Iteration ('000)", y=unit(-2.2, "lines"), gp=gpar(fontsize=12))
+    grid.text(ylabel, x=unit(-2,"lines"), gp=gpar(fontsize=12))
+    popViewport()
+    dev.off()
+  }
+}
+
+## gamma params
+for (i in c(2:10)){
+  filename <- paste("DSA4199-modelling/plots/final_run_",run,"/plot_gamma_", i, ".png", sep="")
+  par_name <- paste("gamma", i)
+  index <- weeks+alpha_i+i
+  ylabel <- as.expression((bquote(gamma[.(i)])))
+  data <- data.frame(index=seq(1:(MCMCITS)), gamma=params_output[(burnin+1):MCMCITS, index])
+  upper <- max(data$gamma)+var(data$gamma)
+  lower <- min(data$gamma)-var(data$gamma)
+  if (upper!=lower){
+    png(file=filename, height = 7, width = 7, units ="cm",
+        res=300, pointsize=10)
+    pushViewport(plotViewport(c(3.5,3.5,1,1), xscale=c(0, (MCMCITS-burnin)), yscale=c(lower, upper)))
+    grid.rect()
+    grid.lines(data$index, data$gamma, default.units = "native",
+               gp=gpar(col="navy", lwd=1))
+    grid.yaxis(gp=gpar(fontsize=10))
+    grid.xaxis(gp=gpar(fontsize=10))
+    grid.text("Iteration ('000)", y=unit(-2.2, "lines"), gp=gpar(fontsize=12))
+    grid.text(ylabel, x=unit(-2.5,"lines"), gp=gpar(fontsize=12))
+    popViewport()
+    dev.off() 
+  }
+}
+
+## logpost
+png(file=paste("DSA4199-modelling/plots/final_run_",run,"/plot_logpost.png",sep=""), height = 7, width = 7, units ="cm",res=300, pointsize=10)
+data <- data.frame(index=seq(1:MCMCITS), logpost=logpost_output$names[1:MCMCITS])
+lower <- min(logpost_output$names[1:MCMCITS])
+upper <- max(logpost_output$names[1:MCMCITS])
+pushViewport(plotViewport(c(3.5,3,1,1), xscale=c(0, (MCMCITS-burnin)), yscale=c(lower, upper)))
+grid.lines(data$index, data$logpost, default.units = "native",
+           gp=gpar(col="navy", lwd=1))
+grid.yaxis(gp=gpar(fontsize=10))
+grid.xaxis(gp=gpar(fontsize=10))
+grid.text("Iteration ('000)", y=unit(-2.2, "lines"), gp=gpar(fontsize=12))
+grid.text(ylabel, x=unit(-2,"lines"), gp=gpar(fontsize=12))
+popViewport()
+dev.off()
+
+## joint distribution
+for (i in seq(from=106, to=118)){
+  for (j in seq(from=106, to=118)){
+    filename <- paste("plots/run19/plot_joint_", i,"_",j,".png", sep="")
+    png(file=filename, height = 8, width = 8, units ="cm",res=300, pointsize=10)
+    data <- data.frame(x=params_output[(burnin+1):MCMCITS,i], y=params_output[(burnin+1):MCMCITS,j])
+    pushViewport(plotViewport(c(3,4,1,1), xscale=c(lower_x, upper_x), yscale=c(lower_y, upper_y)))
+    grid.points(data$x, data$y, default.units = "native",
+               gp=gpar(col="navy", lwd=1))
+    grid.yaxis(gp=gpar(fontsize=6))
+    grid.xaxis(gp=gpar(fontsize=6))
+    x_label <- (names(storage_params)[i])
+    y_label <- (names(storage_params)[j])
+    grid.text(x_label, y=unit(-3, "lines"), gp=gpar(fontsize=8))
+    grid.text(y_label, x=unit(-3.1,"lines"), gp=gpar(fontsize=8))
+    popViewport()
+    dev.off()
+  }
+}
+
+
+#distribution of h params-------------------------------------------------------
+
+CI <- matrix(0,ncol=2,nrow = weeks)
+for (i in (1:weeks)){
+  CI[i,] <- quantile(params_output[1:MCMCITS,i],c(0.025,0.975))
+}
+
+data <- data.frame(index=c(1:weeks), lower_quartile = CI[,1], upper_quartile = CI[,2])
+upper <- max(data$upper_quartile)
+lower <- min(data$lower_quartile)
+
+mean_vals <- numeric(weeks+alpha_i+gamma_i)
+for (i in (1:(weeks+alpha_i+gamma_i))){
+  mean_vals[i] <- mean(params_output[,i])
+}
+
+x_ticks <- c(-7, 5, 9, 14, 18, 23, 27, 31, 36, 40, 44, 49, 53, 
+             58, 62, 66, 70, 75, 79, 83, 88, 92, 97, 101, 105, 117)
+x_ticks_labels <- c(" ","J","F","M", "A","M","J","J", "A", "S", "O", "N", "D",
+                    "J","F","M", "A","M","J","J", "A", "S", "O", "N", "D", " ")
+
+test_CI_data <- data.frame(week=c(sort(rep(1:weeks,2))),val=rep(0,2*weeks))
+for (i in (1:(weeks))){
+  if (i>1){
+    test_CI_data[2*i-1,2] <- data$upper_quartile[i]
+    test_CI_data[2*i,2] <- data$lower_quartile[i]
+  }
+  else{
+    test_CI_data[i,2] <- data$upper_quartile[i]
+    test_CI_data[i+1,2] <- data$lower_quartile[i]
+  }
+}
+
+t="t"
+ylabel <- as.expression((bquote(h[.(t)])))
+filename <- paste("DSA4199-modelling/plots/final_run_1/h_distr.png")
+png(file=filename, height = 8, width=16.5, units="cm",
+    res=300, pointsize=10)
+upper_y <- max(mean_vals[1:weeks])
+pushViewport(plotViewport(c(5,6,1,1),xscale=c(0,weeks+2),yscale=c(lower,upper*1.05)))
+grid.rect()
+#grid.points(seq(1:weeks),mean_vals[1:weeks], pch = 19, default.units = "native",gp=gpar(col="black",cex=0.25))
+#grid.lines(t,h,default.units="native",gp=gpar(col="red"))
+grid.points(seq(1:weeks),mean_vals[1:weeks], default.units = "native",gp=gpar(col="red",cex=0.25))
+#grid.lines(seq(1:weeks),data$lower_quartile,default.units = "native",gp=gpar(col="lightblue"))
+#grid.lines(seq(1:weeks),data$upper_quartile,default.units = "native",gp=gpar(col="lightblue"))
+#grid.lines(test_CI_data[,1],test_CI_data[,2],default.units = "native",gp=gpar(col="lightblue"))
+for (i in (1:weeks)){
+  grid.lines(c(i,i),c(data$lower_quartile[i],data$upper_quartile[i]), default.units = "native", gp=gpar(col="lightblue"))
+}
+grid.yaxis(gp=gpar(fontsize=10))
+grid.xaxis(at=x_ticks,label=x_ticks_labels,gp=gpar(fontsize=10))
+grid.text(ylabel, x=unit(-3.8,"lines"),gp=gpar(fontsize=12))
+popViewport()
+dev.off()
+
+### distribution of gamma params -----------------------------------------------
+
+CI <- matrix(0,ncol=2,nrow = gamma_i)
+for (i in (1:gamma_i)){
+  CI[i,] <- quantile(params_output[1:MCMCITS,(weeks+alpha_i)+i],c(0.025,0.975))
+}
+
+lower <- min(CI[,1])
+upper <- max(CI[,2])
+
+lookup <- c(2,seq(from=7, to=47, by=5))
+
+t="x"
+ylabel <- as.expression((bquote(gamma[.(t)])))
+filename <- paste("DSA4199-modelling/plots/final_run_1/gamma_distr.png")
+png(file=filename, height = 8, width=16.5, units="cm",
+    res=300, pointsize=10)
+upper_y <- max(mean_vals[1:weeks])
+pushViewport(plotViewport(c(5,6,1,1),xscale=c(0,50),yscale=c(lower,0.5)))
+grid.rect()
+#grid.points(seq(1:weeks),mean_vals[1:weeks], pch = 19, default.units = "native",gp=gpar(col="black",cex=0.25))
+#grid.lines(t,h,default.units="native",gp=gpar(col="red"))
+#grid.lines(seq(1:weeks),data$lower_quartile,default.units = "native",gp=gpar(col="lightblue"))
+#grid.lines(seq(1:weeks),data$upper_quartile,default.units = "native",gp=gpar(col="lightblue"))
+#grid.lines(test_CI_data[,1],test_CI_data[,2],default.units = "native",gp=gpar(col="lightblue"))
+for (i in (2:gamma_i)){
+  grid.lines(c(lookup[i],lookup[i]),c(CI[i,1],CI[i,2]), default.units = "native", gp=gpar(col="lightblue",lwd=3))
+}
+grid.points(seq(from=7, to=47, by=5),pch=19,c(mean_vals[(weeks+alpha_i+2):(weeks+alpha_i+gamma_i)]), default.units = "native",gp=gpar(col="red",fill="red"))
+grid.points(c(2),pch=17,c(0), default.units = "native",gp=gpar(col="black",fill="black"))
+grid.yaxis(gp=gpar(fontsize=10))
+grid.xaxis(at=seq(from=2, to=47, by=5), label = seq(1:10),gp=gpar(fontsize=10))
+grid.text(ylabel, x=unit(-3.8,"lines"),gp=gpar(fontsize=12))
+grid.text("x: months since last vaccination", y=unit(-2.6,"lines"),gp=gpar(fontsize=12))
+popViewport()
+dev.off()
+
+
+
+
+
+
+
+
+## Processing for plotting
+#replace NAs with 0s
+for (i in (1:length(data[,1]))){
+  Sv[,i][is.na(Sv[,i])] <- 0
+}
+
+#averaging
+S_avg <- numeric(days)
+for (i in (1:days)){
+  S_avg[i] <- mean(Sv[i,])
+}
+
+#true h values are stored in the variable h
+#getting CDF for each variable from all MCMC samples
+h_CDF_vals <- numeric(days)
+for (i in (1:days)){
+  h_CDF_vals[i] <- sum(storage_params11[i,] <= h[i])/length(data[,1])
+}
+
+#vaccine-related multiplier
+#getting proportion of ppl vaccinated over the days
+V_prop <- numeric(days)
+for (i in (1:length(data[,1]))){
+  if (data[i,]$Vi==1){
+    day_vac <- data[i,]$tvi
+    V_prop[day_vac] <- V_prop[day_vac]+1
+  }
+}
+V_prop <- cumsum(V_prop)
+V_prop <- V_prop/length(data[,1])
+
+#getting proportion of ppl vaccinated over the days
+V_multiplier_est <- (1-V_prop)+V_prop*exp(storage_params11[366,MCMCITS])
+V_multiplier_act <- (1-V_prop)+V_prop*exp(-1.1)
+
+#check if distribution of params are uniform
+param_mean_val <- numeric(days)
+for (i in (1:days)){
+  param_mean_val[i] <- mean(storage_params11[i,])
+}
+plot(param_mean_val)
+
+
+
+library(grid)
+
+###
+
+
+
+#11/12/23
+ylabel <- "Vaccine-\nrelated\nmultiplier"
+data <- data.frame(time = seq(1:days), V_est = V_multiplier_est, V_act = V_multiplier_act)
+filename <- paste("run11/plot_V_multiplier.png")
+png(file=filename, height = 8, width=8, units="cm",
+    res=300, pointsize=10)
+pushViewport(plotViewport(c(3,4,1,1),xscale=c(0,365),yscale=c(0,1)))
+grid.text('Actual',unit(21,'lines'),unit(8,'lines'),gp=gpar(fontsize=6))
+grid.text('Estimated',unit(21,'lines'),unit(10,'lines'),gp=gpar(fontsize=6))
+grid.lines(data$time,data$V_act, default.units = "native",
+           gp=gpar(col="orange",lwd=1))
+grid.lines(data$time,data$V_est, default.units = "native",
+           gp=gpar(col="blue",lwd=1))
+grid.yaxis(at=c(0, 0.2, 0.4, 0.6, 0.8, 1),
+           label=c(0, 0.2, 0.4, 0.6, 0.8, 1),
+           gp=gpar(fontsize=6))
+grid.xaxis(at=x_ticks,label=x_ticks_labels,gp=gpar(fontsize=6))
+grid.text("Time (day)",y=unit(-3,"lines"),gp=gpar(fontsize=8))
+grid.text(ylabel, x=unit(-3.7,"lines"),gp=gpar(fontsize=7))
+popViewport()
+dev.off()
+
+#12/12/23
+ylabel <- "Average\nSurvival"
+data <- data.frame(time = seq(1:days), survival = S_avg)
+filename <- paste("run11/plot_survival_avg.png")
+png(file=filename, height = 8, width=8, units="cm",
+    res=300, pointsize=10)
+pushViewport(plotViewport(c(3,4,1,1),xscale=c(0,365),yscale=c(0,1)))
+grid.lines(data$time,data$survival, default.units = "native",
+           gp=gpar(col="orange",lwd=1))
+grid.yaxis(at=c(0, 0.2, 0.4, 0.6, 0.8, 1),
+           label=c(0, 0.2, 0.4, 0.6, 0.8, 1),
+           gp=gpar(fontsize=6))
+grid.xaxis(at=x_ticks,label=x_ticks_labels,gp=gpar(fontsize=6))
+grid.text("Time (day)",y=unit(-3,"lines"),gp=gpar(fontsize=8))
+grid.text(ylabel, x=unit(-3.8,"lines"),gp=gpar(fontsize=7))
+popViewport()
+dev.off()
+
+TMAX=365
+t = 1:TMAX
+h = 0.125*sin(0.015+0.0085*sin(2.2*(t-45)*6.28/TMAX))*exp(-0.001*t)
+
+
+
+
+
+
+
+
+
+
+
+
+setwd("C:/Users/dorot/OneDrive - National University of Singapore/DSA4199/DSA4199-modelling")
+
+polygon_x <- c(1:365,365:1)
+polygon_y <- c()
+for (i in (1:365)){
+  temp <- c(data$lower_quartile[i], data$upper_quartile[i])
+  polygon_y <- append(polygon_y, temp)
+}
+
+polygon_y_upper <- c()
+polygon_y_lower <- c()
+for (i in (1:365)){
+  polygon_y_upper <- append(polygon_y_upper,data$upper_quartile[i])
+  polygon_y_lower <- append(polygon_y_lower, data$lower_quartile[i])
+}
+
+
+x <- 1:365
+lo <- loess(polygon_y_lower~x)
+lo1 <- loess(polygon_y_upper~x)
+plot(polygon_x,polygon_y)
+lines(predict(lo), col='red', lwd=2)
+lines(predict(lo1), col='red', lwd=2)
+
+lo_predict <- predict(lo)
+lo1_predict <- predict(lo1)
+
+
+library(grid)
+
+####y axis according to upper CI
+
+
+
+y_ticks <- seq(0, max(data$upper_quartile), length.out=4)
+y_ticks_rounded <- round(y_ticks,3)
+
+#smoothed CI
+filename <- paste("run9/plot_smoothed.png")
+png(file=filename, height = 8, width=16, units="cm",
+    res=300, pointsize=10)
+pushViewport(plotViewport(c(2,3,1,1),xscale=c(0,365),yscale=c(0,0.055)))
+  grid.yaxis(at=y_ticks,
+             label=y_ticks_rounded,
+             gp=gpar(fontsize=6))
+  grid.xaxis(at=x_ticks,label=x_ticks_labels, gp=gpar(fontsize=6))
+  grid.polygon(polygon_x, c(lo1_predict, lo_predict), default.units = 'native',
+               gp=gpar(fill="#E7eeff",col='#E7eeff',alpha=0.5))
+  grid.points(x=data$index,y=data$mean_val, pch=18, default.units = "native", gp=gpar(col='#ed2939',cex=0.25))
+  grid.text(bquote(x),y=unit(-2.1,"lines"),gp=gpar(fontsize=8))
+  grid.text(bquote(h[x]), x=unit(-3.1,"lines"), gp=gpar(fontsize=8))
+popViewport()
+dev.off()
+
+#not smoothed
+filename <- paste("run9/plot_not_smoothed.png")
+png(file=filename, height = 8, width=16, units="cm",
+    res=300, pointsize=10)
+pushViewport(plotViewport(c(2,3,1,1),xscale=c(0,365),yscale=c(0,0.055)))
+grid.yaxis(at=y_ticks,
+           label=y_ticks_rounded,
+           gp=gpar(fontsize=6))
+grid.xaxis(at=x_ticks,label=x_ticks_labels, gp=gpar(fontsize=6))
+grid.polygon(polygon_x, c(data$upper_quartile, data$lower_quartile[365:1]), default.units = 'native',
+             gp=gpar(fill="#E7eeff",col='#E7eeff',alpha=0.5))
+grid.points(x=data$index,y=data$mean_val, pch=18, default.units = "native", gp=gpar(col='#ed2939',cex=0.25))
+grid.text(bquote(x),y=unit(-2.1,"lines"),gp=gpar(fontsize=8))
+grid.text(bquote(h[x]), x=unit(-3.1,"lines"), gp=gpar(fontsize=8))
+popViewport()
+dev.off()
+
+
+
+#smoothed CI
+filename <- paste("run9/collated/plot_smoothed.png")
+png(file=filename, height = 8, width=16, units="cm",
+    res=300, pointsize=10)
+pushViewport(plotViewport(c(2,3,1,1),xscale=c(0,365),yscale=c(0,max(lo1_predict))))
+  grid.yaxis(at=y_ticks,
+             label=y_ticks_rounded,
+             gp=gpar(fontsize=6))
+  grid.xaxis(at=x_ticks,label=x_ticks_labels, gp=gpar(fontsize=6))
+  grid.polygon(polygon_x, c(lo1_predict, lo_predict), default.units = 'native',
+               gp=gpar(fill="#E7eeff",col='#E7eeff',alpha=0.5))
+  grid.lines(x=data$index,y=data$mean_val, default.units = "native", gp=gpar(lwd=0.25))
+  grid.points(x=data$index,y=data$mean_val, pch=16, default.units = "native", gp=gpar(col='#ed2939',cex=0.3))
+  grid.text(bquote(x),y=unit(-2.1,"lines"),gp=gpar(fontsize=8))
+  grid.text(bquote(h[x]), x=unit(-3.1,"lines"), gp=gpar(fontsize=8))
+popViewport()
+dev.off()
+
+#not smoothed
+filename <- paste("run9/collated/plot_not_smoothed_scaled.png")
+png(file=filename, height = 8, width=16, units="cm",
+    res=300, pointsize=10)
+pushViewport(plotViewport(c(2,3,1,1),xscale=c(0,365),yscale=c(0,0.014)))
+  grid.yaxis(at=y_ticks,
+             label=y_ticks_rounded,
+             gp=gpar(fontsize=6))
+  grid.xaxis(at=x_ticks,label=x_ticks_labels, gp=gpar(fontsize=6))
+  grid.polygon(polygon_x, c(data$upper_quartile, data$lower_quartile[365:1]), default.units = 'native',
+               gp=gpar(fill="#E7eeff",col='#E7eeff',alpha=0.5))
+  grid.lines(x=data$index,y=data$mean_val, default.units = "native", gp=gpar(lwd=0.5))
+  grid.points(x=data$index,y=data$mean_val, pch=16, default.units = "native", gp=gpar(col='#ed2939',cex=0.3))
+  grid.text(bquote(x),y=unit(-2.1,"lines"),gp=gpar(fontsize=8))
+  grid.text(bquote(h[x]), x=unit(-3.1,"lines"), gp=gpar(fontsize=8))
+popViewport()
+dev.off()
+
+mon <- c("January", "February", "March", "April", "May", "June", "July", "August", "September",
+         "October", "November", "December")
+library(grid)
+
+##smoothed
+for (i in (1:12)){
+  filename <- paste("run9/collated/smoothed_",i,"_plot_", mon[i] ,".png")
+  png(file=filename, height = 8, width=16, units="cm",
+      res=300, pointsize=10)
+  start <- (x_ticks[i]+1)
+  end <- (x_ticks[i+1])
+  month_data <- data[start : end,]
+  month_upper <- round(max(lo1_predict[start:end]),3)
+  pushViewport(plotViewport(c(3,3,2,1),xscale=c(start,end),yscale=c(0,month_upper)))
+  grid.xaxis(at=c(start:end),label=c(start:end), gp=gpar(fontsize=6))
+  grid.polygon(c(start:end, end:start), 
+               c(lo1_predict[start:end], 
+                 lo_predict[end:start]), 
+               default.units = 'native',
+               gp=gpar(fill="#E7eeff",col='#E7eeff',alpha=1))
+  grid.yaxis(at=seq(0, month_upper, length.out=4),
+             label=round(seq(0, month_upper, length.out=4),5),
+             gp=gpar(fontsize=6))
+  grid.lines(x=data$index[start:end],y=data$mean_val[start:end], default.units = "native", gp=gpar(lwd=0.5))
+  grid.points(x=data$index[start:end],y=data$mean_val[start:end], pch=16, default.units = "native", gp=gpar(col='#ed2939',cex=0.3))
+  grid.text(bquote(x),y=unit(-2.1,"lines"),gp=gpar(fontsize=8))
+  grid.text(bquote(h[x]), x=unit(-3.1,"lines"), gp=gpar(fontsize=8))
+  grid.text(mon[i],y=unit(19,"lines"),gp=gpar(fontsize=8))
+  popViewport()
+  dev.off()
+  
+}
+
+
+## not smoothed
+mon <- c("January", "February", "March", "April", "May", "June", "July", "August", "September",
+         "October", "November", "December")
+library(grid)
+for (i in (1:12)){
+  filename <- paste("run9/collated/unsmoothed_",i,"_plot_", mon[i] ,".png")
+  png(file=filename, height = 8, width=16, units="cm",
+      res=300, pointsize=10)
+  start <- (x_ticks[i]+1)
+  end <- (x_ticks[i+1])
+  month_data <- data[start : end,]
+  month_upper <- round(max(month_data$upper_quartile),3)
+  pushViewport(plotViewport(c(3,3,2,1),xscale=c(start,end),yscale=c(0,month_upper)))
+  grid.xaxis(at=c(start:end),label=c(start:end), gp=gpar(fontsize=6))
+  grid.polygon(c(start:end, end:start), 
+               c(data$upper_quartile[start:end], 
+                 data$lower_quartile[end:start]), 
+               default.units = 'native',
+               gp=gpar(fill="#E7eeff",col='#E7eeff',alpha=1))
+  grid.yaxis(at=seq(0, month_upper, length.out=4),
+             label=round(seq(0, month_upper, length.out=4),5),
+             gp=gpar(fontsize=6))
+  grid.lines(x=data$index[start:end],y=data$mean_val[start:end], default.units = "native", gp=gpar(lwd=0.5))
+  grid.points(x=data$index[start:end],y=data$mean_val[start:end], pch=16, default.units = "native", gp=gpar(col='#ed2939',cex=0.3))
+  grid.text(bquote(x),y=unit(-2.1,"lines"),gp=gpar(fontsize=8))
+  grid.text(bquote(h[x]), x=unit(-3.1,"lines"), gp=gpar(fontsize=8))
+  grid.text(mon[i],y=unit(19,"lines"),gp=gpar(fontsize=8))
+  popViewport()
+  dev.off()
+  
+}
+
+#beta plot
+beta <- quantile(storage_params9[366,1:MCMCITS],c(0.025,0.5,0.975))
+y_ticks <- seq(beta[1],beta[3],length.out=4)
+y_ticks_rounded <- round(y_ticks,3)
+
+filename <- paste("run9/collated/plot_beta.png")
+png(file=filename, height = 8, width=8, units="cm",
+    res=300, pointsize=10)
+pushViewport(plotViewport(c(2,3,1,1),xscale=c(0,2),yscale=c(beta[1],beta[3])))
+  grid.yaxis(at=y_ticks,
+             label=y_ticks_rounded,
+             gp=gpar(fontsize=6))
+  grid.xaxis(at=c(0,1,2),label=c(" ","1"," "), gp=gpar(fontsize=6))
+  grid.polygon(c(0.97, 0.97, 1.03, 1.03), c(beta[1], beta[3], beta[3], beta[1]), default.units = 'native',
+               gp=gpar(fill="#E7eeff",col='#E7eeff',alpha=0.5))
+  grid.points(x=c(1),y=beta[2], pch=16, default.units = "native", gp=gpar(col='#ed2939',cex=0.3))
+  grid.points(x=c(1,1),y=c(beta[1],beta[3]), pch=22, default.units = "native", gp=gpar(cex=0.3,fill="black"))
+  grid.text(bquote(x),y=unit(-2.1,"lines"),gp=gpar(fontsize=8))
+  grid.text(bquote(beta[x]), x=unit(-3.1,"lines"), gp=gpar(fontsize=8))
+popViewport()
+dev.off()
+
+library(grid)
+# plotting population vaccine multiplier
+filename <- paste("run10/plotdiscount.png")
+png(file=filename, height = 8, width=8, units="cm",
+    res=300, pointsize=10)
+pushViewport(plotViewport(c(3,4,1,1),xscale=c(0,365),yscale=c(0,2)))
+grid.lines(seq(1:365),V_multiplier_est, default.units = "native",
+           gp=gpar(col="orange",lwd=1))
+grid.lines(seq(1:365),V_multiplier_act, default.units = "native",
+           gp=gpar(col="blue",lwd=1))
+grid.yaxis(at=c(0,1,2),
+           label=c(0,1,2),
+           gp=gpar(fontsize=8))
+grid.xaxis(at=x_ticks,label=x_ticks_labels,gp=gpar(fontsize=8))
+grid.text("t",y=unit(-3.2,"lines"),gp=gpar(fontsize=8))
+grid.text("Population \n Vaccine \n Multiplier", x=unit(-4,"lines"),gp=gpar(fontsize=6))
+popViewport()
+dev.off()
+
+
+
+
+
