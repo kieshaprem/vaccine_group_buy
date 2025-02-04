@@ -1,10 +1,10 @@
 library(grid)
 
+bilateral_affordable = dataset[1:10,]$`Bilateral mechanisms*`*2*100/dataset[1:10,]$`GDP per capita (2022)`
 
-png(paste0("output/plots/plot_price_gdp_bilateral.png"),height=8,width=8,units='cm',res=700,pointsize=10)
+png(paste0("output/plots/plot_price_gdp_bilateral_affordability.png"),height=8,width=8,units='cm',res=700,pointsize=10)
 if(1)
 {
-
   pushViewport(plotViewport(c(4,4,1,2),xscale=c(2,6),yscale=c(6,10)))#)NEW
   grid.rect()
 
@@ -33,7 +33,7 @@ if(1)
     grid.points(x=log(x=dataset[i,5],base=10),
                 y=log(x=dataset[i,8],base=10),
                 default.units = 'native',pch=16,gp=gpar(alpha=0.5,lwd=0.8, col=colour,
-                                                        cex=cex_size[i]))
+                                                        cex=bilateral_affordable[i]*4))
   }
   
   # grid.points(x=log(x=dataset[1:10,5],base=10),

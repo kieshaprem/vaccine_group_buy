@@ -2,14 +2,29 @@
     "debugBreakpointsState": {
         "breakpoints": [
             {
-                "id": 0,
-                "path": "~/GitHub/vaccine_group_buy/scripts/0_load_data.r",
-                "line_number": 35,
+                "id": 1,
+                "path": "~/GitHub/vaccine_group_buy/scripts/4_weighted_by_gdp.R",
+                "line_number": 4,
                 "function_steps": "",
                 "function_name": "toplevel",
                 "state": 1,
                 "editor_state": 1,
-                "editor_line_number": 35,
+                "editor_line_number": 4,
+                "is_pending_debug_completion": false,
+                "needs_updated_steps": false,
+                "type": 1,
+                "is_package_breakpoint": false,
+                "package_name": ""
+            },
+            {
+                "id": 2,
+                "path": "~/GitHub/vaccine_group_buy/scripts/5_affordability_index.R",
+                "line_number": 7,
+                "function_steps": "",
+                "function_name": "toplevel",
+                "state": 1,
+                "editor_state": 1,
+                "editor_line_number": 7,
                 "is_pending_debug_completion": false,
                 "needs_updated_steps": false,
                 "type": 1,
