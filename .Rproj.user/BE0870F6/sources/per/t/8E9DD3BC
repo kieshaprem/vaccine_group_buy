@@ -3,7 +3,7 @@
     "path": "~/GitHub/vaccine_group_buy/scripts/6_waterfall_plot_equal.R",
     "project_path": "scripts/6_waterfall_plot_equal.R",
     "type": "r_source",
-    "hash": "2596338540",
+    "hash": "3092478739",
     "contents": "",
     "dirty": false,
     "created": 1738658594128.0,
@@ -17,11 +17,11 @@
         "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1738661184,
+    "lastKnownWriteTime": 1738719985,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1738661184842,
+    "last_content_update": 1738719985,
     "read_only": false,
     "read_only_alternatives": []
 }

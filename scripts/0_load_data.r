@@ -58,7 +58,59 @@ dataset = as.data.frame(dataset)
 
 save(dataset, file='data/scenarios.RData')
 
+################################################################################
+
 load('data/scenarios.RData')
+
+dataset <- dataset[,-3]
+
+bilateral <- dataset[,c(1,6,7,8)]
+colnames(bilateral)[2:4] <- c("perdose","total_perdose","total_percourse")
+bilateral$perdose_gdppc_percent <- bilateral$perdose*100/dataset$`GDP per capita (2022)`
+
+uniform <- dataset[,c(1,9,10,11,12,13,14,15,16)]
+colnames(uniform)[2:9] <- c("perdose","total_perdose","total_percourse","savings_perdose",
+                            "total_savings_perdose","total_savings_percourse","percourse_total_savings_percent",
+                            "perdose_gdppc_percent")
+uniform$perdose_gdppc_percent <- uniform$perdose*100/dataset$`GDP per capita (2022)`
+
+gdp_naive <- dataset[,c(1,17,18,19,20,21,22,23,24)]
+colnames(gdp_naive)[2:9] <- c("perdose","total_perdose","total_percourse","savings_perdose",
+                            "total_savings_perdose","total_savings_percourse","percourse_total_savings_percent",
+                            "perdose_gdppc_percent")
+gdp_naive$perdose_gdppc_percent <- gdp_naive$perdose*100/dataset$`GDP per capita (2022)`
+
+gdp_adj <- dataset[,c(1,(25:32))]
+colnames(gdp_adj)[2:9] <- c("perdose","total_perdose","total_percourse","savings_perdose",
+                              "total_savings_perdose","total_savings_percourse","percourse_total_savings_percent",
+                              "perdose_gdppc_percent")
+gdp_adj$perdose_gdppc_percent <- gdp_adj$perdose*100/dataset$`GDP per capita (2022)`
+
+
+
+# ordered_data = dataset[order(dataset$`GDP per capita (2022)`,decreasing=T),]
+# ordered_data[,25] <- ordered_data[,25]*100
+# ordered_data[,33] <- ordered_data[,33]*100
+
+dataset = dataset[-11,]
+bilateral = bilateral[-11,]
+uniform = uniform[-11,]
+gdp_naive = gdp_naive[-11,]
+gdp_adj = gdp_adj[-11,]
+
+
+bilateral = bilateral[order(dataset$`GDP per capita (2022)`),]
+uniform = uniform[order(dataset$`GDP per capita (2022)`),]
+gdp_naive = gdp_naive[order(dataset$`GDP per capita (2022)`),]
+gdp_adj = gdp_adj[order(dataset$`GDP per capita (2022)`),]
+
+dataset = dataset[order(dataset$`GDP per capita (2022)`),]
+
+
+
+
+
+
 
 
 
