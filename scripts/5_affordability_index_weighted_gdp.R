@@ -57,6 +57,12 @@ if(1)
   # grid.text("     GDP Weighted", x=0.19,y=0.92,gp=gpar(fontsize=6))
   # grid.text("Adj GDP Weighted", x=0.6,y=0.92,gp=gpar(fontsize=6))
   
+  grid.polygon(x = c(i+c(-0.45,0.45),rev(i+c(-0.45,0.45))),
+               y = c(0,0,(asean_df$total_price_paid[i]/10^9-0),
+                     (asean_df$total_price_paid[i]/10^9)-0),
+               default.units = 'native',
+               gp = gpar(col = '#0042A6', fill = '#0042A6'))
+  
   
   popViewport()
 }
