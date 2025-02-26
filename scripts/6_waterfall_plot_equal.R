@@ -17,7 +17,7 @@ if(1)
   
 
   grid.text(paste0('ASEAN Countries ordered by GDP per capita'),x = unit(0,'npc')+unit(7,'lines'),y = unit(0,'npc')+unit(-2.8,'lines'),gp = gpar(fontsize=9,fontface='bold'))
-  grid.text(paste0('Price per dose, Equal Pricing'),x = unit(0,'npc')+unit(5.7,'lines'),y = unit(0,'npc')+unit(16.4,'lines'),gp = gpar(fontsize=9,fontface='bold'))
+  grid.text(paste0('Price per dose, Uniform Pricing'),x = unit(0,'npc')+unit(5.7,'lines'),y = unit(0,'npc')+unit(16.4,'lines'),gp = gpar(fontsize=9,fontface='bold'))
   grid.text(paste0('$'),x = unit(0,'npc')+unit(1.7,'lines'),y = unit(0,'npc')+unit(17.1,'lines'),gp = gpar(fontsize=8))
   grid.text(paste0('% of GDP per capita'),x = unit(0,'npc')+unit(7.2,'lines'),y = unit(0,'npc')+unit(17.1,'lines'),gp = gpar(fontsize=8))
   

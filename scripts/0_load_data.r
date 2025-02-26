@@ -91,13 +91,13 @@ gdp_adj$perdose_gdppc_percent <- gdp_adj$perdose*100/dataset$`GDP per capita (20
 # ordered_data = dataset[order(dataset$`GDP per capita (2022)`,decreasing=T),]
 # ordered_data[,25] <- ordered_data[,25]*100
 # ordered_data[,33] <- ordered_data[,33]*100
-
-dataset = dataset[-11,]
-bilateral = bilateral[-11,]
-uniform = uniform[-11,]
-gdp_naive = gdp_naive[-11,]
-gdp_adj = gdp_adj[-11,]
-
+# 
+# dataset = dataset[-11,]
+# bilateral = bilateral[-11,]
+# uniform = uniform[-11,]
+# gdp_naive = gdp_naive[-11,]
+# gdp_adj = gdp_adj[-11,]
+# 
 
 bilateral = bilateral[order(dataset$`GDP per capita (2022)`),]
 uniform = uniform[order(dataset$`GDP per capita (2022)`),]
@@ -106,8 +106,20 @@ gdp_adj = gdp_adj[order(dataset$`GDP per capita (2022)`),]
 
 dataset = dataset[order(dataset$`GDP per capita (2022)`),]
 
+################################################################################
+
+spline_gdppc_percent_bilateral <- spline(x=log(x=dataset[1:10,4],base=10),
+                               y=bilateral$perdose_gdppc_percent, n = 1000)
+
+spline_gdppc_percent_uniform <- spline(x=log(x=dataset[1:10,4],base=10),
+                                       y=uniform$perdose_gdppc_percent, n = 1000)
 
 
+spline_gdppc_percent_gdp_adj <- spline(x=log(x=dataset[1:10,4],base=10),
+                                       y=gdp_adj$perdose_gdppc_percent, n = 1000)
+
+spline_gdppc_percent_gdp_naive <- spline(x=log(x=dataset[1:10,4],base=10),
+                                       y=gdp_naive$perdose_gdppc_percent, n = 1000)
 
 
 
