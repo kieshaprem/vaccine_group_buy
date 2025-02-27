@@ -21,15 +21,17 @@ if(1)
   
   vax_0_box <- rectGrob(x = 0.05, y = 0.97, width = 0.025, height = 0.0125,
                         gp = gpar(col = "grey", fill = "grey", alpha = 0.5, lty = 1, lwd=0.8))
-  vax_1_box <- rectGrob(x = 0.42, y = 0.97, width = 0.025, height = 0.0125,
+  vax_1_box <- rectGrob(x = 0.05, y = 0.91, width = 0.025, height = 0.0125,
                         gp = gpar(col = "orange", fill = "orange", alpha=0.5 , lty = 1, lwd=0.8))
 
 
   grid.draw(vax_0_box)
   grid.draw(vax_1_box)
   
-  grid.text("Bilateral pricing", x=0.25,y=0.97,gp=gpar(fontsize=6))
-  grid.text("GDP weighted pricing, alpha = 10", x=0.62,y=0.97,gp=gpar(fontsize=6))
+  grid.text("Bilateral pricing", x=0.21,y=0.97,gp=gpar(fontsize=6))
+  grid.text(" GDP weighted pricing, ", x=0.27,y=0.91,gp=gpar(fontsize=6))
+  grid.text(as.expression(bquote(alpha == 10)), x=0.52,y=0.91,gp=gpar(fontsize=6))
+  
 
   x_curve_main <- spline_gdppc_percent_gdp_adj$x
   y_curve_main<- spline_gdppc_percent_gdp_adj$y

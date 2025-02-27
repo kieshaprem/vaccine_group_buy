@@ -24,10 +24,10 @@ if(1)
 
   grid.draw(vax_0_box)
 
-  grid.text("     Bilateral pricing", x=0.19,y=0.97,gp=gpar(fontsize=6))
+  grid.text("Bilateral pricing", x=0.21,y=0.97,gp=gpar(fontsize=6))
 
-  x_curve <- spline_gdppc_percent$x
-  y_curve<- spline_gdppc_percent$y
+  x_curve <- spline_gdppc_percent_bilateral$x
+  y_curve<- spline_gdppc_percent_bilateral$y
   
   x_line <- seq(min(log(x=dataset[1:10,4],base=10)),
                 max(log(x=dataset[1:10,4],base=10)),

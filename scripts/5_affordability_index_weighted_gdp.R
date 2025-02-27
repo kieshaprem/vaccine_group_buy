@@ -1,6 +1,6 @@
 library(grid)
 
-gdp_naive <- gdp_naive[-order(dataset$`GDP per capita (2022)`),]
+#gdp_naive <- gdp_naive[-order(dataset$`GDP per capita (2022)`),]
 
 png(paste0("output/plots/plot_unaffordability_index_weighted_gdp.png"),height=8,width=8,units='cm',res=700,pointsize=10)
 if(1)
@@ -21,15 +21,15 @@ if(1)
   
   vax_0_box <- rectGrob(x = 0.05, y = 0.97, width = 0.025, height = 0.0125,
                         gp = gpar(col = "grey", fill = "grey", alpha=0.5, lty = 1, lwd=0.8))
-  vax_1_box <- rectGrob(x = 0.4, y = 0.97, width = 0.025, height = 0.0125,
+  vax_1_box <- rectGrob(x = 0.05, y = 0.91, width = 0.025, height = 0.0125,
                         gp = gpar(col = "#ED2939", fill = "#ED2939", alpha=0.5, lty = 1, lwd=0.8))
   
   grid.draw(vax_0_box)
   grid.draw(vax_1_box)
   
   grid.text("Bilateral pricing", x=0.21,y=0.97,gp=gpar(fontsize=6))
-  grid.text("GDP Weighted", x=0.56,y=0.97,gp=gpar(fontsize=6))
-  
+  grid.text("Pricing directly weighted by GDP", x=0.36,y=0.91,gp=gpar(fontsize=6))
+
   x_curve_main <- spline_gdppc_percent_gdp_naive$x
   y_curve_main<- spline_gdppc_percent_gdp_naive$y
   
