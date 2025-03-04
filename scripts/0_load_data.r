@@ -120,10 +120,9 @@ spline_gdppc_percent_gdp_adj <- spline(x=log(x=dataset[1:10,4],base=10),
 
 spline_gdppc_percent_gdp_naive <- spline(x=log(x=dataset[1:10,4],base=10),
                                        y=gdp_naive$perdose_gdppc_percent, n = 1000)
+################################################################################
 
-
-
-
+uniform$total_1dose_percent_gdp <- uniform$total_perdose*100/dataset$`GDP (2022)`
 
 
 
