@@ -15,20 +15,20 @@ waterfall_volume_total_per_dose <- function(mechanism){
   png(paste0("output/plots/",filename,'.png'),
       height=8.2,width=8.2,units='cm',res=700,pointsize=10)
   grid.newpage()
-  pushViewport(plotViewport(c(3,4,2,1),xscale=c(0.7,42.3),yscale=c(-50,2800)))
+  pushViewport(plotViewport(c(3,4,2,1),xscale=c(-1,71),yscale=c(-50,3000)))
   
   # grid.yaxis(at=seq(6,10),label = c("1","10","100","1,000","10,000"),
   #            gp=gpar(fontsize=8))
-  grid.yaxis(at=c(0,500,1000,1500,2000,2500),
-             label=c('0','500','1,000','1,500','2,000','2,500'),
+  grid.yaxis(at=c(0,1000,2000,3000),
+             label=c('0','1,000','2,000','3,000'),
              gp=gpar(fontsize=8))
-  x_axis_loc <- seq(3,40,4)
+  x_axis_loc <- seq(3,70,7)
   grid.xaxis(at=c(x_axis_loc), 
              label=rev(c("SG","BN","MY","TH","ID","VN","PH","LA","KH","MM")),
              gp=gpar(fontsize=8))
   
   for (i in (1:10)){
-    grid.polygon(x = c(x_axis_loc[i]+c(-0.45,0.45),rev(x_axis_loc[i]+c(-0.45,0.45))),
+    grid.polygon(x = c(x_axis_loc[i]+c(-0.55,0.55),rev(x_axis_loc[i]+c(-0.55,0.55))),
                  y = c(-50,-50,bilateral[i,]$total_perdose/1e6,
                        bilateral[i,]$total_perdose/1e6),
                        # log(x=bilateral[i,]$total_perdose/1e6,base=10),
@@ -37,7 +37,7 @@ waterfall_volume_total_per_dose <- function(mechanism){
                  gp = gpar(col = 'grey', fill = 'grey'))
     
     if (data[i,]$savings_perdose>0){
-      grid.polygon(x = c(x_axis_loc[i]+c(0.55,1.45),rev(x_axis_loc[i]+c(0.55,1.45))),
+      grid.polygon(x = c(x_axis_loc[i]+c(0.65,2.35),rev(x_axis_loc[i]+c(0.65,2.35))),
                    y = c(bilateral[i,]$total_perdose/1e6,
                          bilateral[i,]$total_perdose/1e6,
                          data[i,]$total_perdose/1e6,
@@ -48,8 +48,10 @@ waterfall_volume_total_per_dose <- function(mechanism){
                    #       log(x=data[i,]$total_perdose/1e6,base=10)),
                    default.units = 'native',
                    gp = gpar(col = 'blue', fill = 'blue',alpha=0.5))
+      grid.text(paste0("-",round(data[i,]$total_savings_perdose/1e6),"M"),
+                x=x_axis_loc[i]+0.3,y=bilateral[i,]$total_perdose/1e6+80,default.units = 'native',gp=gpar(fontsize=7))
     } else{
-      grid.polygon(x = c(x_axis_loc[i]+c(0.55,1.45),rev(x_axis_loc[i]+c(0.55,1.45))),
+      grid.polygon(x = c(x_axis_loc[i]+c(0.65,2.35),rev(x_axis_loc[i]+c(0.65,2.35))),
                    y=c(bilateral[i,]$total_perdose/1e6,
                    bilateral[i,]$total_perdose/1e6,
                    data[i,]$total_perdose/1e6,
@@ -60,6 +62,8 @@ waterfall_volume_total_per_dose <- function(mechanism){
                    #       log(x=data[i,]$total_perdose/1e6,base=10)),
                    default.units = 'native',
                    gp = gpar(col = 'red', fill = 'red',alpha=0.5))
+      grid.text(paste0("+",round(abs(data[i,]$total_savings_perdose/1e6)),"M"),
+                x=x_axis_loc[i]+0.3,y=data[i,]$total_perdose/1e6+80,default.units = 'native' ,gp=gpar(fontsize=7))
     }
   }
   
