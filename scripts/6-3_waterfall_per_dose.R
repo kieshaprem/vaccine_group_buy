@@ -52,9 +52,9 @@ waterfall_volume_per_dose <- function(mechanism){
                          data[i,]$perdose,
                          data[i,]$perdose),
                    default.units = 'native',
-                   gp = gpar(col = 'blue', fill = 'blue',alpha=0.5))
-      # grid.text(paste0("-",round(data[i,]$savings_perdose,2)),
-      #           x=x_axis_loc[i]+0.3,y=bilateral[i,]$perdose+1.5,default.units = 'native',gp=gpar(fontsize=7))
+                   gp = gpar(col = '#0042A6', fill = '#0042A6',alpha=0.5))
+      grid.text(paste0("-",sprintf("%.1f", round(abs(data[i,]$savings_perdose),1))),
+                x=x_axis_loc[i]+0.3,y=bilateral[i,]$perdose+1.5,default.units = 'native',gp=gpar(fontsize=7))
     }
     
     else{
@@ -65,35 +65,31 @@ waterfall_volume_per_dose <- function(mechanism){
                          data[i,]$perdose),
                    default.units = 'native',
                    gp = gpar(col = 'red', fill = 'red',alpha=0.5))
-      # grid.text(paste0("+",round(abs(data[i,]$savings_perdose),2)),
-      #           x=x_axis_loc[i]+0.3,y=data[i,]$perdose+1.5,default.units = 'native' ,gp=gpar(fontsize=7))
+      grid.text(paste0("+",sprintf("%.1f", round(abs(data[i,]$savings_perdose),1))),
+                x=x_axis_loc[i]+0.3,y=data[i,]$perdose+1.5,default.units = 'native' ,gp=gpar(fontsize=7))
     }
   }
-  
   grid.rect(gp=gpar(fill=NA))
   
-  # grid.polygon(x = c(2,2.4,2.4,2),
-  #              y = c(2.2,2.2,2.25,2.25),
-  #              default.units = 'native',
-  #              gp = gpar(col = '#270f36', fill = '#270f36'))
+  grid.polygon(x = c(2,4,4,2),
+               y = c(57.5,57.5,58.5,58.5),
+               default.units = 'native',
+               gp = gpar(col = 'grey', fill = 'grey'))
+  grid.text("Bilateral price ($)",x=16,y=58,default.units = 'native' ,gp=gpar(fontsize=7))
   
-  # grid.polygon(x = c(0.4,0.8,0.8,0.4),
-  #              y = c(11,11,11.15,11.15),
-  #              default.units = 'native',
-  #              gp = gpar(col = '#270f36', fill = '#270f36'))
-  # 
-  # grid.polygon(x = c(4.2,4.6,4.6,4.2),
-  #              y = c(11,11,11.15,11.15),
-  #              default.units = 'native',
-  #              gp = gpar(col = '#632b6c', fill = '#632b6c'))
-  # 
-  # 
-  # grid.polygon(x = c(0.4,0.8,0.8,0.4),
-  #              y = c(10.5,10.5,10.65,10.65),
-  #              default.units = 'native',
-  #              gp = gpar(col = '#fcc3a3', fill = '#fcc3a3'))
+  grid.polygon(x = c(2,4,4,2),
+               y = c(54.5,54.5,55.5,55.5),
+               default.units = 'native',
+               gp = gpar(col = '#0042A6', fill = '#0042A6',alpha=0.5))
   
-
+  grid.text("  Price decrease ($)",x=16,y=55,default.units = 'native' ,gp=gpar(fontsize=7))
+  
+  grid.polygon(x = c(2,4,4,2),
+               y = c(51.5,51.5,52.5,52.5),
+               default.units = 'native',
+               gp = gpar(col = 'red', fill = 'red',alpha=0.5))  
+  grid.text(" Price increase ($)",x=16,y=52,default.units = 'native' ,gp=gpar(fontsize=7))
+  
 
   grid.text('Price per dose ($)',
             x = unit(0,'npc')+unit(-4.5,'lines'),

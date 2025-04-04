@@ -66,9 +66,9 @@ if(1)
                                              y=model_exp$coefficients[1]+model_exp$coefficients[2]*input))},
                 gp=gpar(lty=2, lwd=0.8))
   
-  grid.text(paste0('GDP per capita in 2022 (current US$)'),y = unit(0,'npc')+unit(-2.8,'lines'),gp = gpar(fontsize=9,fontface='bold',col = 'black'))
-  grid.text(paste0('Healthcare expenditure \nin 2021 (current US$)'),x = unit(0,'npc')+unit(-4.2,'lines'),rot=90,gp = gpar(fontsize=9,fontface='bold',col = 'black'))
-  #grid.lines()
+  grid.text(paste0('GDP per capita in 2022 (current US$) in log10 scale'),y = unit(0,'npc')+unit(-2.8,'lines'),gp = gpar(fontsize=9,fontface='bold',col = 'black'))
+  grid.text(paste0('Healthcare expenditure in 2021\n(current US$) in log10scale'),x = unit(0,'npc')+unit(-4.2,'lines'),rot=90,gp = gpar(fontsize=9,fontface='bold',col = 'black'))
+  
   grid.points(x=log(x=gdp_oop[!gdp_oop$Country.Code %in% asean_iso,][,2],base=10),
               y=log(x=gdp_oop[!gdp_oop$Country.Code %in% asean_iso,][,3],base=10),
               default.units = 'native',pch=16,gp=gpar(alpha=0.5,cex = 0.5, lwd=0.8, col="#0047AB"))
@@ -95,27 +95,24 @@ if(1)
               default.units = 'native',pch=5,gp=gpar(cex = 0.6,lwd=1, col="#40E0D0"))
   
   
-  
-  
-  legend_box <- rectGrob(x = 0.215, y = 0.875, width = 0.36, height = 0.15,
-                         gp = gpar(col = "#A9A9A9", alpha=0.8, lty = 1, lwd=0.8))
-  
-  vax_1_box <- rectGrob(x = 0.06, y = 0.93, width = 0.025, height = 0.0125,
+  # legend_box <- rectGrob(x = 0.215, y = 0.875, width = 0.36, height = 0.15,
+  #                        gp = gpar(col = "#A9A9A9", alpha=0.8, lty = 1, lwd=0.8))
+  # 
+  vax_1_box <- rectGrob(x = 0.06, y = 0.88, width = 0.025, height = 0.0125,
                         gp = gpar(col = "#0047AB", fill = "navy", lty = 1, lwd=0.8))
-  vax_2_box <- rectGrob(x = 0.06, y = 0.88, width = 0.025, height = 0.0125,
+  vax_2_box <- rectGrob(x = 0.06, y = 0.93, width = 0.025, height = 0.0125,
                         gp = gpar(col = "#40E0D0", fill = "#40E0D0", lty = 1, lwd=0.8))
   vax_3_box <- rectGrob(x = 0.06, y = 0.83, width = 0.025, height = 0.0125,
                         gp = gpar(col = "#FD1813", fill = "#FD1813", lty = 1, lwd=0.8))
   
-  grid.draw(legend_box)
+  #grid.draw(legend_box)
   grid.draw(vax_1_box)
   grid.draw(vax_2_box)
   grid.draw(vax_3_box)
   
-  grid.text("                   Household OOPS per capita", x=unit(6.1,"lines"),y=unit(21.5,"lines"),gp=gpar(fontsize=6))
-  grid.text("                    Health expenditure per capita", x=unit(6.1,"lines"),y=unit(20.4, "lines"),gp=gpar(fontsize=6))
+  grid.text("                    Health expenditure per capita", x=unit(6.1,"lines"),y=unit(21.5,"lines"),gp=gpar(fontsize=6))
+  grid.text("                   Household OOPS per capita", x=unit(6.1,"lines"),y=unit(20.4, "lines"),gp=gpar(fontsize=6))
   grid.text("ASEAN countries", x=unit(6.1,"lines"),y=unit(19.3, "lines"),gp=gpar(fontsize=6))
- 
 
   popViewport()
 }
