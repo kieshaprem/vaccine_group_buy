@@ -16,8 +16,8 @@ waterfall_volume_per_dose <- function(mechanism){
   png(paste0("output/plots/",filename,'.png'),
       height=8.2,width=8.2,units='cm',res=700,pointsize=10)
   grid.newpage()
-  pushViewport(plotViewport(c(3,4,2,1),xscale=c(0.7,42.3),yscale=c(0,60)))
-  x_axis_loc <- seq(3,40,4)
+  pushViewport(plotViewport(c(3,4,2,1),xscale=c(-1,71),yscale=c(0,60)))
+  x_axis_loc <- seq(3,70,7)
   grid.xaxis(at=c(x_axis_loc), 
              label=rev(c("SG","BN","MY","TH","ID","VN","PH","LA","KH","MM")),
              gp=gpar(fontsize=8))
@@ -39,30 +39,34 @@ waterfall_volume_per_dose <- function(mechanism){
   grid.yaxis()
   
   for (i in (1:10)){
-    grid.polygon(x = c(x_axis_loc[i]+c(-0.45,0.45),rev(x_axis_loc[i]+c(-0.45,0.45))),
+    grid.polygon(x = c(x_axis_loc[i]+c(-0.55,0.55),rev(x_axis_loc[i]+c(-0.55,0.55))),
                  y = c(0,0,bilateral[i,]$perdose,
                        bilateral[i,]$perdose),
                  default.units = 'native',
                  gp = gpar(col = 'grey', fill = 'grey'))
     
     if (data[i,]$savings_perdose>0){
-      grid.polygon(x = c(x_axis_loc[i]+c(0.55,1.45),rev(x_axis_loc[i]+c(0.55,1.45))),
+      grid.polygon(x = c(x_axis_loc[i]+c(0.65,2.35),rev(x_axis_loc[i]+c(0.65,2.35))),
                    y = c(bilateral[i,]$perdose,
                          bilateral[i,]$perdose,
                          data[i,]$perdose,
                          data[i,]$perdose),
                    default.units = 'native',
                    gp = gpar(col = 'blue', fill = 'blue',alpha=0.5))
+      # grid.text(paste0("-",round(data[i,]$savings_perdose,2)),
+      #           x=x_axis_loc[i]+0.3,y=bilateral[i,]$perdose+1.5,default.units = 'native',gp=gpar(fontsize=7))
     }
     
     else{
-      grid.polygon(x = c(x_axis_loc[i]+c(0.55,1.45),rev(x_axis_loc[i]+c(0.55,1.45))),
+      grid.polygon(x = c(x_axis_loc[i]+c(0.65,2.35),rev(x_axis_loc[i]+c(0.65,2.35))),
                    y = c(bilateral[i,]$perdose,
                          bilateral[i,]$perdose,
                          data[i,]$perdose,
                          data[i,]$perdose),
                    default.units = 'native',
                    gp = gpar(col = 'red', fill = 'red',alpha=0.5))
+      # grid.text(paste0("+",round(abs(data[i,]$savings_perdose),2)),
+      #           x=x_axis_loc[i]+0.3,y=data[i,]$perdose+1.5,default.units = 'native' ,gp=gpar(fontsize=7))
     }
   }
   
