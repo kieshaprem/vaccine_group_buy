@@ -4,13 +4,13 @@ png(paste0("output/plots/waterfall_plot_uniform.png"),height=8,width=8,units='cm
 if(1)
 {
   
-  pushViewport(plotViewport(c(3,3,3,3),xscale=c(0.5,10.5),yscale=c(0,2.1)))#)NEW
+  pushViewport(plotViewport(c(3,3,3,3),xscale=c(0.5,10.5),yscale=c(0,60)))#)NEW
   grid.rect()
   
-  grid.yaxis(at=c(0,1,2), 
-             label=c("0%","0.5%","1%"),gp=gpar(fontsize=7),main=FALSE)
-  grid.yaxis(at=c(0,1,2), 
-             label=c("$1","$10","$100"),gp=gpar(fontsize=7))
+  grid.yaxis(at=c(0,12,24,36,48,60), 
+             label=c("0.0%","0.2%","0.4%","0.6%","0.8%","1.0%"),gp=gpar(fontsize=7),main=FALSE)
+  grid.yaxis(at=c(0,10,20,30,40,50,60), 
+             label=c("$0","$10","$20","$30","$40","$50","$60"),gp=gpar(fontsize=7))
   
   grid.xaxis(at=seq(1,10), 
              label=rev(c("SG","BN","MY","TH","ID","VN","PH","LA","KH","MM")),gp=gpar(fontsize=8))
@@ -24,25 +24,25 @@ if(1)
   
   for (i in (1:10)){
     grid.polygon(x = c(i+c(-0.45,0.45),rev(i+c(-0.45,0.45))),
-                 y = c(0,0,log(x=uniform[i,]$perdose,base=10),
-                       log(x=uniform[i,]$perdose,base=10)),
+                 y = c(0,0,uniform[i,]$perdose,
+                       uniform[i,]$perdose),
                  default.units = 'native',
-                 gp = gpar(col = '#0042A6', fill = '#0042A6'))
+                 gp = gpar(col = '#0042A6', fill = '#0042A6', alpha=0.5))
   }
 
-  grid.lines(seq(1,10), uniform$perdose_gdppc_percent*2.1, default.units = "native",
+  grid.lines(seq(1,10), uniform$perdose_gdppc_percent*60, default.units = "native",
              gp=gpar(col="red", lwd=0.8))
   
-  grid.points(seq(1,10), uniform$perdose_gdppc_percent*2.1, default.units = "native",
+  grid.points(seq(1,10), uniform$perdose_gdppc_percent*60, default.units = "native",
               gp=gpar(col="red", cex=0.4),pch=16)
   
   grid.polygon(x = c(0.8,1.2,1.2,0.8),
-               y = c(2.2,2.2,2.25,2.25),
+               y = c(63,63,64,64),
                default.units = 'native',
-               gp = gpar(col = '#0042A6', fill = '#0042A6'))
+               gp = gpar(col = '#0042A6', fill = '#0042A6',alpha=0.5))
   
   grid.polygon(x = c(2,2.4,2.4,2),
-               y = c(2.2,2.2,2.25,2.25),
+               y = c(63,63,64,64),
                default.units = 'native',
                gp = gpar(col = 'red', fill = 'red'))
   popViewport()
