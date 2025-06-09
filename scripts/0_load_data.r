@@ -86,19 +86,6 @@ colnames(gdp_adj)[2:9] <- c("perdose","total_perdose","total_percourse","savings
                               "perdose_gdppc_percent")
 gdp_adj$perdose_gdppc_percent <- gdp_adj$perdose*100/dataset$`GDP per capita (2022)`
 
-
-
-# ordered_data = dataset[order(dataset$`GDP per capita (2022)`,decreasing=T),]
-# ordered_data[,25] <- ordered_data[,25]*100
-# ordered_data[,33] <- ordered_data[,33]*100
-# 
-# dataset = dataset[-11,]
-# bilateral = bilateral[-11,]
-# uniform = uniform[-11,]
-# gdp_naive = gdp_naive[-11,]
-# gdp_adj = gdp_adj[-11,]
-# 
-
 bilateral = bilateral[order(dataset$`GDP per capita (2022)`),]
 uniform = uniform[order(dataset$`GDP per capita (2022)`),]
 gdp_naive = gdp_naive[order(dataset$`GDP per capita (2022)`),]
@@ -124,5 +111,5 @@ spline_gdppc_percent_gdp_naive <- spline(x=log(x=dataset[1:10,4],base=10),
 
 uniform$total_1dose_percent_gdp <- uniform$total_perdose*100/dataset$`GDP (2022)`
 
-
+###############################################################################
 
