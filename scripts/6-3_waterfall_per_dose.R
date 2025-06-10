@@ -33,7 +33,7 @@ waterfall_volume_per_dose <- function(mechanism){
                  y = c(0,0,bilateral[i,]$perdose,
                        bilateral[i,]$perdose),
                  default.units = 'native',
-                 gp = gpar(col = 'grey', fill = 'grey'))
+                 gp = gpar(col = 'grey50', fill = 'grey50',alpha=0.5))
     
     if (data[i,]$savings_perdose>0){
       grid.polygon(x = c(x_axis_loc[i]+c(0.65,2.35),rev(x_axis_loc[i]+c(0.65,2.35))),
@@ -64,7 +64,7 @@ waterfall_volume_per_dose <- function(mechanism){
   grid.polygon(x = c(2,4,4,2),
                y = c(57.5,57.5,58.5,58.5),
                default.units = 'native',
-               gp = gpar(col = 'grey', fill = 'grey'))
+               gp = gpar(col = 'grey50', fill = 'grey50',alpha=0.5))
   grid.text("Bilateral price ($)",x=16,y=58,default.units = 'native' ,gp=gpar(fontsize=4))
   
   grid.polygon(x = c(2,4,4,2),

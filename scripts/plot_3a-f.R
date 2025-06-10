@@ -1,6 +1,6 @@
 library(grid)
-source('scripts/5_unaffordability_index_plot.R')
 source('scripts/6_waterfall_plot.R')
+source('scripts/5_unaffordability_index_plot.R')
 
 
 paneller=function(row,column)

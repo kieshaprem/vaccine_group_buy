@@ -3,7 +3,7 @@ library(grid)
 
 waterfall_plot <- function(mechanism){
   
-  pushViewport(plotViewport(c(1,3,1,1),xscale=c(0.5,10.5),yscale=c(0,60)))#)NEW
+  pushViewport(plotViewport(c(1,3,1,1),xscale=c(0.5,10.5),yscale=c(0,60)))
   grid.rect()
   
   if (mechanism == "bilateral"){
@@ -35,20 +35,11 @@ waterfall_plot <- function(mechanism){
   grid.text(paste0('$'),x = unit(0,'npc')+unit(2,'lines'),y = unit(0,'npc')+unit(21.1,'lines'),gp = gpar(fontsize=4))
   grid.text(paste0('% of GDP per capita'),x = unit(0,'npc')+unit(7.5,'lines'),y = unit(0,'npc')+unit(21.1,'lines'),gp = gpar(fontsize=4))
   
-  
-  grid.yaxis(at=c(0,12,24,36,48,60), 
-             label=c("0.0%","0.2%","0.4%","0.6%","0.8%","1.0%"),gp=gpar(fontsize=5),main=FALSE)
-  grid.yaxis(at=c(0,10,20,30,40,50,60), 
-             label=c("$0","$10","$20","$30","$40","$50","$60"),gp=gpar(fontsize=5))
-  
-  grid.xaxis(at=seq(1,10), 
-             label=rev(c("SG","BN","MY","TH","ID","VN","PH","LA","KH","MM")),gp=gpar(fontsize=5))
-  
   #grid.text(paste0('ASEAN Countries ordered by GDP per capita'),x = unit(0,'npc')+unit(7.9,'lines'),y = unit(0,'npc')+unit(-2.8,'lines'),gp = gpar(fontsize=6,fontface='bold'))
    
   # bar chart
   for (i in (1:10)){
-    grid.polygon(x = c(i+c(-0.45,0.45),rev(i+c(-0.45,0.45))),
+    grid.polygon(x = c(i+c(-0.4,0.4),rev(i+c(-0.4,0.4))),
                  y = c(0,0,dataset[i,]$perdose,
                        dataset[i,]$perdose),
                  default.units = 'native',
@@ -60,6 +51,15 @@ waterfall_plot <- function(mechanism){
              gp=gpar(col="red", lwd=0.8))
   grid.points(seq(1,10), dataset$perdose_gdppc_percent*60, default.units = "native",
               gp=gpar(col="red", cex=0.4),pch=16)
+  
+  grid.yaxis(at=c(0,12,24,36,48,60), 
+             label=c("0.0%","0.2%","0.4%","0.6%","0.8%","1.0%"),gp=gpar(fontsize=5),main=FALSE)
+  grid.yaxis(at=c(0,10,20,30,40,50,60), 
+             label=c("$0","$10","$20","$30","$40","$50","$60"),gp=gpar(fontsize=5))
+  
+  grid.xaxis(at=seq(1,10), 
+             label=rev(c("SG","BN","MY","TH","ID","VN","PH","LA","KH","MM")),gp=gpar(fontsize=4.5))
+  
   
   popViewport()
 }

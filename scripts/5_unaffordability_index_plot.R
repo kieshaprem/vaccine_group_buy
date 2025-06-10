@@ -46,7 +46,7 @@ unaffordability_plot <- function(mechanism){
   
   # legend
   vax_0_box <- rectGrob(x = 0.05, y = 0.965, width = 0.025, height = 0.0125,
-                        gp = gpar(col = "grey", fill = "grey", alpha=0.5, lty = 1, lwd=0.8))
+                        gp = gpar(col = "grey50", fill = "grey50", alpha=0.5, lty = 1, lwd=0.8))
   grid.draw(vax_0_box)
   grid.text("Bilateral pricing", x=0.23,y=0.97,gp=gpar(fontsize=4))
 
@@ -79,11 +79,11 @@ unaffordability_plot <- function(mechanism){
                    rev(x_line[x_line<x_val])),
                y = c(y_curve_bilateral[x_curve_bilateral<x_val],y_val,
                      rev(y_line[y_line<y_val])),
-               default.units = 'native',gp=gpar(col=NA,fill="grey",alpha=0.5))
+               default.units = 'native',gp=gpar(col=NA,fill="grey50",alpha=0.5))
   
   grid.polygon(x=c((x_line[x_line>x_val]),rev(c(x_val,x_curve_bilateral[x_curve_bilateral>x_val]))),
                y = c((y_line[y_line>y_val]),rev(c(y_val,y_curve_bilateral[x_curve_bilateral>x_val]))),
-               default.units = 'native',gp=gpar(col=NA,fill="grey",alpha=0.5))
+               default.units = 'native',gp=gpar(col=NA,fill="grey50",alpha=0.5))
   
   
   grid.lines(x=seq(min(log(x=dataset[1:10,4],base=10)),
