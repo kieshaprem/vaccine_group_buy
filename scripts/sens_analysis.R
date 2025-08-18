@@ -86,7 +86,7 @@ get_percent_share_df <- function(sens_analysis_df,constant_col,alpha){
 }
 
 bilateral_analysis_price <- get_percent_share_df(bilateral_sens_analysis,constant_col=1,
-                                           alpha=FALSE)
+                                                 alpha=FALSE)
 uniform_analysis_price <- get_percent_share_df(uniform_sens_analysis,constant_col=1,
                                                alpha = FALSE)
 gdp_adj_analysis_price <- get_percent_share_df(gdp_adj_sens_analysis, constant_col = 11,
@@ -94,8 +94,59 @@ gdp_adj_analysis_price <- get_percent_share_df(gdp_adj_sens_analysis, constant_c
 
 
 gdp_adj_analysis_alpha <- get_percent_share_df(gdp_adj_sens_analysis, constant_col=2,
-                                                 alpha=TRUE)
+                                               alpha=TRUE)
 
+
+
+
+
+get_total_expenditure <- function(sens_analysis_df,constant_col,alpha){
+  analysis <- data.frame(array(NA,dim=c(length(bilateral$Country),5)))
+  colnames(analysis) <- c("Country","Population","percent_share_min",
+                          "percent_share_median",
+                          "percent_share_max")
+  analysis$Country <- bilateral$Country
+  analysis$Population <- dataset$`Population (2022)`
+  for (co in analysis$Country){
+    if (!alpha){
+      analysis[analysis$Country==co,]$percent_share_min <- sens_analysis_df[[co]][1,constant_col]*analysis[analysis$Country==co,]$Population # temp values only, will convert to percentages later
+      analysis[analysis$Country==co,]$percent_share_median <- sens_analysis_df[[co]][2,constant_col]*analysis[analysis$Country==co,]$Population
+      analysis[analysis$Country==co,]$percent_share_max <- sens_analysis_df[[co]][3,constant_col]*analysis[analysis$Country==co,]$Population
+    }
+    else{
+      if (ncol(sens_analysis_df[[1]])>1){
+        analysis[analysis$Country==co,]$percent_share_min <- sens_analysis_df[[co]][constant_col,1]*analysis[analysis$Country==co,]$Population # temp values only, will convert to percentages later
+        analysis[analysis$Country==co,]$percent_share_median <- sens_analysis_df[[co]][constant_col,11]*analysis[analysis$Country==co,]$Population
+        analysis[analysis$Country==co,]$percent_share_max <- sens_analysis_df[[co]][constant_col,21]*analysis[analysis$Country==co,]$Population
+      }
+      else{
+        analysis[analysis$Country==co,]$percent_share_min <- sens_analysis_df[[co]][constant_col,1]*analysis[analysis$Country==co,]$Population # temp values only, will convert to percentages later
+        analysis[analysis$Country==co,]$percent_share_median <- sens_analysis_df[[co]][constant_col,1]*analysis[analysis$Country==co,]$Population
+        analysis[analysis$Country==co,]$percent_share_max <- sens_analysis_df[[co]][constant_col,1]*analysis[analysis$Country==co,]$Population
+        
+      }
+    }
+  }
+  colnames(analysis) <- c("Country","Population","min_total_expenditure",
+                          "median_total_expenditure",
+                          "max_total_expenditure")
+  #analysis$percent_share_min <- analysis$percent_share_min*100/sum(analysis$percent_share_min)
+  #analysis$percent_share_median <- analysis$percent_share_median*100/sum(analysis$percent_share_median)
+  #analysis$percent_share_max <- analysis$percent_share_max*100/sum(analysis$percent_share_max)
+  return(analysis)
+}
+
+
+bilateral_analysis_expenditure <- get_total_expenditure(bilateral_sens_analysis,constant_col=1,
+                                                 alpha=FALSE)
+uniform_analysis_expenditure <- get_total_expenditure(uniform_sens_analysis,constant_col=1,
+                                               alpha = FALSE)
+gdp_adj_analysis_price_expenditure <- get_total_expenditure(gdp_adj_sens_analysis, constant_col = 11,
+                                               alpha = FALSE)
+
+
+gdp_adj_analysis_alpha_expenditure <- get_total_expenditure(gdp_adj_sens_analysis, constant_col=2,
+                                               alpha=TRUE)
 
 
 
