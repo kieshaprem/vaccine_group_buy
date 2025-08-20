@@ -1,5 +1,5 @@
 percent_share <- function(){
-  pushViewport(plotViewport(c(6.2,2,6.2,1),xscale=c(0.5,10.5),yscale=c(-1,45)))#)NEW
+  pushViewport(plotViewport(c(1,2,1,1),xscale=c(0.5,10.5),yscale=c(-1,45)))#)NEW
   grid.rect()
   
   # grid.yaxis(at=c(0,10,20,30,40,50,60), 
@@ -8,9 +8,9 @@ percent_share <- function(){
   grid.xaxis(at=seq(1,10), 
              label=rev(c("SG","BN","MY","TH","ID","VN","PH","LA","KH","MM")),gp=gpar(fontsize=5))
   
-  grid.text(paste0('ASEAN countries ordered by GDP per capita'),x = unit(0,'npc')+unit(7,'lines'),y = unit(0,'npc')+unit(-2.8,'lines'),gp = gpar(fontsize=6,fontface='bold'))
+  #grid.text(paste0('ASEAN countries ordered by GDP per capita'),x = unit(0,'npc')+unit(7,'lines'),y = unit(0,'npc')+unit(-2.8,'lines'),gp = gpar(fontsize=6,fontface='bold'))
   grid.text('e) Percentage share',x = unit(0,'npc')+unit(3.4,'lines'),
-            y = unit(0,'npc')+unit(16.8,'lines'),
+            y = unit(0,'npc')+unit(16.3,'lines'),
             gp = gpar(fontsize=6,fontface='bold'))
   
   for (i in 1:10){
@@ -52,11 +52,11 @@ percent_share <- function(){
                default.units = 'native',
                gp = gpar(col = 'grey50', fill = 'grey50'))
   
-  grid.text("Bilateral   ",x = unit(0,'npc')+unit(3.7,'lines'),y = unit(0,'npc')+unit(22.3,'lines'),
+  grid.text("Bilateral   ",x = unit(0,'npc')+unit(3.7,'lines'),y = unit(0,'npc')+unit(21.3,'lines'),
             gp = gpar(fontsize=4))
-  grid.text("Uniform     ",x = unit(0,'npc')+unit(3.9,'lines'),y = unit(0,'npc')+unit(21.1,'lines'),
+  grid.text("Uniform     ",x = unit(0,'npc')+unit(3.9,'lines'),y = unit(0,'npc')+unit(20.1,'lines'),
             gp = gpar(fontsize=4))
-  grid.text("GDPPC-weighted",x = unit(0,'npc')+unit(4.9,'lines'),y = unit(0,'npc')+unit(19.8,'lines'),
+  grid.text("GDPPC-weighted",x = unit(0,'npc')+unit(4.9,'lines'),y = unit(0,'npc')+unit(18.9,'lines'),
             gp = gpar(fontsize=4))
   popViewport()
 }

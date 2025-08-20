@@ -2,6 +2,7 @@ library(grid)
 source('scripts/6-3_waterfall_per_dose.R')
 source('scripts/6-4_waterfall_total_per_dose.R')
 source('scripts/plot_sens_analysis.R')
+source('scripts/total_expenditure.R')
 
 paneller=function(row,mechanism)
 {
@@ -22,12 +23,22 @@ paneller=function(row,mechanism)
       waterfall_volume_total_per_dose("gdp_adj")
     }
   }
+  
+  if (mechanism=="sens_analysis"){
+    if (row==1){
+      percent_share()
+    }
+    if (row==2){
+      total_expenditure()
+    }
+  }
+  
   popViewport()
   print(paste0("Column",column))
   print(paste0("Row",row))
 }
 
-png('output/plots/final_paper/2a-f.png',height=10,width=15,res=300, units='cm',pointsize=10)
+png('output/plots/final_paper/2a-f_new.png',height=10,width=15,res=300, units='cm',pointsize=10)
 pushViewport(plotViewport(c(1,1,1,1)))
 pushViewport(viewport(layout=grid.layout(nrow=1,ncol=3)))
 for (column in (1:3)){
@@ -48,7 +59,11 @@ for (column in (1:3)){
     popViewport()
   }
   if (column==3){
-    percent_share()
+    pushViewport(viewport(layout=grid.layout(nrow=2,ncol=1)))
+    paneller(row=1, mechanism = "sens_analysis")
+    paneller(row=2, mechanism = "sens_analysis")
+    popViewport()
+    popViewport()
   }
 }  
 popViewport()
