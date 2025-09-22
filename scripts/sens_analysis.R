@@ -148,6 +148,39 @@ gdp_adj_analysis_price_expenditure <- get_total_expenditure(gdp_adj_sens_analysi
 gdp_adj_analysis_alpha_expenditure <- get_total_expenditure(gdp_adj_sens_analysis, constant_col=2,
                                                alpha=TRUE)
 
+gdp_adj_alphabetical <- gdp_adj_analysis_price_expenditure[order(gdp_adj_analysis_price_expenditure$Country),]
+gdp_adj_alphabetical$price_perdose <- gdp_adj[order(gdp_adj$Country),]$perdose
+gdp_adj_alphabetical <- gdp_adj_alphabetical[,c('Country','Population',
+                                                'price_perdose','min_total_expenditure',
+                                                'median_total_expenditure','max_total_expenditure')]
+bilateral_analysis_expenditure <- bilateral_analysis_expenditure[order(bilateral_analysis_expenditure$Country),]
 
+gdp_adj_alphabetical$min_total_savings <- bilateral_analysis_expenditure$min_total_expenditure-gdp_adj_alphabetical$min_total_expenditure
+gdp_adj_alphabetical$median_total_savings <- bilateral_analysis_expenditure$median_total_expenditure-gdp_adj_alphabetical$median_total_expenditure
+gdp_adj_alphabetical$max_total_savings <- bilateral_analysis_expenditure$max_total_expenditure-gdp_adj_alphabetical$max_total_expenditure
+gdp_adj_alphabetical$price_perdose_max <- NA
 
+for (co in gdp_adj_alphabetical$Country){
+    gdp_adj_alphabetical[gdp_adj_alphabetical$Country==co,]$price_perdose_min <- gdp_adj_sens_analysis[[co]][1,11]
+    gdp_adj_alphabetical[gdp_adj_alphabetical$Country==co,]$price_perdose_max <- gdp_adj_sens_analysis[[co]][3,11]
+}
 
+gdp_adj_alphabetical <- gdp_adj_alphabetical[,c('Country','Population','price_perdose',
+                                                'price_perdose_min','price_perdose_max',
+                                                colnames(gdp_adj_alphabetical)[4:9])]
+
+gdp_adj_alphabetical$perdose_final <- paste0(round(gdp_adj_alphabetical$price_perdose,2)," (",
+                                             round(gdp_adj_alphabetical$price_perdose_min,2), " - ",
+                                             round(gdp_adj_alphabetical$price_perdose_max,2),")")
+
+gdp_adj_alphabetical$expenditure_final <- paste0(round(gdp_adj_alphabetical$median_total_expenditure,2)," (",
+                                             round(gdp_adj_alphabetical$min_total_expenditure,2), " - ",
+                                             round(gdp_adj_alphabetical$max_total_expenditure,2),")")
+
+gdp_adj_alphabetical$savings_final <- paste0(round(gdp_adj_alphabetical$median_total_savings,2)," (",
+                                                 round(gdp_adj_alphabetical$min_total_savings,2), " - ",
+                                                 round(gdp_adj_alphabetical$max_total_savings,2),")")
+
+to_save <- gdp_adj_alphabetical[,c('Country','perdose_final','expenditure_final','savings_final')]
+library(writexl)
+write_xlsx(to_save,path='output/gdp_adj_price_table.xlsx')

@@ -6,7 +6,7 @@ waterfall_volume_per_dose <- function(mechanism){
   pushViewport(plotViewport(c(1,2,1,1),xscale=c(-1,71),yscale=c(0,60)))
   x_axis_loc <- seq(3,70,7)
   grid.xaxis(at=c(x_axis_loc), 
-             label=rev(c("SG","BN","MY","TH","ID","VN","PH","LA","KH","MM")),
+             label=c("SG","BN","MY","TH","ID","VN","PH","LA","KH","MM"),
              gp=gpar(fontsize=5))
   grid.yaxis(gp=gpar(fontsize=5))
   
@@ -61,24 +61,24 @@ waterfall_volume_per_dose <- function(mechanism){
   }
   grid.rect(gp=gpar(fill=NA))
   
-  grid.polygon(x = c(2,4,4,2),
+  grid.polygon(x = c(40,42,42,40),
                y = c(57.5,57.5,58.5,58.5),
                default.units = 'native',
                gp = gpar(col = 'grey50', fill = 'grey50',alpha=0.5))
-  grid.text("Bilateral price ($)",x=16,y=58,default.units = 'native' ,gp=gpar(fontsize=4))
+  grid.text("Bilateral price ($)",x=55,y=58,default.units = 'native' ,gp=gpar(fontsize=4))
   
-  grid.polygon(x = c(2,4,4,2),
+  grid.polygon(x = c(40,42,42,40),
                y = c(54.5,54.5,55.5,55.5),
                default.units = 'native',
                gp = gpar(col = '#0042A6', fill = '#0042A6',alpha=0.5))
   
-  grid.text("  Price decrease ($)",x=16,y=55,default.units = 'native' ,gp=gpar(fontsize=4))
+  grid.text("  Price decrease ($)",x=55,y=55,default.units = 'native' ,gp=gpar(fontsize=4))
   
-  grid.polygon(x = c(2,4,4,2),
+  grid.polygon(x = c(40,42,42,40),
                y = c(51.5,51.5,52.5,52.5),
                default.units = 'native',
                gp = gpar(col = 'red', fill = 'red',alpha=0.5))  
-  grid.text(" Price increase ($)",x=16,y=52,default.units = 'native' ,gp=gpar(fontsize=4))
+  grid.text(" Price increase ($)",x=55,y=52,default.units = 'native' ,gp=gpar(fontsize=4))
   
   if (mechanism == "uniform"){
     grid.text('Price per dose ($)',

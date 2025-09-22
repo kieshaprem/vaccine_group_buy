@@ -6,7 +6,7 @@ percent_share <- function(){
   #            label=c("$0","$10","$20","$30","$40","$50","$60"),gp=gpar(fontsize=7))
   grid.yaxis(at=c(0,10,20,30,40),label=c("0%","10%","20%","30%","40%"),gp=gpar(fontsize=5))
   grid.xaxis(at=seq(1,10), 
-             label=rev(c("SG","BN","MY","TH","ID","VN","PH","LA","KH","MM")),gp=gpar(fontsize=5))
+             label=c("SG","BN","MY","TH","ID","VN","PH","LA","KH","MM"),gp=gpar(fontsize=5))
   
   #grid.text(paste0('ASEAN countries ordered by GDP per capita'),x = unit(0,'npc')+unit(7,'lines'),y = unit(0,'npc')+unit(-2.8,'lines'),gp = gpar(fontsize=6,fontface='bold'))
   grid.text('e) Percentage share',x = unit(0,'npc')+unit(3.4,'lines'),
@@ -37,26 +37,26 @@ percent_share <- function(){
   grid.points(seq(1,10), gdp_adj_analysis_alpha$percent_share_median, default.units = "native",
               gp=gpar(col="orange", cex=0.55),pch=16)
   
-  grid.polygon(x = c(0.8,1.2,1.2,0.8),
-               y = c(38,38,39,39),
+  grid.polygon(x = c(6.6,6.9,6.9,6.6),
+               y = c(38,38,38.5,38.5),
                default.units = 'native',
                gp = gpar(col = 'orange', fill = 'orange'))
   
-  grid.polygon(x = c(0.8,1.2,1.2,0.8),
-               y = c(40.5,40.5,41.5,41.5),
+  grid.polygon(x = c(6.6,6.9,6.9,6.6),
+               y = c(40.5,40.5,41,41),
                default.units = 'native',
                gp = gpar(col = 'blue', fill = 'blue'))
   
-  grid.polygon(x = c(0.8,1.2,1.2,0.8),
-               y = c(43,43,44,44),
+  grid.polygon(x = c(6.6,6.9,6.9,6.6),
+               y = c(43,43,43.5,43.5),
                default.units = 'native',
                gp = gpar(col = 'grey50', fill = 'grey50'))
   
-  grid.text("Bilateral   ",x = unit(0,'npc')+unit(3.7,'lines'),y = unit(0,'npc')+unit(21.3,'lines'),
+  grid.text("Bilateral    ",x = unit(0,'npc')+unit(15.5,'lines'),y = unit(0,'npc')+unit(21.2,'lines'),
             gp = gpar(fontsize=4))
-  grid.text("Uniform     ",x = unit(0,'npc')+unit(3.9,'lines'),y = unit(0,'npc')+unit(20.1,'lines'),
+  grid.text("Uniform      ",x = unit(0,'npc')+unit(15.7,'lines'),y = unit(0,'npc')+unit(20,'lines'),
             gp = gpar(fontsize=4))
-  grid.text("GDPPC-weighted",x = unit(0,'npc')+unit(4.9,'lines'),y = unit(0,'npc')+unit(18.9,'lines'),
+  grid.text("GDPPC-weighted",x = unit(0,'npc')+unit(16.7,'lines'),y = unit(0,'npc')+unit(18.8,'lines'),
             gp = gpar(fontsize=4))
   popViewport()
 }

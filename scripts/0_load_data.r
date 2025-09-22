@@ -112,4 +112,10 @@ spline_gdppc_percent_gdp_naive <- spline(x=log(x=dataset[1:10,4],base=10),
 uniform$total_1dose_percent_gdp <- uniform$total_perdose*100/dataset$`GDP (2022)`
 
 ###############################################################################
+bilateral <- bilateral[order(-dataset$`GDP per capita (2022)`),]
+uniform <- uniform[order(-dataset$`GDP per capita (2022)`),]
+gdp_adj <- gdp_adj[order(-dataset$`GDP per capita (2022)`),]
+gdp_adj_analysis_alpha <- merge(gdp_adj_analysis_alpha, dataset[,c("Country","GDP per capita (2022)")],
+                                by="Country")
+gdp_adj_analysis_alpha <- gdp_adj_analysis_alpha[order(-gdp_adj_analysis_alpha$`GDP per capita (2022)`),]
 

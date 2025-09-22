@@ -9,7 +9,7 @@ waterfall_volume_total_per_dose <- function(mechanism){
              gp=gpar(fontsize=5))
   x_axis_loc <- seq(3,70,7)
   grid.xaxis(at=c(x_axis_loc), 
-             label=rev(c("SG","BN","MY","TH","ID","VN","PH","LA","KH","MM")),
+             label=c("SG","BN","MY","TH","ID","VN","PH","LA","KH","MM"),
              gp=gpar(fontsize=5))
   
   if (mechanism=='uniform'){
@@ -59,24 +59,24 @@ waterfall_volume_total_per_dose <- function(mechanism){
                 x=x_axis_loc[i]+0.3,y=data[i,]$total_perdose/1e6+80,default.units = 'native' ,gp=gpar(fontsize=4))
     }
   }
-  grid.polygon(x = c(2,4,4,2),
+  grid.polygon(x = c(40,42,42,40),
                y = c(2875,2875,2925,2925),
                default.units = 'native',
                gp = gpar(col = 'grey50', fill = 'grey50', alpha=0.5))
-  grid.text("Bilateral price ($)",x=16,y=2900,default.units = 'native' ,gp=gpar(fontsize=4))
+  grid.text("Bilateral price ($)",x=55,y=2900,default.units = 'native' ,gp=gpar(fontsize=4))
   
-  grid.polygon(x = c(2,4,4,2),
+  grid.polygon(x = c(40,42,42,40),
                y = c(2725,2725,2775,2775),
                default.units = 'native',
                gp = gpar(col = '#0042A6', fill = '#0042A6',alpha=0.5))
   
-  grid.text("  Price decrease ($)",x=16,y=2750,default.units = 'native' ,gp=gpar(fontsize=4))
+  grid.text("  Price decrease ($)",x=55,y=2750,default.units = 'native' ,gp=gpar(fontsize=4))
   
-  grid.polygon(x = c(2,4,4,2),
+  grid.polygon(x = c(40,42,42,40),
                y = c(2575,2575,2625,2625),
                default.units = 'native',
                gp = gpar(col = 'red', fill = 'red',alpha=0.5))  
-  grid.text(" Price increase ($)",x=16,y=2600,default.units = 'native' ,gp=gpar(fontsize=4))
+  grid.text(" Price increase ($)",x=55,y=2600,default.units = 'native' ,gp=gpar(fontsize=4))
   
   grid.rect(gp=gpar(fill=NA))
  

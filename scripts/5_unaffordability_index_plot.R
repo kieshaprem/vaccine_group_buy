@@ -27,7 +27,7 @@ unaffordability_plot <- function(mechanism){
   
   if (mechanism=="uniform"){
     mechanism_name <- "Uniform Pricing"
-    grid.text("Uniform pricing", x=0.23,y=0.91,gp=gpar(fontsize=4))
+    grid.text("Uniform pricing (WCI = -0.613)", x=0.41,y=0.91,gp=gpar(fontsize=4))
     color <- "blue"
     x_curve_main <- spline_gdppc_percent_uniform$x
     y_curve_main<- spline_gdppc_percent_uniform$y
@@ -36,8 +36,8 @@ unaffordability_plot <- function(mechanism){
   
   if (mechanism=="gdp_adj"){
     mechanism_name <- "Weighted by GDP per capita"
-    grid.text("Weighted by GDP per capita, ", x=0.385,y=0.91,gp=gpar(fontsize=4))
-    grid.text(as.expression(bquote(alpha == 10)), x=0.75,y=0.91,gp=gpar(fontsize=4))
+    grid.text("Weighted by GDP per capita, \n(WCI = -0.404)                       ", x=0.40,y=0.88,gp=gpar(fontsize=4))
+    grid.text(as.expression(bquote(alpha == 10)), x=0.77,y=0.905,gp=gpar(fontsize=4))
     color <- "orange"
     x_curve_main <- spline_gdppc_percent_gdp_adj$x
     y_curve_main<- spline_gdppc_percent_gdp_adj$y
@@ -48,14 +48,14 @@ unaffordability_plot <- function(mechanism){
   vax_0_box <- rectGrob(x = 0.05, y = 0.965, width = 0.025, height = 0.0125,
                         gp = gpar(col = "grey50", fill = "grey50", alpha=0.5, lty = 1, lwd=0.8))
   grid.draw(vax_0_box)
-  grid.text("Bilateral pricing", x=0.23,y=0.97,gp=gpar(fontsize=4))
+  grid.text("Bilateral pricing (WCI = -0.664)", x=0.41,y=0.97,gp=gpar(fontsize=4))
 
   x_line <- seq(min(log(x=dataset[1:10,4],base=10)),
                 max(log(x=dataset[1:10,4],base=10)),
                 length.out=10000)
   y_line <- seq(0,1,length.out=10000)
   
-  index <- as.integer(median(c(which.min(abs(x_line-x_curve[4])),which.min(abs(x_line-x_curve[5])))))
+  index <- as.integer(median(c(which.min(abs(x_line-spline_gdppc_percent_bilateral$x[257])),which.min(abs(x_line-spline_gdppc_percent_bilateral$x[298])))))
   
   x_val <- x_line[index]
   y_val <- y_line[index]

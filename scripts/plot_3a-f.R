@@ -32,7 +32,7 @@ paneller=function(row,column)
   print(paste0("Row",row))
 }
 
-png('output/plots/final_paper/3a-f.png',height=10,width=15,res=300, units='cm',pointsize=10)
+png('output/plots/final_paper/3a-f_new_2.png',height=10,width=15,res=300, units='cm',pointsize=10)
 pushViewport(plotViewport(c(1,1,1,1)))
 pushViewport(viewport(layout=grid.layout(nrow=2,ncol=3)))
 for (row in (1:2)){
