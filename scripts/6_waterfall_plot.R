@@ -58,7 +58,7 @@ waterfall_plot <- function(mechanism){
              label=c("$0","$10","$20","$30","$40","$50","$60"),gp=gpar(fontsize=5))
   
   grid.xaxis(at=seq(1,10), 
-             label=c("SG","BN","MY","TH","ID","VN","PH","LA","KH","MM"),gp=gpar(fontsize=4.5))
+             label=rev(c("SG","BN","MY","TH","ID","VN","PH","LA","KH","MM")),gp=gpar(fontsize=4.5))
   
   
   popViewport()
