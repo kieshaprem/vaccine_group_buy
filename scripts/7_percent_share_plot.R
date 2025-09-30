@@ -1,7 +1,4 @@
-bilateral$percent_share <- bilateral$total_perdose*100/sum(bilateral$total_perdose)
-colnames(uniform)[ncol(uniform)] <- "percent_share"
-uniform$percent_share <- uniform$total_perdose*100/sum(uniform$total_perdose)
-gdp_adj$percent_share <- gdp_adj$total_perdose*100/sum(gdp_adj$total_perdose)
+
 
 library(grid)
 

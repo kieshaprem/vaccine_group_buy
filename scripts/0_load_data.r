@@ -1,50 +1,4 @@
 library(readxl)
-
-vgb = read_excel('data/vgb_country.xlsx',sheet = 'data')
-
-head(vgb)
-
-oop_raw = read.csv('data/P_Data_Extract_From_World_Development_Indicators_oop_2021/oop_data.csv')
-names(oop_raw)[5:9] = as.character(2019:2023)
-
-oop_all_countries_2021 = oop_raw[,c("Country.Code","2021")]
-oop_all_countries_2021 = oop_all_countries_2021[oop_all_countries_2021[,2]!=".." & oop_all_countries_2021[,2]!="",]
-oop_all_countries_2021[,2] = as.numeric(oop_all_countries_2021[,2])
-
-
-asean_iso = vgb$`ISO3C Code`
-
-max(log(x=oop_all_countries_2021[,2], base=2))
-min(log(x=oop_all_countries_2021[,2], base=2))
-
-
-gdp_raw = read.csv('data/P_Data_Extract_From_World_Development_Indicators_gdp_2022/gdp_data.csv')
-
-gdp_all_countries_2022 = gdp_raw[,c(4,5)]
-gdp_all_countries_2022 = gdp_all_countries_2022[gdp_all_countries_2022[,2]!=".." & gdp_all_countries_2022[,2]!="",]
-gdp_all_countries_2022[,2] = as.numeric(gdp_all_countries_2022[,2])
-
-max(log(x=gdp_all_countries_2022[,2], base=2))
-min(log(x=gdp_all_countries_2022[,2], base=2))
-
-gdp_oop <- merge(gdp_all_countries_2022, oop_all_countries_2021, by = "Country.Code")
-names(gdp_oop)[2:3] <- c("GDP_2022","OOP_2021")
-
-
-
-exp_raw = read.csv('data/P_Data_Extract_From_World_Development_Indicators_total_exp/exp_2021.csv')
-
-exp_all_countries_2021 = exp_raw[,c(2,7)]
-exp_all_countries_2021 = exp_all_countries_2021[exp_all_countries_2021[,2]!=".." & exp_all_countries_2021[,2]!="",]
-exp_all_countries_2021[,2] = as.numeric(exp_all_countries_2021[,2])
-
-max(log(x=exp_all_countries_2021[,2], base=2))
-min(log(x=exp_all_countries_2021[,2], base=2))
-
-gdp_oop_exp <- merge(gdp_oop, exp_all_countries_2021, by = "Country.Code")
-names(gdp_oop_exp)[4] <- "EXP_2021"
-
-#################################################################################
 dataset = read_excel('data/Scenarios for regionalizing vaccine access in ASEAN_Jun24_updatedNov24.xlsx',sheet = '#4 Weighted by GDP')
 names(dataset)[2:6] = dataset[1,2:6]
 names(dataset)[8:9] = dataset[1,8:9]
@@ -64,33 +18,34 @@ load('data/scenarios.RData')
 
 dataset <- dataset[,-3]
 
-bilateral <- dataset[,c(1,6,7,8)]
-colnames(bilateral)[2:4] <- c("perdose","total_perdose","total_percourse")
-bilateral$perdose_gdppc_percent <- bilateral$perdose*100/dataset$`GDP per capita (2022)`
+#bilateral <- dataset[,c(1,6,7)]
+bilateral <- dataset[1:10,c('Country','Bilateral mechanisms*','Total cost per dose')]
+colnames(bilateral)[2:3] <- c("perdose","total_perdose")
+bilateral$perdose_gdppc_percent <- bilateral$perdose*100/dataset[1:10,]$`GDP per capita (2022)`
+bilateral$percent_share <- bilateral$total_perdose*100/sum(bilateral$total_perdose)
+bilateral = bilateral[order(dataset[1:10,]$`GDP per capita (2022)`),]
 
-uniform <- dataset[,c(1,9,10,11,12,13,14,15,16)]
-colnames(uniform)[2:9] <- c("perdose","total_perdose","total_percourse","savings_perdose",
-                            "total_savings_perdose","total_savings_percourse","percourse_total_savings_percent",
-                            "perdose_gdppc_percent")
-uniform$perdose_gdppc_percent <- uniform$perdose*100/dataset$`GDP per capita (2022)`
+uniform <- dataset[1:10,c('Country','Pooled procurement via ASEAN','Total cost per dose.1',
+                      'Total savings per dose')]
+colnames(uniform)[2:4] <- c("perdose","total_perdose","total_savings_perdose")
+uniform$perdose_gdppc_percent <- uniform$perdose*100/dataset[1:10,]$`GDP per capita (2022)`
+uniform$percent_share <- uniform$total_perdose*100/sum(uniform$total_perdose)
+uniform = uniform[order(dataset[1:10,]$`GDP per capita (2022)`),]
 
-gdp_naive <- dataset[,c(1,17,18,19,20,21,22,23,24)]
-colnames(gdp_naive)[2:9] <- c("perdose","total_perdose","total_percourse","savings_perdose",
-                            "total_savings_perdose","total_savings_percourse","percourse_total_savings_percent",
-                            "perdose_gdppc_percent")
-gdp_naive$perdose_gdppc_percent <- gdp_naive$perdose*100/dataset$`GDP per capita (2022)`
+# gdp_naive <- dataset[,c(1,17,18,19,20,21,22,23,24)]
+# colnames(gdp_naive)[2:9] <- c("perdose","total_perdose","total_percourse","savings_perdose",
+#                             "total_savings_perdose","total_savings_percourse","percourse_total_savings_percent",
+#                             "perdose_gdppc_percent")
+# gdp_naive$perdose_gdppc_percent <- gdp_naive$perdose*100/dataset$`GDP per capita (2022)`
 
-gdp_adj <- dataset[,c(1,(25:32))]
-colnames(gdp_adj)[2:9] <- c("perdose","total_perdose","total_percourse","savings_perdose",
-                              "total_savings_perdose","total_savings_percourse","percourse_total_savings_percent",
-                              "perdose_gdppc_percent")
-gdp_adj$perdose_gdppc_percent <- gdp_adj$perdose*100/dataset$`GDP per capita (2022)`
+gdp_adj <- dataset[1:10,c('Country','Weighted by GDP (formula 2)',
+                      'Total cost per dose.3','Total savings per dose.2')]
+colnames(gdp_adj)[2:4] <- c("perdose","total_perdose","total_savings_perdose")
+gdp_adj$perdose_gdppc_percent <- gdp_adj$perdose*100/dataset[1:10,]$`GDP per capita (2022)`
+gdp_adj$percent_share <- gdp_adj$total_perdose*100/sum(gdp_adj$total_perdose)
+gdp_adj = gdp_adj[order(dataset[1:10,]$`GDP per capita (2022)`),]
 
-bilateral = bilateral[order(dataset$`GDP per capita (2022)`),]
-uniform = uniform[order(dataset$`GDP per capita (2022)`),]
-gdp_naive = gdp_naive[order(dataset$`GDP per capita (2022)`),]
-gdp_adj = gdp_adj[order(dataset$`GDP per capita (2022)`),]
-
+#gdp_naive = gdp_naive[order(dataset$`GDP per capita (2022)`),]
 dataset = dataset[order(dataset$`GDP per capita (2022)`),]
 
 ################################################################################
@@ -105,16 +60,12 @@ spline_gdppc_percent_uniform <- spline(x=log(x=dataset[1:10,4],base=10),
 spline_gdppc_percent_gdp_adj <- spline(x=log(x=dataset[1:10,4],base=10),
                                        y=gdp_adj$perdose_gdppc_percent, n = 1000)
 
-spline_gdppc_percent_gdp_naive <- spline(x=log(x=dataset[1:10,4],base=10),
-                                       y=gdp_naive$perdose_gdppc_percent, n = 1000)
+# spline_gdppc_percent_gdp_naive <- spline(x=log(x=dataset[1:10,4],base=10),
+#                                        y=gdp_naive$perdose_gdppc_percent, n = 1000)
 ################################################################################
 
 uniform$total_1dose_percent_gdp <- uniform$total_perdose*100/dataset$`GDP (2022)`
 
-###############################################################################
-bilateral <- bilateral[order(-dataset$`GDP per capita (2022)`),]
-uniform <- uniform[order(-dataset$`GDP per capita (2022)`),]
-gdp_adj <- gdp_adj[order(-dataset$`GDP per capita (2022)`),]
 gdp_adj_analysis_alpha <- merge(gdp_adj_analysis_alpha, dataset[,c("Country","GDP per capita (2022)")],
                                 by="Country")
 gdp_adj_analysis_alpha <- gdp_adj_analysis_alpha[order(-gdp_adj_analysis_alpha$`GDP per capita (2022)`),]
