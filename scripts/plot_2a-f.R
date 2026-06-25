@@ -38,7 +38,7 @@ paneller=function(row,mechanism)
   print(paste0("Row",row))
 }
 
-png('output/plots/final_paper/2a-f_new2.png',height=10,width=15,res=300, units='cm',pointsize=10)
+png('output/plots/final_paper/2a-f_updated.png',height=10,width=15,res=300, units='cm',pointsize=10)
 pushViewport(plotViewport(c(1,1,1,1)))
 pushViewport(viewport(layout=grid.layout(nrow=1,ncol=3)))
 for (column in (1:3)){
@@ -58,14 +58,16 @@ for (column in (1:3)){
     popViewport()
     popViewport()
   }
-  if (column==3){
-    pushViewport(viewport(layout=grid.layout(nrow=2,ncol=1)))
-    paneller(row=1, mechanism = "sens_analysis")
-    paneller(row=2, mechanism = "sens_analysis")
-    popViewport()
-    popViewport()
-  }
+  # if (column==3){
+  #   pushViewport(viewport(layout=grid.layout(nrow=2,ncol=1)))
+  #   paneller(row=1, mechanism = "sens_analysis")
+  #   paneller(row=2, mechanism = "sens_analysis")
+  #   popViewport()
+  #   popViewport()
+  # }
 }  
 popViewport()
 popViewport()
 dev.off()
+
+bilateral_full <- bilateral_full[order(-main_sheet$gdp_percapita),]

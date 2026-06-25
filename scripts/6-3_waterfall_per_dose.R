@@ -6,20 +6,20 @@ waterfall_volume_per_dose <- function(mechanism){
   pushViewport(plotViewport(c(1,2,1,1),xscale=c(-1,71),yscale=c(0,60)))
   x_axis_loc <- seq(3,70,7)
   grid.xaxis(at=c(x_axis_loc), 
-             label=c("SG","BN","MY","TH","ID","VN","PH","LA","KH","MM"),
+             label=c(bilateral_updated$iso2c),
              gp=gpar(fontsize=5))
   grid.yaxis(gp=gpar(fontsize=5))
   
   if (mechanism=='uniform'){
     filename <- "waterfall_uniform_perdose"
-    data <- uniform
+    data <- uniform_full
     grid.text('a) Uniform Pricing',
               x = unit(0,'npc')+unit(3,'lines'),
               y = unit(0,'npc')+unit(16.3,'lines'),
               gp = gpar(fontsize=6,fontface='bold'))
   } else{
     filename <- "waterfall_gdp_perdose"
-    data <- gdp_adj
+    data <- adj_full_gdppc
     grid.text('b) Weighted by GDP per capita',
               x = unit(0,'npc')+unit(5,'lines'),
               y = unit(0,'npc')+unit(16.3,'lines'),
@@ -30,27 +30,27 @@ waterfall_volume_per_dose <- function(mechanism){
   
   for (i in (1:10)){
     grid.polygon(x = c(x_axis_loc[i]+c(-0.55,0.55),rev(x_axis_loc[i]+c(-0.55,0.55))),
-                 y = c(0,0,bilateral[i,]$perdose,
-                       bilateral[i,]$perdose),
+                 y = c(0,0,bilateral_full[i,]$perdose,
+                       bilateral_updated[i,]$perdose),
                  default.units = 'native',
                  gp = gpar(col = 'grey50', fill = 'grey50',alpha=0.5))
     
     if (data[i,]$savings_perdose>0){
       grid.polygon(x = c(x_axis_loc[i]+c(0.65,2.35),rev(x_axis_loc[i]+c(0.65,2.35))),
-                   y = c(bilateral[i,]$perdose,
-                         bilateral[i,]$perdose,
+                   y = c(bilateral_full[i,]$perdose,
+                         bilateral_full[i,]$perdose,
                          data[i,]$perdose,
                          data[i,]$perdose),
                    default.units = 'native',
                    gp = gpar(col = '#0042A6', fill = '#0042A6',alpha=0.5))
       grid.text(paste0("-",sprintf("%.1f", round(abs(data[i,]$savings_perdose),1))),
-                x=x_axis_loc[i]+0.3,y=bilateral[i,]$perdose+1.5,default.units = 'native',gp=gpar(fontsize=4))
+                x=x_axis_loc[i]+0.3,y=bilateral_full[i,]$perdose+1.5,default.units = 'native',gp=gpar(fontsize=4))
     }
     
     else{
       grid.polygon(x = c(x_axis_loc[i]+c(0.65,2.35),rev(x_axis_loc[i]+c(0.65,2.35))),
-                   y = c(bilateral[i,]$perdose,
-                         bilateral[i,]$perdose,
+                   y = c(bilateral_full[i,]$perdose,
+                         bilateral_full[i,]$perdose,
                          data[i,]$perdose,
                          data[i,]$perdose),
                    default.units = 'native',

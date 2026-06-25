@@ -15,7 +15,7 @@ save(dataset, file='data/scenarios.RData')
 ################################################################################
 
 load('data/scenarios.RData')
-
+options(scipen = 1000)
 dataset <- dataset[,-3]
 
 #bilateral <- dataset[,c(1,6,7)]
