@@ -1,56 +1,72 @@
 #uniform <- uniform[order(-dataset$`GDP per capita (2022)`),]
 library(grid)
-waterfall_volume_total_per_dose <- function(mechanism){
+waterfall_volume_total_per_dose <- function(mechanism,coverage){
   
-  pushViewport(plotViewport(c(1,2,1,1),xscale=c(-1,71),yscale=c(-50,3000)))
+  pushViewport(plotViewport(c(1,2,1,1),xscale=c(-1,80),yscale=c(-50,3000)))
   
   grid.yaxis(at=c(0,1000,2000,3000),
              label=c('0','1,000','2,000','3,000'),
              gp=gpar(fontsize=5))
-  x_axis_loc <- seq(3,70,7)
+  x_axis_loc <- seq(3,75,7)
   grid.xaxis(at=c(x_axis_loc), 
-             label=c(bilateral_updated$iso2c),
+             label=c(bilateral_full$iso2c),
              gp=gpar(fontsize=5))
   
   if (mechanism=='uniform'){
     filename <- "waterfall_uniform_total_perdose"
-    data <- uniform_full
     title <- 'Uniform Pricing'
     grid.text('c)',
               x = unit(0,'npc')+unit(0.4,'lines'),
               y = unit(0,'npc')+unit(15.6,'lines'),
               gp = gpar(fontsize=6,fontface='bold'))
+    if (coverage=='full'){
+      data <- uniform_full
+    }
+    if (coverage=='partial'){
+      data <- uniform_partial
+    }
   }
   else{
     filename <- "waterfall_gdp_totalperdose"
-    data <- adj_full_gdppc
+    if (coverage=='full'){
+      data <- adj_full_gdppc
+    }
+    if (coverage=='partial'){
+      data <- adj_partial_gdppc
+    }
     grid.text('d)',
               x = unit(0,'npc')+unit(0.4,'lines'),
               y = unit(0,'npc')+unit(15.6,'lines'),
               gp = gpar(fontsize=6,fontface='bold'))
   }
   
-  for (i in (1:10)){
+  if (coverage=='full'){
+    baseline <- bilateral_full
+  }
+  if (coverage=='partial'){
+    baseline <- bilateral_partial
+  }
+  for (i in (1:nrow(data))){
     grid.polygon(x = c(x_axis_loc[i]+c(-0.55,0.55),rev(x_axis_loc[i]+c(-0.55,0.55))),
-                 y = c(-50,-50,bilateral_full[i,]$total_perdose/1e6,
-                       bilateral_full[i,]$total_perdose/1e6),
+                 y = c(-50,-50,baseline[i,]$total_perdose/1e6,
+                       baseline[i,]$total_perdose/1e6),
                  default.units = 'native',
                  gp = gpar(col = 'grey50', fill = 'grey50', alpha =0.5))
     
     if (data[i,]$savings_perdose>0){
       grid.polygon(x = c(x_axis_loc[i]+c(0.65,2.35),rev(x_axis_loc[i]+c(0.65,2.35))),
-                   y = c(bilateral_full[i,]$total_perdose/1e6,
-                         bilateral_full[i,]$total_perdose/1e6,
+                   y = c(baseline[i,]$total_perdose/1e6,
+                         baseline[i,]$total_perdose/1e6,
                          data[i,]$total_perdose/1e6,
                          data[i,]$total_perdose/1e6),
                    default.units = 'native',
                    gp = gpar(col = '#0042A6', fill = '#0042A6',alpha=0.5))
       grid.text(paste0("-",round(data[i,]$total_savings_perdose/1e6),"M"),
-                x=x_axis_loc[i]+0.3,y=bilateral_full[i,]$total_perdose/1e6+80,default.units = 'native',gp=gpar(fontsize=4))
+                x=x_axis_loc[i]+0.3,y=baseline[i,]$total_perdose/1e6+80,default.units = 'native',gp=gpar(fontsize=4))
     } else{
       grid.polygon(x = c(x_axis_loc[i]+c(0.65,2.35),rev(x_axis_loc[i]+c(0.65,2.35))),
-                   y=c(bilateral_full[i,]$total_perdose/1e6,
-                   bilateral_full[i,]$total_perdose/1e6,
+                   y=c(baseline[i,]$total_perdose/1e6,
+                   baseline[i,]$total_perdose/1e6,
                    data[i,]$total_perdose/1e6,
                    data[i,]$total_perdose/1e6),
                    default.units = 'native',
@@ -59,25 +75,25 @@ waterfall_volume_total_per_dose <- function(mechanism){
                 x=x_axis_loc[i]+0.3,y=data[i,]$total_perdose/1e6+80,default.units = 'native' ,gp=gpar(fontsize=4))
     }
   }
-  grid.polygon(x = c(40,42,42,40),
-               y = c(2875,2875,2925,2925),
-               default.units = 'native',
-               gp = gpar(col = 'grey50', fill = 'grey50', alpha=0.5))
-  grid.text("Bilateral price ($)",x=55,y=2900,default.units = 'native' ,gp=gpar(fontsize=4))
-  
-  grid.polygon(x = c(40,42,42,40),
-               y = c(2725,2725,2775,2775),
-               default.units = 'native',
-               gp = gpar(col = '#0042A6', fill = '#0042A6',alpha=0.5))
-  
-  grid.text("  Price decrease ($)",x=55,y=2750,default.units = 'native' ,gp=gpar(fontsize=4))
-  
-  grid.polygon(x = c(40,42,42,40),
-               y = c(2575,2575,2625,2625),
-               default.units = 'native',
-               gp = gpar(col = 'red', fill = 'red',alpha=0.5))  
-  grid.text(" Price increase ($)",x=55,y=2600,default.units = 'native' ,gp=gpar(fontsize=4))
-  
+  # grid.polygon(x = c(40,42,42,40),
+  #              y = c(2875,2875,2925,2925),
+  #              default.units = 'native',
+  #              gp = gpar(col = 'grey50', fill = 'grey50', alpha=0.5))
+  # grid.text("Bilateral price ($)",x=55,y=2900,default.units = 'native' ,gp=gpar(fontsize=4))
+  # 
+  # grid.polygon(x = c(40,42,42,40),
+  #              y = c(2725,2725,2775,2775),
+  #              default.units = 'native',
+  #              gp = gpar(col = '#0042A6', fill = '#0042A6',alpha=0.5))
+  # 
+  # grid.text("  Price decrease ($)",x=55,y=2750,default.units = 'native' ,gp=gpar(fontsize=4))
+  # 
+  # grid.polygon(x = c(40,42,42,40),
+  #              y = c(2575,2575,2625,2625),
+  #              default.units = 'native',
+  #              gp = gpar(col = 'red', fill = 'red',alpha=0.5))  
+  # grid.text(" Price increase ($)",x=55,y=2600,default.units = 'native' ,gp=gpar(fontsize=4))
+  # 
   grid.rect(gp=gpar(fill=NA))
  
   if (mechanism == "uniform"){

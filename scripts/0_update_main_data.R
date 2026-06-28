@@ -10,20 +10,20 @@ names(vax_coverage)[2:5] <- c('coverage_covid_1dose_percent',
 'coverage_covid_complete_primary_percent','hpv_coverage_percent','uhc_service_utilisation_percent')
 vax_coverage <- vax_coverage[1:11,]
 
-pop_2023 <- read.csv('data/unpopulation_dataportal_20260623100853.csv')
-pop_2023 <- pop_2023[,c('Iso3','Time','Value')]
-names(pop_2023) <- c('iso3c','year','population_size')
-pop_2023$pop_size_rounded <- round(pop_2023$population_size)
-pop_2023 <- pop_2023[pop_2023$year==2023,]
+pop_2023 <- read.csv('data/API_SP.POP.TOTL_DS2_en_csv_v2_430662/API_SP.POP.TOTL_DS2_en_csv_v2_430662.csv',skip = 4)
+pop_2023 <- pop_2023[,c('Country.Name','Country.Code','X2023')]
+names(pop_2023) <- c('Country.Name','iso3c','population_size')
+pop_2023 <- pop_2023[pop_2023$Country.Name %in% vax_coverage$`Country Name`,]
 
 gdp_2023 <- read.csv('data/GDP/API_NY.GDP.MKTP.CD_DS2_en_csv_v2_428094.csv')
 gdp_2023 <- gdp_2023[gdp_2023$Country.Code %in% pop_2023$iso3c,]
 gdp_2023 <- gdp_2023[,c('Country.Name','Country.Code','X2023')]
 names(gdp_2023)[3] <- 'GDP_2023'
 
-main_sheet <- merge(pop_2023[,c('iso3c','pop_size_rounded')],gdp_2023,by.x = 'iso3c',by.y = 'Country.Code' )
+main_sheet <- merge(pop_2023[,c('iso3c','population_size')],
+                    gdp_2023,by.x = 'iso3c',by.y = 'Country.Code' )
 main_sheet <- main_sheet[,c(3,1,2,4)]
-main_sheet$gdp_percapita <- main_sheet$GDP_2023/main_sheet$pop_size_rounded
+main_sheet$gdp_percapita <- main_sheet$GDP_2023/main_sheet$population_size
 main_sheet$relative_gdppc <- (main_sheet$gdp_percapita-min(main_sheet$gdp_percapita))/
   (max(main_sheet$gdp_percapita)-min(main_sheet$gdp_percapita))
 main_sheet <- merge(main_sheet,oop[,2:3],
@@ -46,3 +46,6 @@ names(main_sheet)[13:14] <- c('bilateral_price','uniform_price')
 main_sheet[main_sheet$iso3c=='TLS',]$bilateral_price <- 9.95
 main_sheet[main_sheet$iso3c=='TLS',]$uniform_price <- 7.5
 save(main_sheet,file = 'output/main_sheet.rdata')
+write_xlsx(main_sheet,path = 'output/main_sheet.xlsx')
+
+main_sheet <- read_xlsx('output/main_sheet.xlsx')

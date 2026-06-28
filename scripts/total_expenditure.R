@@ -2,7 +2,17 @@
 
 library(grid)
 
-total_expenditure <- function(){
+total_expenditure <- function(coverage){
+  if (coverage=='full'){
+    bilateral <- bilateral_full
+    uniform <- uniform_full
+    adj <- adj_full_gdppc
+  }
+  if (coverage=='partial'){
+    bilateral <- bilateral_partial
+    uniform <- uniform_partial
+    adj <- adj_partial_gdppc
+  }
 #png(paste0("output/plots/total_exp.png"),height=8,width=8,units='cm',res=700,pointsize=10)
   pushViewport(plotViewport(c(1,2,1,1),yscale=c(0,10),xscale=c(0,8*10^9)))
   #grid.rect(gp=gpar(fill=NA))
@@ -25,7 +35,8 @@ total_expenditure <- function(){
                gp = gpar(col = 'grey50', fill = 'grey50',alpha=0.5))
   grid.text('Bilateral',x=unit(-1.1*10^9,units='native'),y=unit(8,units = 'native'),
             gp = gpar(fontsize=5,col = 'black'))
-  grid.text('6.811M',x=unit(7.7*10^9,units='native'),y=unit(8,units = 'native'),
+  total_bilateral_exp <- round(sum(bilateral$total_perdose)/10^6,1)
+  grid.text(paste0(total_bilateral_exp,'M'),x=unit(7.7*10^9,units='native'),y=unit(8,units = 'native'),
             gp = gpar(fontsize=5,col = 'black'))
   
   # uniform
@@ -40,26 +51,31 @@ total_expenditure <- function(){
                y = c(4,4,6,6),
                default.units = 'native',
                gp = gpar(col = 'red', fill = 'white',alpha=0.5,lty='dashed'))
+  uniform_percent_reduction <- as.character(round((sum(uniform$total_perdose)-sum(bilateral$total_perdose))*100/
+                                       sum(bilateral$total_perdose),1))
   
-  grid.text('- 25.1%',x=unit(7.7*10^9,units='native'),y=unit(5,units = 'native'),
+  grid.text(paste0(uniform_percent_reduction,'%'),x=unit(7.7*10^9,units='native'),y=unit(5,units = 'native'),
             gp = gpar(fontsize=5,col = 'red'))
   
   grid.text('Uniform',x=unit(-1.1*10^9,units='native'),y=unit(5,units = 'native'),
             gp = gpar(fontsize=5,col = 'black'))
   
-  # GDP-adjusted
-  grid.polygon(x = c(0,sum(gdp_adj$total_perdose),
-                     rev(c(0,sum(gdp_adj$total_perdose)))),
+  # Adjusted
+  grid.polygon(x = c(0,sum(adj$total_perdose),
+                     rev(c(0,sum(adj$total_perdose)))),
                y = c(1,1,3,3),
                default.units = 'native',
                gp = gpar(col = 'grey50', fill = 'grey50',alpha=0.5))
   
-  grid.polygon(x = c(sum(gdp_adj$total_perdose),sum(bilateral$total_perdose),
-                     rev(c(sum(gdp_adj$total_perdose),sum(bilateral$total_perdose)))),
+  grid.polygon(x = c(sum(adj$total_perdose),sum(bilateral$total_perdose),
+                     rev(c(sum(adj$total_perdose),sum(bilateral$total_perdose)))),
                y = c(1,1,3,3),
                default.units = 'native',
                gp = gpar(col = 'red', fill = 'white',alpha=0.5,lty='dashed'))
-  grid.text('- 25.9%',x=unit(7.7*10^9,units='native'),y=unit(2,units = 'native'),
+  adj_percent_reduction <- as.character(round((sum(adj$total_perdose)-sum(bilateral$total_perdose))*100/
+                                                sum(bilateral$total_perdose),1))
+  
+  grid.text(paste0(adj_percent_reduction,'%'),x=unit(7.7*10^9,units='native'),y=unit(2,units = 'native'),
             gp = gpar(fontsize=5,col = 'red'))
   
   grid.text('Weighted\nby GDPPC',x=unit(-1.3*10^9,units='native'),y=unit(2,units = 'native'),
