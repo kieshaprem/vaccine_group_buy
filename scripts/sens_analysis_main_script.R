@@ -7,6 +7,10 @@ gdp_adj_sens_analysis <- tiered_pricing_selection(P_min = 5,
                                                   price_range = base_price_tested,
                                                   alphas_range = alphas_tested,
                                                   country_wealth_var = 'GDPPC')
+ooppc_adj_sens_analysis <- tiered_pricing_selection(P_min = 5,
+                                                        price_range = base_price_tested,
+                                                        alphas_range = alphas_tested,
+                                                        country_wealth_var = 'OOPPC')
 
 ## reordering the partial dfs
 bilateral_partial <- bilateral_partial[order(bilateral_partial$gdp_percapita),]
@@ -38,6 +42,14 @@ gdp_adj_full_analysis_alpha <-  get_percent_share_df(base_df = adj_full_gdppc,
 gdp_adj_partial_analysis_alpha <-  get_percent_share_df(base_df = adj_partial_gdppc,
                                                      sens_analysis_df = gdp_adj_sens_analysis,
                                                      constant_col = 2, alpha = TRUE)
-
 gdp_adj_full_analysis_alpha$iso2c <- countrycode(gdp_adj_full_analysis_alpha$Country,origin = 'iso3c',
                                             destination = 'iso2c')
+
+## analysing percent share for sens analysis on OOP-adjusted vax price
+adj_full <- adj_full[order(adj_full$gdp_percapita),]
+oop_adj_full_analysis_price <- get_percent_share_df(base_df = adj_full,
+                                                    sens_analysis_df = ooppc_adj_sens_analysis,
+                                                    constant_col = 11, alpha=FALSE)
+oop_adj_full_analysis_alpha <- get_percent_share_df(base_df = adj_full,
+                                                    sens_analysis_df = ooppc_adj_sens_analysis,
+                                                    constant_col = 2, alpha=TRUE)

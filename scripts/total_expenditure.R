@@ -2,16 +2,27 @@
 
 library(grid)
 
-total_expenditure <- function(coverage){
+total_expenditure <- function(coverage,mechanism){
   if (coverage=='full'){
     bilateral <- bilateral_full
     uniform <- uniform_full
-    adj <- adj_full_gdppc
+    if (mechanism=='gdp_adj'){
+      adj <- adj_full_gdppc
+    }
+    if (mechanism=='ooppc_adj'){
+      adj <- adj_full
+    }
   }
   if (coverage=='partial'){
     bilateral <- bilateral_partial
     uniform <- uniform_partial
     adj <- adj_partial_gdppc
+    if (mechanism=='gdp_adj'){
+      adj <- adj_partial_gdppc
+    }
+    if (mechanism=='ooppc_adj'){
+      adj <- adj_partial
+    }
   }
 #png(paste0("output/plots/total_exp.png"),height=8,width=8,units='cm',res=700,pointsize=10)
   pushViewport(plotViewport(c(1,2,1,1),yscale=c(0,10),xscale=c(0,8*10^9)))
@@ -78,7 +89,10 @@ total_expenditure <- function(coverage){
   grid.text(paste0(adj_percent_reduction,'%'),x=unit(7.7*10^9,units='native'),y=unit(2,units = 'native'),
             gp = gpar(fontsize=5,col = 'red'))
   
-  grid.text('Weighted\nby GDPPC',x=unit(-1.3*10^9,units='native'),y=unit(2,units = 'native'),
+  if (mechanism=='ooppc_adj'){
+    mechanism_name <- 'CHE per capita adjusted'
+  }
+  grid.text(mechanism_name,x=unit(-1.3*10^9,units='native'),y=unit(2,units = 'native'),
             gp = gpar(fontsize=5,col = 'black'))
   
   popViewport()

@@ -1,8 +1,8 @@
 library(countrycode)
 
 # Tiered pricing formula
-adjusted_price <- function(P_min, alpha,relative_gdppc){
-  return (P_min*(1+alpha*relative_gdppc))
+adjusted_price <- function(P_min, alpha,relative_country_wealth){
+  return (P_min*(1+alpha*relative_country_wealth))
 }
 P_min <- 5
 
@@ -31,14 +31,14 @@ general_sens_analysis <- function(df,price_range=base_price_tested){
 # Sensitivity analysis for tiered pricing
 tiered_pricing_sens_analysis <- function(df,price_range,alphas_range,P_min,country_wealth_var){
   sens_analysis_df <- list()
-  for (co in adj_full_gdppc$iso3c){
+  for (co in df$iso3c){
     temp <- data.frame(array(NA,dim=c(length(price_range),
                                       length(alphas_range))))
     for (i in 1:length(price_range)){
       for (j in 1:length(alphas_range)){
         temp[i,j] <- adjusted_price(P_min*price_range[i], 
                                     alphas_range[j], 
-                                    adj_full_gdppc[adj_full_gdppc$iso3c==co,country_wealth_var])
+                                    df[df$iso3c==co,country_wealth_var])
       }
     }
     sens_analysis_df[[co]] <- temp

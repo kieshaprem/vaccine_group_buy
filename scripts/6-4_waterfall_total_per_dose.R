@@ -1,17 +1,6 @@
 #uniform <- uniform[order(-dataset$`GDP per capita (2022)`),]
 library(grid)
 waterfall_volume_total_per_dose <- function(mechanism,coverage){
-  
-  pushViewport(plotViewport(c(1,2,1,1),xscale=c(-1,80),yscale=c(-50,3000)))
-  
-  grid.yaxis(at=c(0,1000,2000,3000),
-             label=c('0','1,000','2,000','3,000'),
-             gp=gpar(fontsize=5))
-  x_axis_loc <- seq(3,75,7)
-  grid.xaxis(at=c(x_axis_loc), 
-             label=c(bilateral_full$iso2c),
-             gp=gpar(fontsize=5))
-  
   if (mechanism=='uniform'){
     filename <- "waterfall_uniform_total_perdose"
     title <- 'Uniform Pricing'
@@ -26,13 +15,25 @@ waterfall_volume_total_per_dose <- function(mechanism,coverage){
       data <- uniform_partial
     }
   }
-  else{
-    filename <- "waterfall_gdp_totalperdose"
+if (mechanism=='gdp_adj'){
+  filename <- "waterfall_gdp_totalperdose"
     if (coverage=='full'){
       data <- adj_full_gdppc
     }
     if (coverage=='partial'){
       data <- adj_partial_gdppc
+    }
+    grid.text('d)',
+              x = unit(0,'npc')+unit(0.4,'lines'),
+              y = unit(0,'npc')+unit(15.6,'lines'),
+              gp = gpar(fontsize=6,fontface='bold'))
+}
+  if (mechanism=='ooppc_adj'){
+    if (coverage=='full'){
+      data <- adj_full
+    }
+    if (coverage=='partial'){
+      data <- adj_partial
     }
     grid.text('d)',
               x = unit(0,'npc')+unit(0.4,'lines'),
@@ -46,6 +47,14 @@ waterfall_volume_total_per_dose <- function(mechanism,coverage){
   if (coverage=='partial'){
     baseline <- bilateral_partial
   }
+  pushViewport(plotViewport(c(1,2,1,1),xscale=c(-1,80),yscale=c(-50,3000)))
+  grid.yaxis(at=c(0,1000,2000,3000),
+             label=c('0','1,000','2,000','3,000'),
+             gp=gpar(fontsize=5))
+  x_axis_loc <- seq(3,75,7)
+  grid.xaxis(at=c(x_axis_loc), 
+             label=c(baseline$iso2c),
+             gp=gpar(fontsize=5))
   for (i in (1:nrow(data))){
     grid.polygon(x = c(x_axis_loc[i]+c(-0.55,0.55),rev(x_axis_loc[i]+c(-0.55,0.55))),
                  y = c(-50,-50,baseline[i,]$total_perdose/1e6,

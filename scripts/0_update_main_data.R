@@ -48,4 +48,5 @@ main_sheet[main_sheet$iso3c=='TLS',]$uniform_price <- 7.5
 save(main_sheet,file = 'output/main_sheet.rdata')
 write_xlsx(main_sheet,path = 'output/main_sheet.xlsx')
 
+library(readxl)
 main_sheet <- read_xlsx('output/main_sheet.xlsx')

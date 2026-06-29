@@ -21,8 +21,8 @@ waterfall_volume_per_dose <- function(mechanism,coverage){
     }
     if (coverage=='partial'){
       data <- uniform_partial
-    }
-  } else{
+    }}
+if (mechanism=='gdp_adj'){
     filename <- "waterfall_gdp_perdose"
     if (coverage=='full'){
       data <- adj_full_gdppc
@@ -31,6 +31,20 @@ waterfall_volume_per_dose <- function(mechanism,coverage){
       data <- adj_partial_gdppc
     }
     grid.text('b) Weighted by GDP per capita',
+              x = unit(0,'npc')+unit(5,'lines'),
+              y = unit(0,'npc')+unit(16.3,'lines'),
+              gp = gpar(fontsize=6,fontface='bold'))
+    grid.text(as.expression(bquote(alpha == 10)), x=0.1,y=1.05,gp=gpar(fontsize=6))
+}
+  if (mechanism=='ooppc_adj'){
+    filename <- "waterfall_ooppc_perdose"
+    if (coverage=='full'){
+      data <- adj_full
+    }
+    if (coverage=='partial'){
+      data <- adj_partial
+    }
+    grid.text('b) Weighted by Current Health Expenditure per capita',
               x = unit(0,'npc')+unit(5,'lines'),
               y = unit(0,'npc')+unit(16.3,'lines'),
               gp = gpar(fontsize=6,fontface='bold'))
