@@ -4,38 +4,50 @@ waterfall_volume_total_per_dose <- function(mechanism,coverage){
   if (mechanism=='uniform'){
     filename <- "waterfall_uniform_total_perdose"
     title <- 'Uniform Pricing'
-    grid.text('c)',
+    grid.text('d)',
               x = unit(0,'npc')+unit(0.4,'lines'),
               y = unit(0,'npc')+unit(15.6,'lines'),
               gp = gpar(fontsize=6,fontface='bold'))
     if (coverage=='full'){
       data <- uniform_full
     }
-    if (coverage=='partial'){
-      data <- uniform_partial
+    if (coverage=='real'){
+      data <- uniform_real
     }
   }
 if (mechanism=='gdp_adj'){
-  filename <- "waterfall_gdp_totalperdose"
     if (coverage=='full'){
-      data <- adj_full_gdppc
+      data <- adj_gdppc_full
     }
-    if (coverage=='partial'){
-      data <- adj_partial_gdppc
+    if (coverage=='real'){
+      data <- adj_gdppc_real
+    }
+    grid.text('e)',
+              x = unit(0,'npc')+unit(0.4,'lines'),
+              y = unit(0,'npc')+unit(15.6,'lines'),
+              gp = gpar(fontsize=6,fontface='bold'))
+}
+  if (mechanism=='gov_exp_adj'){
+    if (coverage=='full'){
+      data <- adj_gov_exp_full
+    }
+    if (coverage=='real'){
+      data <- adj_gov_exp_real
     }
     grid.text('d)',
               x = unit(0,'npc')+unit(0.4,'lines'),
               y = unit(0,'npc')+unit(15.6,'lines'),
               gp = gpar(fontsize=6,fontface='bold'))
-}
-  if (mechanism=='ooppc_adj'){
+  }
+  
+  if (mechanism=='chepc_adj'){
     if (coverage=='full'){
-      data <- adj_full
+      data <- adj_chepc_full
     }
-    if (coverage=='partial'){
-      data <- adj_partial
+    if (coverage=='real'){
+      data <- adj_chepc_real
     }
-    grid.text('d)',
+    grid.text('f)',
               x = unit(0,'npc')+unit(0.4,'lines'),
               y = unit(0,'npc')+unit(15.6,'lines'),
               gp = gpar(fontsize=6,fontface='bold'))
@@ -44,12 +56,14 @@ if (mechanism=='gdp_adj'){
   if (coverage=='full'){
     baseline <- bilateral_full
   }
-  if (coverage=='partial'){
-    baseline <- bilateral_partial
+  if (coverage=='real'){
+    baseline <- bilateral_real
   }
-  pushViewport(plotViewport(c(1,2,1,1),xscale=c(-1,80),yscale=c(-50,3000)))
-  grid.yaxis(at=c(0,1000,2000,3000),
-             label=c('0','1,000','2,000','3,000'),
+  baseline$iso2c <- countrycode(bilateral_full$iso3c,origin = 'iso3c',
+                                destination = 'iso2c')
+  pushViewport(plotViewport(c(1,2,1,1),xscale=c(-1,80),yscale=c(-50,6000)))
+  grid.yaxis(at=c(0,1000,2000,3000,4000,5000,6000),
+             label=c('0','1,000','2,000','3,000','4,000','5,000','6,000'),
              gp=gpar(fontsize=5))
   x_axis_loc <- seq(3,75,7)
   grid.xaxis(at=c(x_axis_loc), 
@@ -71,7 +85,7 @@ if (mechanism=='gdp_adj'){
                    default.units = 'native',
                    gp = gpar(col = '#0042A6', fill = '#0042A6',alpha=0.5))
       grid.text(paste0("-",round(data[i,]$total_savings_perdose/1e6),"M"),
-                x=x_axis_loc[i]+0.3,y=baseline[i,]$total_perdose/1e6+80,default.units = 'native',gp=gpar(fontsize=4))
+                x=x_axis_loc[i]+1,y=baseline[i,]$total_perdose/1e6+170,default.units = 'native',gp=gpar(fontsize=4))
     } else{
       grid.polygon(x = c(x_axis_loc[i]+c(0.65,2.35),rev(x_axis_loc[i]+c(0.65,2.35))),
                    y=c(baseline[i,]$total_perdose/1e6,
@@ -81,7 +95,7 @@ if (mechanism=='gdp_adj'){
                    default.units = 'native',
                    gp = gpar(col = 'red', fill = 'red',alpha=0.5))
       grid.text(paste0("+",round(abs(data[i,]$total_savings_perdose/1e6)),"M"),
-                x=x_axis_loc[i]+0.3,y=data[i,]$total_perdose/1e6+80,default.units = 'native' ,gp=gpar(fontsize=4))
+                x=x_axis_loc[i]+0.5,y=data[i,]$total_perdose/1e6+150,default.units = 'native' ,gp=gpar(fontsize=4))
     }
   }
   # grid.polygon(x = c(40,42,42,40),
@@ -95,7 +109,7 @@ if (mechanism=='gdp_adj'){
   #              default.units = 'native',
   #              gp = gpar(col = '#0042A6', fill = '#0042A6',alpha=0.5))
   # 
-  # grid.text("  Price decrease ($)",x=55,y=2750,default.units = 'native' ,gp=gpar(fontsize=4))
+  # grid.text("  Price decrease ($)",x=55,y=2750,default.unists = 'native' ,gp=gpar(fontsize=4))
   # 
   # grid.polygon(x = c(40,42,42,40),
   #              y = c(2575,2575,2625,2625),

@@ -10,7 +10,7 @@ paneller=function(row,plot_type,coverage_type,price_adjustment)
  
   if (plot_type=="sens_analysis"){
     if (row==1){
-      percent_share(coverage=coverage_type,mechanism = price_adjustment,compare_gdp_oop = FALSE)
+      percent_share(coverage=coverage_type,mechanism = price_adjustment,compare_gdp_gov_exp = FALSE)
     }
     if (row==2){
       total_expenditure(coverage_type, mechanism=price_adjustment)
@@ -29,7 +29,7 @@ paneller=function(row,plot_type,coverage_type,price_adjustment)
 }
 
 plot_coverage <- function(coverage, price_adjustment){
-  png(paste0('output/plots/final_paper/2a-f_updated3_',coverage,"_",price_adjustment,'.png'),
+  png(paste0('output/plots/final_paper/2a-f_updated9_',coverage,"_",price_adjustment,'.png'),
              height=10,width=15,res=300, units='cm',pointsize=10)
   pushViewport(plotViewport(c(1,1,1,1)))
   pushViewport(viewport(layout=grid.layout(nrow=1,ncol=3)))
@@ -52,8 +52,10 @@ plot_coverage <- function(coverage, price_adjustment){
     }
     if (column==3){
       pushViewport(viewport(layout=grid.layout(nrow=2,ncol=1)))
-      paneller(row=1, plot_type = "sens_analysis",coverage_type = coverage,price_adjustment = price_adjustment)
-      paneller(row=2, plot_type = "sens_analysis",coverage_type = coverage,price_adjustment = price_adjustment)
+      #paneller(row=1, plot_type = "sens_analysis",coverage_type = coverage,price_adjustment = price_adjustment)
+      #paneller(row=2, plot_type = "sens_analysis",coverage_type = coverage,price_adjustment = price_adjustment)
+      paneller(row=1, plot_type = "base",coverage_type = coverage,price_adjustment = 'chepc_adj')
+      paneller(row=2, plot_type = "base",coverage_type = coverage,price_adjustment = 'chepc_adj')
       popViewport()
       popViewport()
     }
@@ -63,16 +65,4 @@ plot_coverage <- function(coverage, price_adjustment){
   dev.off()
 }
 
-plot_coverage(coverage = 'full',price_adjustment = 'gdp_adj')
-plot_coverage(coverage = 'full',price_adjustment = 'ooppc_adj')
-
-plot_coverage('partial')
-
-bilateral_full <- bilateral_full[order(bilateral_full$gdp_percapita),]
-uniform_full <- uniform_full[order(uniform_full$gdp_percapita),]
-adj_full_gdppc <- adj_full_gdppc[order(adj_full_gdppc$gdp_percapita),]
-
-#bilateral_partial <- bilateral_partial[order(main_sheet$gdp_percapita),]
-#uniform_partial <- uniform_partial[order(main_sheet$gdp_percapita),]
-#adj_partial_gdppc <- adj_partial_gdppc[order(main_sheet$gdp_percapita),]
-
+################################################################################

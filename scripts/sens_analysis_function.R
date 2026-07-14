@@ -16,7 +16,7 @@ base_price_tested <- c(0.5,1,1.5)
 
 # Sensitivity analysis for uniform and bilateral pricing
 general_sens_analysis <- function(df,price_range=base_price_tested){
-  # df should be either bilateral_full, bilateral_partial, uniform_full, or uniform_partial
+  # df should be either bilateral_full, bilateral_real, uniform_full, or uniform_real
   sens_analysis_df <- list()
   for (co in df$iso3c){
     temp <- data.frame(array(NA,dim=c(length(price_range),1)))
@@ -48,17 +48,23 @@ tiered_pricing_sens_analysis <- function(df,price_range,alphas_range,P_min,count
 
 tiered_pricing_selection <- function(P_min,price_range,alphas_range,country_wealth_var){
   if (country_wealth_var=='GDPPC'){
-    return(tiered_pricing_sens_analysis(df = adj_full_gdppc, P_min = P_min, 
+    return(tiered_pricing_sens_analysis(df = adj_gdppc_full, P_min = P_min, 
                                         price_range = base_price_tested,
                                         alphas_range = alphas_tested,
                                         country_wealth_var='relative_gdppc'))
   }
 
-  if (country_wealth_var=='OOPPC'){
-    return(tiered_pricing_sens_analysis(df = adj_full, P_min = P_min, 
+  if (country_wealth_var=='gov_exp'){
+    return(tiered_pricing_sens_analysis(df = adj_gov_exp_full, P_min = P_min, 
                                         price_range = base_price_tested,
                                         alphas_range = alphas_tested,
-                                        country_wealth_var='relative_ooppc'))
+                                        country_wealth_var='relative_gov_exp'))
+  }
+  if (country_wealth_var=='CHEPC'){
+    return(tiered_pricing_sens_analysis(df = adj_chepc_full, P_min = P_min, 
+                                        price_range = base_price_tested,
+                                        alphas_range = alphas_tested,
+                                        country_wealth_var='relative_chepc'))
   }
 }
 
@@ -105,3 +111,40 @@ get_percent_share_df <- function(base_df,sens_analysis_df,constant_col,alpha){
   analysis$percent_share_max <- analysis$percent_share_max*100/sum(analysis$percent_share_max)
   return(analysis)
 }
+
+# for CHEC adjusted and GDPPC adjusted only
+# get WCI range
+get_wci_range <- function(base_df,sens_analysis_df,constant_col, 
+                          wealth_metric,affordability_metric){
+  base_df <- base_df[order(base_df[,wealth_metric]),]
+  analysis <- data.frame(array(NA,dim=c(length(base_df$iso3c),6)))
+  colnames(analysis) <- c("Country","gdp_percapita","gov_exp",
+                          "wci_min",
+                          "wci_median",
+                          "wci_max")
+  analysis$Country <- base_df$iso3c
+  analysis$gdp_percapita <- base_df$gdp_percapita
+  analysis$gov_exp <- base_df$gov_exp
+  output_df_list <- list()
+  for (i in c(1,11,21)){
+    temp_df <- analysis
+    temp_df$perdose <- sapply(analysis$Country,
+                              function(x){sens_analysis_df[[x]][constant_col,i]})
+    temp_df[,affordability_metric] <- temp_df$perdose*100/temp_df[,wealth_metric]
+    if (i==1){
+      col <- 'wci_min'
+    }
+    if (i==11){
+      col <- 'wci_median'
+    }
+    if (i==21){
+      col <- 'wci_max'
+    }
+    analysis[,col] <- ci(ineqvar = log(temp_df[,wealth_metric],base=10),
+                         outcome = temp_df[,affordability_metric],
+                         type = "CIw")$concentration_index
+    output_df_list[[col]] <- temp_df
+    }
+  return(list(analysis,output_df_list))
+}
+

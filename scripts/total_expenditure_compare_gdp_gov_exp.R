@@ -2,18 +2,18 @@
 
 library(grid)
 
-total_expenditure_compare_gdp_oop <- function(coverage){
+total_expenditure_compare_gdp_gov_exp <- function(coverage){
   if (coverage=='full'){
     bilateral <- bilateral_full
     uniform <- uniform_full
-    adj_gdppc <- adj_full_gdppc
-    adj_ooppc <- adj_full
+    adj_gdppc <- adj_gdppc_full
+    adj_gov_exp <- adj_chepc_full
   }
-  if (coverage=='partial'){
-    bilateral <- bilateral_partial
-    uniform <- uniform_partial
-    adj_gdppc <- adj_partial_gdppc
-    adj_ooppc <- adj_partial
+  if (coverage=='real'){
+    bilateral <- bilateral_real
+    uniform <- uniform_real
+    adj_gdppc <- adj_gdppc_real
+    adj_gov_exp <- adj_chepc_real
   }
   #png(paste0("output/plots/total_exp.png"),height=8,width=8,units='cm',res=700,pointsize=10)
   pushViewport(plotViewport(c(1,2,1,1),yscale=c(0,10),xscale=c(0,8*10^9)))
@@ -25,7 +25,7 @@ total_expenditure_compare_gdp_oop <- function(coverage){
   # grid.text('Total expenditure for ASEAN (US$ millions)',y = unit(0,'npc')+unit(-2.2,'lines'),
   #           gp = gpar(fontsize=6,fontface='bold',col = 'black'))
   
-  grid.text('f) Total expenditure for ASEAN (US$ millions)',gp=gpar(fontsize=6,fontface='bold'),
+  grid.text('f) Total expenditure for SEA (US$ millions)',gp=gpar(fontsize=6,fontface='bold'),
             x = unit(0,'npc')+unit(5,'lines'),
             y = unit(0,'npc')+unit(14.7,'lines'),)
   
@@ -80,28 +80,28 @@ total_expenditure_compare_gdp_oop <- function(coverage){
   grid.text(paste0(adj_percent_reduction,'%'),x=unit(7.7*10^9,units='native'),y=unit(3.5,units = 'native'),
             gp = gpar(fontsize=5,col = 'red'))
   
-  grid.text('Weighted\nby GDPPC',x=unit(-1.3*10^9,units='native'),y=unit(3.5,units = 'native'),
+  grid.text('GDPPC-\nadjusted',x=unit(-1.3*10^9,units='native'),y=unit(3.5,units = 'native'),
             gp = gpar(fontsize=5,col = 'black'))
   
-  # Adjusted CHE
-  grid.polygon(x = c(0,sum(adj_ooppc$total_perdose),
-                     rev(c(0,sum(adj_ooppc$total_perdose)))),
+  # Adjusted gov_exp
+  grid.polygon(x = c(0,sum(adj_gov_exp$total_perdose),
+                     rev(c(0,sum(adj_gov_exp$total_perdose)))),
                y = c(1,1,2,2),
                default.units = 'native',
                gp = gpar(col = 'grey50', fill = 'grey50',alpha=0.5))
   
-  grid.polygon(x = c(sum(adj_ooppc$total_perdose),sum(bilateral$total_perdose),
-                     rev(c(sum(adj_ooppc$total_perdose),sum(bilateral$total_perdose)))),
+  grid.polygon(x = c(sum(adj_gov_exp$total_perdose),sum(bilateral$total_perdose),
+                     rev(c(sum(adj_gov_exp$total_perdose),sum(bilateral$total_perdose)))),
                y = c(1,1,2,2),
                default.units = 'native',
                gp = gpar(col = 'red', fill = 'white',alpha=0.5,lty='dashed'))
-  adj_oop_percent_reduction <- as.character(round((sum(adj_ooppc$total_perdose)-sum(bilateral$total_perdose))*100/
+  adj_gov_exp_percent_reduction <- as.character(round((sum(adj_gov_exp$total_perdose)-sum(bilateral$total_perdose))*100/
                                                 sum(bilateral$total_perdose),1))
   
-  grid.text(paste0(adj_oop_percent_reduction,'%'),x=unit(7.7*10^9,units='native'),y=unit(1.5,units = 'native'),
+  grid.text(paste0(adj_gov_exp_percent_reduction,'%'),x=unit(7.7*10^9,units='native'),y=unit(1.5,units = 'native'),
             gp = gpar(fontsize=5,col = 'red'))
   
-  grid.text('CHE per capita \nadjusted',x=unit(-1.3*10^9,units='native'),y=unit(1.5,units = 'native'),
+  grid.text('CHEPC-\nadjusted',x=unit(-1.3*10^9,units='native'),y=unit(1.5,units = 'native'),
             gp = gpar(fontsize=5,col = 'black'))
   
   popViewport()

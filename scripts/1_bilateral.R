@@ -1,38 +1,36 @@
 load('output/main_sheet.rdata')
 # Bilateral
-bilateral_updated <- main_sheet[,c('iso3c','population_size','gdp_percapita','ooppc',
+bilateral_updated <- main_sheet[,c('iso3c','population_size','gdp_percapita','gov_exp',
                                    'coverage_covid_1dose_percent','bilateral_price')]
 bilateral_updated$coverage_covid_1dose_percent <- as.numeric(bilateral_updated$coverage_covid_1dose_percent)
-bilateral_updated$pop_covered <- round(bilateral_updated$coverage_covid_1dose_percent/100*bilateral_updated$population_size)
-
-bilateral_updated$total_price <- bilateral_updated$pop_covered*bilateral_updated$bilateral_price
-bilateral_updated$total_price_in_millions <- bilateral_updated$total_price/10^6
-
-bilateral_updated$total_price_full_coverage <- bilateral_updated$population_size*bilateral_updated$bilateral_price
-bilateral_updated$total_price_full_coverage_in_millions <- bilateral_updated$total_price_full_coverage/10^6
-
-bilateral_updated$perdose_gdppc_percent <- bilateral_updated$bilateral_price*100/bilateral_updated$gdp_percapita
-bilateral_updated$perdose_ooppc_percent <- bilateral_updated$bilateral_price*100/bilateral_updated$ooppc
-
-bilateral_updated$percent_share_partial <- bilateral_updated$total_price*100/sum(bilateral_updated$total_price)
-bilateral_updated$percent_share_full <- bilateral_updated$total_price_full_coverage*100/sum(bilateral_updated$total_price_full_coverage)
-
 names(bilateral_updated)[which(names(bilateral_updated)=='bilateral_price')] <- 'perdose'
-bilateral_updated$iso2c <- countrycode(bilateral_updated$iso3c,origin='iso3c',destination = 'iso2c')
-#bilateral_updated <- bilateral_updated[order(-main_sheet$gdp_percapita),]
+bilateral_updated$perdose_gdppc_percent <- bilateral_updated$perdose*100/bilateral_updated$gdp_percapita
+bilateral_updated$perdose_gov_exp_percent <- bilateral_updated$perdose*100/bilateral_updated$gov_exp
 
-save(bilateral_updated,file = 'output/bilateral_updated.rdata')
-load('output/bilateral_updated.rdata')
 
-bilateral_partial <- bilateral_updated[,c('iso3c','perdose','coverage_covid_1dose_percent','pop_covered',
-                                          'total_price','total_price_in_millions','gdp_percapita',
-                                          'ooppc')]
-names(bilateral_partial)[which(names(bilateral_partial)=='total_price')] <- 'total_perdose'
+# population
+bilateral_full <- bilateral_updated[,c('iso3c','population_size','gdp_percapita','gov_exp','perdose',
+                                       'perdose_gdppc_percent','perdose_gov_exp_percent')]
+bilateral_real <- bilateral_updated[,c('iso3c','population_size','gdp_percapita','gov_exp','perdose',
+                                          'perdose_gdppc_percent','perdose_gov_exp_percent',
+                                          'coverage_covid_1dose_percent')]
+bilateral_real$pop_covered <- round(bilateral_real$coverage_covid_1dose_percent/100*bilateral_real$population_size)
 
-bilateral_full <- bilateral_updated[,c('iso3c','perdose','population_size',
-                                       'total_price_full_coverage','total_price_full_coverage_in_millions',
-                                       'gdp_percapita','ooppc')]
-names(bilateral_full)[which(names(bilateral_full)=='total_price_full_coverage')] <- 'total_perdose'
-library(countrycode)
-bilateral_full$iso2c <- countrycode(bilateral_full$iso3c,origin = 'iso3c',destination = 'iso2c')
+# total price
+bilateral_full$total_perdose <- bilateral_full$population_size*bilateral_full$perdose
+bilateral_real$total_perdose <- bilateral_real$pop_covered*bilateral_real$perdose
+
+# percent share
+bilateral_full$percent_share <- bilateral_full$total_perdose*100/sum(bilateral_full$total_perdose)
+bilateral_real$percent_share <- bilateral_real$total_perdose*100/sum(bilateral_real$total_perdose)
+
 names(bilateral_full)[which(names(bilateral_full)=='population_size')] <- 'pop_covered'
+
+load('output/bilateral_full.rdata')
+bilateral_full <- merge(bilateral_full,main_sheet[,c('iso3c','chepc')],by.x = 'iso3c',
+                              by.y = 'iso3c',all.x = T)
+bilateral_full$perdose_chepc_percent <- bilateral_full$perdose*100/bilateral_full$chepc
+bilateral_full <- bilateral_full[order(bilateral_full$gdp_percapita),]
+
+save(bilateral_full,file = 'output/bilateral_full.rdata')
+save(bilateral_real,file = 'output/bilateral_real.rdata')

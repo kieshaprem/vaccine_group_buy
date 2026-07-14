@@ -1,43 +1,39 @@
-uniform_updated <- bilateral_updated[,c('iso3c','population_size','gdp_percapita','ooppc',
-                                 'coverage_covid_1dose_percent','pop_covered')]
-uniform_updated <- cbind(uniform_updated,perdose=main_sheet$uniform_price)
-
-uniform_updated$total_price <- uniform_updated$pop_covered*uniform_updated$perdose
-uniform_updated$total_price_in_millions <- uniform_updated$total_price/10^6
-
-uniform_updated$total_price_full_coverage <- uniform_updated$population_size*uniform_updated$perdose
-uniform_updated$total_price_full_coverage_in_millions <- uniform_updated$total_price_full_coverage/10^6
-
-uniform_updated$perdose_gdppc_percent <- uniform_updated$perdose*100/uniform_updated$gdp_percapita
-uniform_updated$perdose_ooppc_percent <- uniform_updated$perdose*100/uniform_updated$ooppc
-
-uniform_updated$percent_share_partial <- uniform_updated$total_price*100/sum(uniform_updated$total_price)
-uniform_updated$percent_share_full <- uniform_updated$total_price_full_coverage*100/sum(uniform_updated$total_price_full_coverage)
-
-uniform_updated$total_savings_partial <- bilateral_updated$total_price-uniform_updated$total_price
-uniform_updated$total_savings_full <- bilateral_updated$total_price_full_coverage-uniform_updated$total_price_full_coverage
-uniform_updated$total_savings_partial_in_millions <- uniform_updated$total_savings_partial/10^6
-uniform_updated$total_savings_full_in_millions <- uniform_updated$total_savings_full/10^6
+uniform_updated <- main_sheet[,c('iso3c','population_size','gdp_percapita','gov_exp',
+                                 'coverage_covid_1dose_percent','uniform_price')]
+names(uniform_updated)[which(names(uniform_updated)=='uniform_price')] <- 'perdose'
+uniform_updated$coverage_covid_1dose_percent <- as.numeric(uniform_updated$coverage_covid_1dose_percent)
 uniform_updated$savings_perdose <- bilateral_updated$perdose-uniform_updated$perdose
+uniform_updated$perdose_gdppc_percent <- uniform_updated$perdose*100/uniform_updated$gdp_percapita
+uniform_updated$perdose_gov_exp_percent <- uniform_updated$perdose*100/uniform_updated$gov_exp
 
-save(uniform_updated,file='output/uniform_updated.rdata')
-load('output/uniform_updated.rdata')
+# population
+uniform_full <- uniform_updated[,c('iso3c','population_size','gdp_percapita','gov_exp','perdose',
+                                   'savings_perdose','perdose_gdppc_percent','perdose_gov_exp_percent')]
+uniform_real <- uniform_updated[,c('iso3c','population_size','gdp_percapita','gov_exp','perdose',
+                                   'savings_perdose','perdose_gdppc_percent','perdose_gov_exp_percent',
+                                   'coverage_covid_1dose_percent')]
+uniform_real$pop_covered <-round(uniform_real$coverage_covid_1dose_percent/100*uniform_real$population_size)
 
-uniform_partial <- uniform_updated[,c('iso3c','perdose','coverage_covid_1dose_percent','pop_covered',
-                                          'total_price','total_price_in_millions',
-                                      'total_savings_partial','gdp_percapita',
-                                      'ooppc')]
-names(uniform_partial)[which(names(uniform_partial)=='total_price')] <- 'total_perdose'
-uniform_partial$savings_perdose <- bilateral_updated$perdose-uniform_partial$perdose
-names(uniform_partial)[which(names(uniform_partial)=='total_savings_partial')] <- 'total_savings_perdose'
+# total price
+uniform_full$total_perdose <- uniform_full$population_size*uniform_full$perdose
+uniform_real$total_perdose <- uniform_real$pop_covered*uniform_updated$perdose
 
-######################################################################################
-uniform_full <- uniform_updated[,c('iso3c','perdose','population_size',
-                                       'total_price_full_coverage',
-                                   'total_price_full_coverage_in_millions','total_savings_full',
-                                   'gdp_percapita','ooppc')]
-names(uniform_full)[which(names(uniform_full)=='total_price_full_coverage')] <- 'total_perdose'
-uniform_full$savings_perdose <- bilateral_updated$perdose-uniform_full$perdose
-names(uniform_full)[which(names(uniform_full)=='total_savings_full')] <- 'total_savings_perdose'
+# total savings
+uniform_full$total_savings_perdose <- bilateral_full$total_perdose-uniform_full$total_perdose
+uniform_real$total_savings_perdose <- bilateral_real$total_perdose-uniform_real$total_perdose
+
+# percent share
+uniform_full$percent_share <- uniform_full$total_perdose*100/sum(uniform_full$total_perdose)
+uniform_real$percent_share <- uniform_real$total_perdose*100/sum(uniform_real$total_perdose)
+
 names(uniform_full)[which(names(uniform_full)=='population_size')] <- 'pop_covered'
+
+uniform_full <- merge(uniform_full,main_sheet[,c('iso3c','chepc')],by.x = 'iso3c',
+                        by.y = 'iso3c',all.x = T)
+uniform_full$perdose_chepc_percent <- uniform_full$perdose*100/adj_gdppc_full_updated$chepc
+uniform_full <- uniform_full[order(uniform_full$gdp_percapita),]
+
+
+save(uniform_full,file = 'output/uniform_full.rdata')
+save(uniform_real,file = 'output/uniform_real.rdata')
 

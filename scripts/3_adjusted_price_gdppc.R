@@ -1,46 +1,46 @@
+source('scripts/0_process_calculations.R')
+adj_updated <- main_sheet[,c('iso3c','population_size','gdp_percapita',
+                             'relative_gdppc','gov_exp',
+                                 'relative_gov_exp','coverage_covid_1dose_percent')]
+adj_updated$coverage_covid_1dose_percent <- as.numeric(adj_updated$coverage_covid_1dose_percent)
 p_min <- 5
 alpha <- 10
-# set alpha as 10.5 if we want total adjusted full coverage = total uniform full coverage
 
-adj_updated_gdppc <- bilateral_updated[,c('iso3c','population_size','gdp_percapita','ooppc',
-                                    'coverage_covid_1dose_percent','pop_covered')]
-adj_updated_gdppc <- cbind(adj_updated_gdppc,relative_gdppc=main_sheet$relative_gdppc,
-                     relative_ooppc=main_sheet$relative_ooppc)
+# adjusted by GDPPC
+adj_gdppc <- adj_updated
+adj_gdppc$perdose <- get_adjusted_price(relative_country_income = adj_gdppc$relative_gdppc,
+                                        p_min=p_min, alpha=alpha)
+adj_gdppc$savings_perdose <- bilateral_updated$perdose-adj_gdppc$perdose
+adj_gdppc$perdose_gdppc_percent <- adj_gdppc$perdose*100/adj_gdppc$gdp_percapita
+adj_gdppc$perdose_gov_exp_percent <- adj_gdppc$perdose*100/adj_gdppc$gov_exp
 
-adj_updated_gdppc$perdose <- p_min*(1+alpha*adj_updated_gdppc$relative_gdppc)
+# adjusted by GDPPC, full coverage
+adj_gdppc_full <- adj_gdppc[,!colnames(adj_gdppc) %in% c('coverage_covid_1dose_percent')]
+adj_gdppc_real <- adj_gdppc
+adj_gdppc_real$pop_covered <-round(adj_gdppc_real$coverage_covid_1dose_percent/100*adj_gdppc_real$population_size)
+adj_gdppc_real <- adj_gdppc_real[,c('iso3c','population_size',
+                                    'coverage_covid_1dose_percent','pop_covered',
+                                    colnames(adj_gdppc_real)[!colnames(adj_gdppc_real) %in% c('iso3c','population_size',
+                                                                  'coverage_covid_1dose_percent','pop_covered')])]
 
-adj_updated_gdppc$total_price <- adj_updated_gdppc$pop_covered*adj_updated_gdppc$perdose
-adj_updated_gdppc$total_price_in_millions <- adj_updated_gdppc$total_price/10^6
-adj_updated_gdppc$total_price_full_coverage <- adj_updated_gdppc$population_size*adj_updated_gdppc$perdose
-adj_updated_gdppc$total_price_full_coverage_in_millions <- adj_updated_gdppc$total_price_full_coverage/10^6
+# total per dose
+adj_gdppc_full$total_perdose <- adj_gdppc_full$population_size*adj_gdppc_full$perdose
+adj_gdppc_real$total_perdose <- adj_gdppc_real$pop_covered*adj_gdppc_real$perdose
 
-adj_updated_gdppc$perdose_gdppc_percent <- adj_updated_gdppc$perdose*100/adj_updated_gdppc$gdp_percapita
-adj_updated_gdppc$perdose_ooppc_percent <- adj_updated_gdppc$perdose*100/adj_updated_gdppc$ooppc
-adj_updated_gdppc$percent_share_partial <- adj_updated_gdppc$total_price*100/sum(adj_updated_gdppc$total_price)
-adj_updated_gdppc$percent_share_full <- adj_updated_gdppc$total_price_full_coverage*100/sum(adj_updated_gdppc$total_price_full_coverage)
+# total savings per dose
+adj_gdppc_full$total_savings_perdose <- bilateral_full$total_perdose-adj_gdppc_full$total_perdose
+adj_gdppc_real$total_savings_perdose <- bilateral_real$total_perdose-adj_gdppc_real$total_perdose
 
-adj_updated_gdppc$total_savings_partial <- bilateral_updated$total_price-adj_updated_gdppc$total_price
-adj_updated_gdppc$total_savings_full <- bilateral_updated$total_price_full_coverage-adj_updated_gdppc$total_price_full_coverage
+# percent share
+adj_gdppc_full$percent_share <- adj_gdppc_full$total_perdose*100/sum(adj_gdppc_full$total_perdose)
+adj_gdppc_real$percent_share <- adj_gdppc_real$total_perdose*100/sum(adj_gdppc_real$total_perdose)
 
-adj_updated_gdppc$total_savings_partial_in_millions <- adj_updated_gdppc$total_savings_partial/10^6
-adj_updated_gdppc$total_savings_full_in_millions <- adj_updated_gdppc$total_savings_full/10^6
-adj_updated_gdppc$savings_perdose <- bilateral_updated$perdose-adj_updated_gdppc$perdose
+names(adj_gdppc_full)[which(names(adj_gdppc_full)=='population_size')] <- 'pop_covered'
 
-save(adj_updated_gdppc,file='output/adj_updated_gdppc.rdata')
+adj_gdppc_full <- merge(adj_gdppc_full,main_sheet[,c('iso3c','chepc')],by.x = 'iso3c',
+                      by.y = 'iso3c',all.x = T)
+adj_gdppc_full$perdose_chepc_percent <- adj_gdppc_full$perdose*100/adj_gdppc_full$chepc
+adj_gdppc_full <- adj_gdppc_full[order(adj_gdppc_full$gdp_percapita),]
 
-load('output/adj_updated_gdppc.rdata')
-adj_partial_gdppc <- adj_updated_gdppc[,c('iso3c','perdose','coverage_covid_1dose_percent','pop_covered',
-                              'total_price','total_price_in_millions',
-                              'savings_perdose','total_savings_partial',
-                              'gdp_percapita','ooppc','relative_gdppc','relative_ooppc')]
-names(adj_partial_gdppc)[which(names(adj_partial_gdppc)=='total_price')] <- 'total_perdose'
-names(adj_partial_gdppc)[which(names(adj_partial_gdppc)=='total_savings_partial')] <- 'total_savings_perdose'
-
-adj_full_gdppc <- adj_updated_gdppc[,c('iso3c','perdose','population_size',
-                           'total_price_full_coverage',
-                           'total_price_full_coverage_in_millions','savings_perdose',
-                           'total_savings_full','gdp_percapita','ooppc','relative_gdppc','relative_ooppc')]
-names(adj_full_gdppc)[which(names(adj_full_gdppc)=='total_price_full_coverage')] <- 'total_perdose'
-names(adj_full_gdppc)[which(names(adj_full_gdppc)=='total_savings_full')] <- 'total_savings_perdose'
-names(adj_full_gdppc)[which(names(adj_full_gdppc)=='population_size')] <- 'pop_covered'
-
+save(adj_gdppc_full,file='output/adj_gdppc_full.rdata')
+save(adj_gdppc_real,file='output/adj_gdppc_real.rdata')
