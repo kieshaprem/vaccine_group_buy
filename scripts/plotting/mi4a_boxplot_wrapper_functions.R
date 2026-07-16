@@ -21,10 +21,15 @@ plot_boxplot_price <- function(filename, input_data, input_group_col){
   unique_x <- unique(input_data[,input_group_col])
 
   if (input_group_col=="Income.Group"){
-    ordering <- c('LMIC','UMIC','HIC')
-    x_name <- "Price per dose by Country Income Group"
+    if (length(unique(input_data[,input_group_col]))==4){
+    ordering <- c('LIC','LMIC','UMIC','HIC')
     #other_factor <- 0.06
     #y_factor <- 1
+    } else {
+      ordering <- c('LMIC','UMIC','HIC')
+    }
+    x_name <- "Price per dose by Country Income Group"
+    x_factor_coordinate <- 0.5
   }
   if (input_group_col=="Manufacturer"){
     ordering <- c("Blank",

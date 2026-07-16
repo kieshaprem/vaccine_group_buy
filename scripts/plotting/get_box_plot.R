@@ -24,6 +24,14 @@ get_box_plot <- function(data, group_col, val_col, y_axis_name, x_axis_name,
   group_terms_wn <- sapply(group_terms, function(x){paste0(x, "\nn=",n_points[x])})
   x_scale_length <- length(group_terms)
   x_scale <- c(0.5,x_scale_length+1)
+  
+  
+  # Calculate dynamic spacing and offsets
+  group_spacing <- 1  # Distance between group centers
+  box_width <- 0.2 * group_spacing  # Box width is 50% of spacing
+  whisker_cap_width <- 0.15 * group_spacing  # Whisker cap width is 15% of spacing
+  text_offset_x <- 0.5 * group_spacing  # Text offset from box center
+  
   pushViewport(plotViewport(c(4,3,1,1),xscale=x_scale,yscale=val_scale))
   # X AXIS
   for (i in 1:x_scale_length){
@@ -52,50 +60,71 @@ get_box_plot <- function(data, group_col, val_col, y_axis_name, x_axis_name,
     max_val <- max(sub_data)
     first_q <- quantile(sub_data,probs = 0.25)
     third_q <- quantile(sub_data,probs = 0.75)
+    iqr_range <- third_q-first_q
+    upper_whisker <- third_q + 1.5*iqr_range
+    lower_whisker <- first_q - 1.5*iqr_range
+    outliers <- sub_data[sub_data < lower_whisker | sub_data > upper_whisker]
+    if (max_val<upper_whisker){
+      upper_whisker <- max_val
+    }
+    if (min_val>lower_whisker){
+      lower_whisker <- min_val
+    }
     median_val <- median(sub_data)
     # tails
-    grid.lines(y=c(min_val,max_val),
+    grid.lines(y=c(lower_whisker,upper_whisker),
                x = c(i,i),default.units = 'native',gp=gpar(col=line_colour,lwd=1))
-    grid.lines(y=c(min_val,min_val),
-               x = c(i-(0.05*x_factor),i+(0.05*x_factor)),
+    grid.lines(y=c(lower_whisker,lower_whisker),
+               x = c(i-(whisker_cap_width),i+(whisker_cap_width)),
                      default.units = 'native',gp=gpar(col='black',lwd=1))
-    grid.lines(y=c(max_val,max_val),
-               x = c(i-(0.05*x_factor),i+(0.05*x_factor)),default.units = 'native',gp=gpar(col='black',lwd=1))
+    grid.lines(y=c(upper_whisker,upper_whisker),
+               x = c(i-(whisker_cap_width),i+(whisker_cap_width)),default.units = 'native',gp=gpar(col='black',lwd=1))
+    if (length(outliers)>0){
+      grid.points(x=rep(i,length(outliers)),y=outliers,default.units='native',
+                 gp=gpar(col='black',lwd=1,cex=0.4),pch = 16)
+    }
     if (length(sub_data)!=1){
       if (min_val==max_val){
-        grid.text(paste0("Min, Median, \nMax: ",get_2dp(min_val)),x=i+(0.75*x_factor),y=min_val, 
+        grid.text(paste0("Min, Median, \nMax: ",get_2dp(min_val)),
+                  x=i+text_offset_x,y=min_val, 
                   default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
       } else if (min_val==median_val){
-        grid.text(paste0("Min, Median:\n",get_2dp(min_val)),x=i+(0.75*x_factor),y=min_val-y_factor, 
+        grid.text(paste0("Min, Median:\n",get_2dp(min_val)),
+                  x=i+text_offset_x,y=min_val-y_factor, 
                   default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
-        grid.text(paste0("Max: ",get_2dp(max_val)),x=i+(0.75*x_factor),y=max_val+y_factor, 
+        grid.text(paste0("Max: ",get_2dp(max_val)),
+                  x=i+text_offset_x,y=max_val+y_factor, 
                   default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
       } else if (max_val==median_val){
-        grid.text(paste0("Median, Max:\n",get_2dp(max_val)),x=i+(0.75*x_factor),y=max_val+y_factor, 
+        grid.text(paste0("Median, Max:\n",get_2dp(max_val)),
+                  x=i+text_offset_x,y=max_val+y_factor, 
                   default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
-        grid.text(paste0("Min: ",get_2dp(min_val)),x=i+(0.75*x_factor),y=min_val-y_factor, 
+        grid.text(paste0("Min: ",get_2dp(min_val)),
+                  x=i+text_offset_x,y=min_val-y_factor, 
                   default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
       } else{
-        grid.text(paste0("Min: ",get_2dp(min_val)),x=i+(0.75*x_factor),y=min_val-y_factor, 
+        grid.text(paste0("Min: ",get_2dp(min_val)),
+                  x=i+text_offset_x,y=min_val-y_factor, 
                   default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
-        grid.text(paste0("Max: ",get_2dp(max_val)),x=i+(0.75*x_factor),y=max_val+y_factor, 
+        grid.text(paste0("Max: ",get_2dp(max_val)),
+                  x=i+text_offset_x,y=max_val+y_factor, 
                   default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
       }
     }
       grid.polygon(y = c(first_q,third_q,
                          rev(c(first_q,third_q))),
-                   x = c(i-(0.25*x_factor),i-(0.25*x_factor),i+(0.25*x_factor),i+(0.25*x_factor)),
+                   x = c(i-box_width,i-box_width,i+box_width,i+box_width),
                    default.units = 'native',
                    gp = gpar(col = bar_colour, fill = bar_colour))
       grid.lines(y=c(median_val,median_val),
-                 x = c(i-(0.25*x_factor),i+(0.25*x_factor)),
+                 x = c(i-box_width,i+box_width),
                  default.units = 'native',gp=gpar(col='black',lwd=1))
       if (min_val!=median_val & max_val!=median_val){
-        grid.text(paste0("Median: ",get_2dp(median_val)),x=i+(0.7*x_factor),y=median_val, 
+        grid.text(paste0("Median: ",get_2dp(median_val)),x=i+text_offset_x*0.95,y=median_val, 
                   default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
       }
       if(length(sub_data)==1){
-        grid.text(paste0("Min, Median\nMax: ",get_2dp(median_val)),x=i+(0.75*x_factor),y=median_val, 
+        grid.text(paste0("Min, Median\nMax: ",get_2dp(median_val)),x=i+text_offset_x,y=median_val, 
                   default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
     }
     }
