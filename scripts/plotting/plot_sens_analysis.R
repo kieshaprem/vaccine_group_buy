@@ -1,135 +1,105 @@
-percent_share <- function(mechanism, coverage, compare_gdp_gov_exp=FALSE){
-  if (coverage=='full'){
-    bilateral_analysis_price <- bilateral_full_analysis_price
-    uniform_analysis_price <- uniform_full_analysis_price
-    if (mechanism=='gdp_adj'){
-      adj_analysis_alpha <- gdp_adj_full_analysis_alpha
-    }
-    if (mechanism=='gov_exp_adj'){
-      adj_analysis_alpha <- gov_exp_adj_full_analysis_alpha
-    }
-    if (mechanism=='chepc_adj'){
-      adj_analysis_alpha <- chepc_adj_full_analysis_alpha
-    }
-  }
-  if (coverage=='real'){
-    bilateral_analysis_price <- bilateral_real_analysis_price
-    uniform_analysis_price <- uniform_real_analysis_price
-    if (mechanism=='gdp_adj'){
-      adj_analysis_alpha <- gdp_adj_real_analysis_alpha
-    }
-    if (mechanism=='gov_exp_adj'){
-      adj_analysis_alpha <- gov_exp_adj_real_analysis_alpha
-    }
-    if (mechanism=='chepc_adj'){
-      adj_analysis_alpha <- chepc_adj_real_analysis_alpha
-    }
-  }
-  adj_analysis_alpha <- adj_analysis_alpha[adj_analysis_alpha$Country==bilateral_full$iso3c,]
-  adj_analysis_alpha$iso2c <- countrycode(adj_analysis_alpha$Country,
-                                              origin='iso3c',destination = 'iso2c')
-  pushViewport(plotViewport(c(1,2,1,1),xscale=c(0.5,12.5),yscale=c(-1,50)))#)NEW
+
+percent_share <- function(){
+  
+  bilateral$iso2c <- countrycode(bilateral$iso3c,
+                                 origin='iso3c',destination = 'iso2c')
+  order_magnitude <- order_of_magnitude(max(percent_share_df[,'97.5%']))
+  val_scale <- c(-1,ceiling(max(percent_share_df[,'97.5%'])/order_magnitude)*order_magnitude)
+  pushViewport(plotViewport(c(1,2,1,1),xscale=c(0.5,12.5),yscale=val_scale))
   grid.rect()
   
   # grid.yaxis(at=c(0,10,20,30,40,50,60), 
   #            label=c("$0","$10","$20","$30","$40","$50","$60"),gp=gpar(fontsize=7))
-  grid.yaxis(at=c(0,10,20,30,40),label=c("0%","10%","20%","30%","40%"),gp=gpar(fontsize=5))
-  grid.xaxis(at=seq(1,11), 
-             label=c(adj_analysis_alpha$iso2c),gp=gpar(fontsize=5))
+  y_axis_locations <- axisTicks(val_scale,log=FALSE)
+  y_axis_labels <- sapply(y_axis_locations,function(x){paste0(x,'%')})
   
-  #grid.text(paste0('ASEAN countries ordered by GDP per capita'),x = unit(0,'npc')+unit(7,'lines'),y = unit(0,'npc')+unit(-2.8,'lines'),gp = gpar(fontsize=6,fontface='bold'))
-  grid.text('e) Percentage share',x = unit(0,'npc')+unit(3.4,'lines'),
-            y = unit(0,'npc')+unit(16.3,'lines'),
+  grid.yaxis(at = y_axis_locations, label = y_axis_labels, gp=gpar(fontsize=6,col='black'))
+  
+  grid.xaxis(at=seq(1,11), 
+             label=c(bilateral$iso2c),gp=gpar(fontsize=6))
+  
+  grid.text('g) Percentage share',x = unit(0,'npc')+unit(3.4,'lines'),
+            y = unit(0,'npc')+unit(61.3,'lines'),
             gp = gpar(fontsize=6,fontface='bold'))
   
-  for (i in 1:length(adj_analysis_alpha$Country)){
-    grid.lines(x=c(i,i),y=c(adj_analysis_alpha$percent_share_min[i],
-                            adj_analysis_alpha$percent_share_max[i]),
+  for (i in 1:length(bilateral$Country)){
+    # gdppc_adj
+    grid.lines(x=c(i,i),y=c(adj_gdppc_min$percent_share[i],
+                            adj_gdppc_max$percent_share[i]),
                gp=gpar(col="orange",lwd=1),
                default.units = 'native')
-    grid.lines(x=c(i-0.15,i+0.15),y=c(adj_analysis_alpha$percent_share_min[i],
-                                      adj_analysis_alpha$percent_share_min[i]),
-               gp=gpar(col="orange",lwd=1),
+    # grid.lines(x=c(i-0.1,i+0.1),y=c(adj_gdppc_min$percent_share[i],
+    #                                   adj_gdppc_min$percent_share[i]),
+    #            gp=gpar(col="orange",lwd=1),
+    #            default.units = 'native')
+    # grid.lines(x=c(i-0.1,i+0.1),y=c(adj_gdppc_max$percent_share[i],
+    #                                   adj_gdppc_max$percent_share[i]),
+    #            gp=gpar(col="orange",lwd=1),
+    #            default.units = 'native')
+    grid.points(seq(1,11), adj_gdppc$percent_share, default.units = "native",
+                gp=gpar(col="orange", cex=0.45,alpha=0.5),pch=16)
+    
+    grid.text('GDPPC-adj',x = unit(0,'npc')+unit(4.5,'lines'),
+              y = unit(0,'npc')+unit(37,'lines'),
+              gp = gpar(fontsize=5))
+    grid.polygon(x = c(0.7,1,1,0.7),
+                 y = c(62.7,62.7,63.2,63.2),
+                 default.units = 'native',
+                 gp = gpar(col = 'orange', fill = 'orange'))
+    
+    # chepc_adj
+    grid.lines(x=c(i+0.1,i+0.1),y=c(adj_chepc_min$percent_share[i],
+                                      adj_chepc_max$percent_share[i]),
+               gp=gpar(col="green",lwd=1),
                default.units = 'native')
-    grid.lines(x=c(i-0.15,i+0.15),y=c(adj_analysis_alpha$percent_share_max[i],
-                                      adj_analysis_alpha$percent_share_max[i]),
-               gp=gpar(col="orange",lwd=1),
-               default.units = 'native')
-  }
-  # if doing the comparison plot, set mechanism = 'gdp_adj'
-  if(compare_gdp_gov_exp==TRUE){
-    if (coverage=='full'){
-      other_percent_share <- gov_exp_adj_full_analysis_alpha
-    }
-    if (coverage=='real'){
-      other_percent_share <- gov_exp_adj_real_analysis_alpha
-    }
-    for (i in 1:length(other_percent_share$Country)){
-      grid.lines(x=c(i+0.15,i+0.15),y=c(other_percent_share$percent_share_min[i],
-                              other_percent_share$percent_share_max[i]),
-                 gp=gpar(col="green",lwd=1),
-                 default.units = 'native')
-      grid.lines(x=c(i,i+0.3),y=c(other_percent_share$percent_share_min[i],
-                                        other_percent_share$percent_share_min[i]),
-                 gp=gpar(col="green",lwd=1),
-                 default.units = 'native')
-      grid.lines(x=c(i,i+0.3),y=c(other_percent_share$percent_share_max[i],
-                                        other_percent_share$percent_share_max[i]),
-                 gp=gpar(col="green",lwd=1),
-                 default.units = 'native')
-      grid.text('CHEPC-adj',x = unit(0,'npc')+unit(3.4,'lines'),
-                y = unit(0,'npc')+unit(20.2,'lines'),
-                 gp = gpar(fontsize=3.5))
-      grid.polygon(x = c(0.7,1,1,0.7),
-                   y = c(35.5,35.5,36,36),
-                   default.units = 'native',
-                   gp = gpar(col = 'green', fill = 'green'))
-      grid.points(seq(1.15,11.15), other_percent_share$percent_share_median, default.units = "native",
-                  gp=gpar(col="green", cex=0.45,alpha=0.5),pch=16)
-    }
-  }
+    
+    # grid.lines(x=c(i,i+0.2),y=c(adj_chepc_min$percent_share[i],
+    #                             adj_chepc_min$percent_share[i]),
+    #            gp=gpar(col="green",lwd=1),
+    #            default.units = 'native')
+    # grid.lines(x=c(i,i+0.2),y=c(adj_chepc_max$percent_share[i],
+    #                             adj_chepc_max$percent_share[i]),
+    #            gp=gpar(col="green",lwd=1),
+    #            default.units = 'native')
+    # 
+    grid.points(seq(1.1,11.1), adj_chepc$percent_share, default.units = "native",
+                gp=gpar(col="green", cex=0.45,alpha=0.5),pch=16)
+    
+    grid.text('CHEPC-adj',x = unit(0,'npc')+unit(4.5,'lines'),
+              y = unit(0,'npc')+unit(35.5,'lines'),
+              gp = gpar(fontsize=5))
+    grid.polygon(x = c(0.7,1,1,0.7),
+                 y = c(60.2,60.2,60.7,60.7),
+                 default.units = 'native',
+                 gp = gpar(col = 'green', fill = 'green'))
+    grid.lines(x=c(i+0.15,i+0.15), y =c(percent_share_df[i,'2.5%'],
+                                        percent_share_df[i,'97.5%']),default.units = "native",
+                gp=gpar(col="grey50", cex=0.45,alpha=0.5))
+     }
   
-  grid.points(seq(1.15,11.15), bilateral_analysis_price$percent_share_median, default.units = "native",
+  grid.points(seq(1.15,11.15), percent_share_df[,'50%'], default.units = "native",
               gp=gpar(col="grey50", cex=0.45,alpha=0.5),pch=16)
-  
-  grid.points(seq(1,11), uniform_analysis_price$percent_share_median, default.units = "native",
-              gp=gpar(col="blue", cex=0.45,alpha=0.5),pch=16)
-  
-  grid.points(seq(1,11), adj_analysis_alpha$percent_share_median, default.units = "native",
-              gp=gpar(col="orange", cex=0.45,alpha=0.5),pch=16)
-  
+
   grid.polygon(x = c(0.7,1,1,0.7),
-               y = c(42,42,42.5,42.5),
-               default.units = 'native',
-               gp = gpar(col = 'orange', fill = 'orange'))
-  
-  grid.polygon(x = c(0.7,1,1,0.7),
-               y = c(45.5,45.5,45,45),
-               default.units = 'native',
-               gp = gpar(col = 'blue', fill = 'blue'))
-  
-  grid.polygon(x = c(0.7,1,1,0.7),
-               y = c(48,48,48.5,48.5),
+               y = c(67.7,67.7,68.2,68.2),
                default.units = 'native',
                gp = gpar(col = 'grey50', fill = 'grey50'))
+  grid.text("Bilateral",x = unit(0,'npc')+unit(4.5,'lines'),y = unit(0,'npc')+unit(40,'lines'),
+            gp = gpar(fontsize=5))
   
-  grid.text("Bilateral    ",x = unit(0,'npc')+unit(3,'lines'),y = unit(0,'npc')+unit(21.2,'lines'),
-            gp = gpar(fontsize=4))
-  grid.text("Uniform      ",x = unit(0,'npc')+unit(3.3,'lines'),y = unit(0,'npc')+unit(20,'lines'),
-            gp = gpar(fontsize=4))
-  # if (mechanism=='gov_exp_adj'){
-  #   mechanism <- 'gov_exp adjusted'
-  # }
-  if (mechanism=='gdp_adj'){
-    mechanism <- 'GDPPC-adj'
-  }
-  if (mechanism=='chepc_adj'){
-    mechanism <- 'CHEPC-adj'
-    
-  }
-  grid.text(mechanism,x = unit(0,'npc')+unit(3.3,'lines'),
-            y = unit(0,'npc')+unit(21.4,'lines'),
-            gp = gpar(fontsize=3.5))
+  
+  grid.points(seq(1,11), uniform$percent_share, default.units = "native",
+              gp=gpar(col="blue", cex=0.45,alpha=0.5),pch=16)
+  grid.polygon(x = c(0.7,1,1,0.7),
+               y = c(65.2,65.2,65.7,65.7),
+               default.units = 'native',
+               gp = gpar(col = 'blue', fill = 'blue'))
+    grid.text("Uniform",x = unit(0,'npc')+unit(4.5,'lines'),y = unit(0,'npc')+unit(38.5,'lines'),
+            gp = gpar(fontsize=5))
+
+    grid.text("d) Percent share",x = unit(0,'npc')+unit(3,'lines'),
+              y = unit(0,'npc')+unit(26.8,'lines'),
+              gp = gpar(fontsize=8,fontface='bold'))  
   
   popViewport()
 }

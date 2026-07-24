@@ -12,10 +12,16 @@ get_adjusted_price <- function(relative_country_income,p_min,alpha){
   return(round(p_min*(1+alpha*relative_country_income),2))
 }
 
+get_savings_per_dose <- function(alternate_pricing_df, bilateral_pricing_df){
+  alternate_pricing_df$savings_perdose <- bilateral_pricing_df$perdose - alternate_pricing_df$perdose
+  return(alternate_pricing_df)
+}
 
-process_mechanism <- function(df, mechanism, bilateral_df){
+
+process_mechanism <- function(df, mechanism, bilateral_df=NA){
   df$total_perdose <- as.numeric(df$pop_covered*df$perdose)
-  if (mechanism!='bilateral'){
+  df$total_perdose <- round_up_thousands(df$total_perdose)
+  if (mechanism!='bilateral' & is.data.frame(bilateral_df)){
     #df$total_savings_perdose <- df$pop_covered*df$savings_perdose
     df$total_savings_perdose <- as.numeric(bilateral_df$total_perdose-df$total_perdose)
   }
@@ -55,8 +61,27 @@ get_spline <- function(df, perspective){
 }
 
 get_wci <- function(df, perspective){
+  df <- add_affordability_percent(df =df, perspective = perspective)
   affordability_var <- paste0('perdose_',perspective,'_percent')
   return(ci(ineqvar = df[,perspective],
      outcome = df[,affordability_var],
      type = "CIw"))
+}
+
+
+get_ci <- function(df, perspective){
+  df <- add_affordability_percent(df =df, perspective = perspective)
+  affordability_var <- paste0('perdose_',perspective,'_percent')
+  return(round(ci(ineqvar = df[,perspective],
+            outcome = df[,affordability_var],
+            type = "CI")$concentration_index,3))
+}
+
+
+get_cig <- function(df, perspective){
+  df <- add_affordability_percent(df =df, perspective = perspective)
+  affordability_var <- paste0('perdose_',perspective,'_percent')
+  return(ci(ineqvar = df[,perspective],
+            outcome = df[,affordability_var],
+            type = "CIg"))
 }

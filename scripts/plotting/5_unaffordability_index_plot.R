@@ -3,10 +3,10 @@ library(grid)
 library(econocharts)
 #png(paste0("output/plots/plot_unaffordability_index_bilateral.png"),height=8,width=8,units='cm',res=700,pointsize=10)
 unaffordability_plot <- function(mechanism, spline_df_bilateral, 
-                                 spline_df_main, WCI_val, WCI_val_bilateral,
+                                 spline_df_main, CI_val, CI_val_bilateral,
                                  affordability_metric){
   if (affordability_metric=='perdose_gdppc_percent'){
-    wealth_measure <- 'gdp_percapita'
+    wealth_measure <- 'gdppc'
     affordability_metric_name <- 'GDP per capita'
     x_axis_loc <- c(3.5,4,4.5)
     x_axis_labels <- c(expression(paste(10^"3.5")),expression(paste(10^"4.0")),
@@ -18,19 +18,7 @@ unaffordability_plot <- function(mechanism, spline_df_bilateral,
     # gdppc_spline_min <- spline_gdppc_percent_gdppc_min
     # gdppc_spline_max <- spline_gdppc_percent_gdppc_max
   }
-  if (affordability_metric=='perdose_gov_exp_percent'){
-    wealth_measure <- 'gov_exp'
-    affordability_metric_name <- 'GHE per capita'
-    x_axis_loc <- c(1,2,3)
-    x_axis_labels <- c(expression(paste(10^"1")),expression(paste(10^"2")),
-                       expression(paste(10^"3")))
-    y_axis_loc <- c(0,40,80,120,160)
-    y_axis_labels <- c("0%","40%","80%","120%","160%")
-    # gov_exp_spline_min <- spline_gov_exp_percent_gov_exp_min
-    # gov_exp_spline_max <- spline_gov_exp_percent_gov_exp_max
-    # gdppc_spline_min <- spline_gdppc_percent_gov_exp_min
-    # gdppc_spline_max <- spline_gdppc_percent_gov_exp_max
-  }
+  
   if (affordability_metric=='perdose_chepc_percent'){
     wealth_measure <- 'chepc'
     affordability_metric_name <- 'CHE per capita'
@@ -45,16 +33,22 @@ unaffordability_plot <- function(mechanism, spline_df_bilateral,
     # gdppc_spline_max <- spline_gdppc_percent_chepc_max
   }
   
-  pushViewport(plotViewport(c(1,3,1,1),
-                            xscale=c(min(log(x=bilateral_full[,wealth_measure],base=10)),
-                                     max(log(x=bilateral_full[,wealth_measure],base=10))),
+  pushViewport(plotViewport(c(2,3,2,1),
+                            xscale=c(min(log(x=bilateral[,wealth_measure],base=10)),
+                                     max(log(x=bilateral[,wealth_measure],base=10))),
                             yscale=c(min(y_axis_loc),max(y_axis_loc))))
   grid.rect()
   
   if (mechanism=="bilateral"){
     grid.text(paste0('Price of 1 dose\nas % of ',affordability_metric_name),x = unit(0,'npc')+unit(-4.2,'lines'),rot=90,
               gp = gpar(fontsize=6,fontface='bold',col = 'black'))
-    grid.text('e)',x = unit(0,'npc')+unit(0.1,'lines'),y = unit(0,'npc')+unit(15.5,'lines'),gp = gpar(fontsize=6,fontface='bold'))
+    if (affordability_metric=='perdose_gdppc_percent'){
+      text <- 'e)'
+    }
+    if (affordability_metric=='perdose_chepc_percent'){
+      text <- 'm)'
+    }
+    grid.text(text,x = unit(0,'npc')+unit(0.1,'lines'),y = unit(0,'npc')+unit(19,'lines'),gp = gpar(fontsize=6,fontface='bold'))
   }
   grid.xaxis(at=x_axis_loc, 
              label=x_axis_labels,
@@ -71,49 +65,50 @@ unaffordability_plot <- function(mechanism, spline_df_bilateral,
   x_curve_main <- spline_df_main$x
   y_curve_main<- spline_df_main$y
   if (mechanism=="uniform"){
-    grid.text(paste0("Uniform pricing (WCI = ",WCI_val,")"), x=0.39,y=0.90,gp=gpar(fontsize=4))
+    if (affordability_metric=='perdose_gdppc_percent'){
+      text <- 'f)'
+    }
+    if (affordability_metric=='perdose_chepc_percent'){
+      text <- 'n)'
+    }
+    grid.text(paste0("Uniform pricing (CI = ",CI_val,")"), x=0.39,y=0.90,gp=gpar(fontsize=4))
     color <- "blue"
-    grid.text('f)',x = unit(0,'npc')+unit(0.1,'lines'),y = unit(0,'npc')+unit(15.5,'lines'),gp = gpar(fontsize=6,fontface='bold'))
+    grid.text(text,x = unit(0,'npc')+unit(0.1,'lines'),y = unit(0,'npc')+unit(19,'lines'),gp = gpar(fontsize=6,fontface='bold'))
   }
   
   if (mechanism=="gdp_adj"){
-    print('lagi gdp_dj')
-    grid.text(paste0("GDPPC-adjusted, \n(WCI = ",WCI_val,")       "),x=0.27,y=0.88,gp=gpar(fontsize=4))
+    if (affordability_metric=='perdose_gdppc_percent'){
+      text <- 'g)'
+    }
+    if (affordability_metric=='perdose_chepc_percent'){
+      text <- 'o)'
+    }
+    grid.text(paste0("GDPPC-adjusted, \n(CI = ",CI_val,")       "),x=0.27,y=0.88,gp=gpar(fontsize=4))
     grid.text(as.expression(bquote(alpha == 10)), x=0.52,y=0.905,gp=gpar(fontsize=4))
     color <- "orange"
-    grid.text('g)',x = unit(0,'npc')+unit(0.1,'lines'),y = unit(0,'npc')+unit(15.5,'lines'),gp = gpar(fontsize=6,fontface='bold'))
-    # grid.lines(x=gdppc_spline_min$x,
-    #            y=gdppc_spline_min$y,
-    #            default.units = 'native',
-    #            gp=gpar(col='#FF8C00',lty='dashed'))
-    # grid.lines(x=gdppc_spline_max$x,
-    #            y=gdppc_spline_max$y,
-    #            default.units = 'native',
-    #            gp=gpar(col='#FF8C00',lty='dashed'))
-  }
+    grid.text(text,x = unit(0,'npc')+unit(0.1,'lines'),y = unit(0,'npc')+unit(19,'lines'),gp = gpar(fontsize=6,fontface='bold'))
+    }
   if (mechanism=="chepc_adj"){
-    grid.text(paste0("CHEPC-adjusted, \n(WCI = ",WCI_val,")       "),x=0.27,y=0.88,gp=gpar(fontsize=4))
+    if (affordability_metric=='perdose_gdppc_percent'){
+      text <- 'h)'
+    }
+    if (affordability_metric=='perdose_chepc_percent'){
+      text <- 'p)'
+    }
+    grid.text(paste0("CHEPC-adjusted, \n(CI = ",CI_val,")       "),x=0.27,y=0.88,gp=gpar(fontsize=4))
     grid.text(as.expression(bquote(alpha == 10)), x=0.52,y=0.905,gp=gpar(fontsize=4))
     color <- "green"
-    grid.text('h)',x = unit(0,'npc')+unit(0.1,'lines'),y = unit(0,'npc')+unit(15.5,'lines'),gp = gpar(fontsize=6,fontface='bold'))
-    # grid.lines(x=gov_exp_spline_min$x,
-    #            y=gov_exp_spline_min$y,
-    #            default.units = 'native',
-    #            gp=gpar(col='#013220',lty='dashed'))
-    # grid.lines(x=gov_exp_spline_max$x,
-    #            y=gov_exp_spline_max$y,
-    #            default.units = 'native',
-    #            gp=gpar(col='#013220',lty='dashed'))
-  }
+    grid.text(text,x = unit(0,'npc')+unit(0.1,'lines'),y = unit(0,'npc')+unit(19,'lines'),gp = gpar(fontsize=6,fontface='bold'))
+   }
   
   # legend
   vax_0_box <- rectGrob(x = 0.05, y = 0.965, width = 0.025, height = 0.0125,
                         gp = gpar(col = "grey50", fill = "grey50", alpha=0.5, lty = 1, lwd=0.8))
   grid.draw(vax_0_box)
-  grid.text(paste0("Bilateral pricing (WCI = ",WCI_val_bilateral,")"), x=0.4,y=0.96,gp=gpar(fontsize=4))
+  grid.text(paste0("Bilateral pricing (CI = ",CI_val_bilateral,")"), x=0.4,y=0.96,gp=gpar(fontsize=4))
 
-  x_line <- seq(min(log(x=bilateral_full[,wealth_measure],base=10)),
-                max(log(x=bilateral_full[,wealth_measure],base=10)),
+  x_line <- seq(min(log(x=bilateral[,wealth_measure],base=10)),
+                max(log(x=bilateral[,wealth_measure],base=10)),
                 length.out=1000)
   y_line <- seq(min(y_axis_loc),max(y_axis_loc),length.out=1000)
   
@@ -121,7 +116,7 @@ unaffordability_plot <- function(mechanism, spline_df_bilateral,
   
   
   intersect_val <- curve_intersect(diagonal_line,
-                                   spline_gdppc_percent_chepc_adj,empirical = T)
+                                   spline_df_main,empirical = T)
   
   x_val <- intersect_val$x
   y_val <- intersect_val$y
@@ -142,14 +137,21 @@ unaffordability_plot <- function(mechanism, spline_df_bilateral,
   grid.draw(vax_1_box)
   }
   
-  grid.polygon(x=c(x_curve_bilateral[x_curve_bilateral<x_val],x_val,
-                   rev(x_line[x_line<x_val])),
-               y = c(y_curve_bilateral[x_curve_bilateral<x_val],y_val,
-                     rev(y_line[y_line<y_val])),
+  intersect_val_bilateral <- curve_intersect(diagonal_line,
+                                   spline_df_bilateral,empirical = T)
+  x_val_bilateral <- intersect_val_bilateral$x
+  y_val_bilateral <- intersect_val_bilateral$y
+  
+  grid.polygon(x=c(x_curve_bilateral[x_curve_bilateral<x_val_bilateral],x_val_bilateral,
+                   rev(x_line[x_line<x_val_bilateral])),
+               y = c(y_curve_bilateral[x_curve_bilateral<x_val_bilateral],y_val_bilateral,
+                     rev(y_line[y_line<y_val_bilateral])),
                default.units = 'native',gp=gpar(col=NA,fill="grey50",alpha=0.5))
   
-  grid.polygon(x=c((x_line[x_line>x_val]),rev(c(x_val,x_curve_bilateral[x_curve_bilateral>x_val]))),
-               y = c((y_line[y_line>y_val]),rev(c(y_val,y_curve_bilateral[x_curve_bilateral>x_val]))),
+  grid.polygon(x=c((x_line[x_line>x_val_bilateral]),rev(c(x_val_bilateral,
+                                                          x_curve_bilateral[x_curve_bilateral>x_val_bilateral]))),
+               y = c((y_line[y_line>y_val_bilateral]),rev(c(y_val_bilateral,
+                                                            y_curve_bilateral[x_curve_bilateral>x_val_bilateral]))),
                default.units = 'native',gp=gpar(col=NA,fill="grey50",alpha=0.5))
   
   grid.lines(x=x_line,

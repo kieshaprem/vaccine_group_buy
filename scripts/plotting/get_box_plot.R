@@ -1,62 +1,68 @@
 library(grid)
-
-# get 2 dp
-get_2dp <- function(number){return(format(round(number,2),nsmall=2))}
+source('scripts/plotting/general_helper_plotting_functions.R')
 
 # get basic box plot
 get_box_plot <- function(data, group_col, val_col, y_axis_name, x_axis_name,
-                         group_order_col, bar_colour, line_colour, x_factor, y_factor,
-                         bilateral_flag){
+                         group_order_col, bar_colour, line_colour, y_factor, 
+                         n_flag, plot_name){
   data <- data[order(data[,group_order_col]),]
-  val_scale <- c(0,max(data[,val_col])+5)
-  if (val_scale[2]>=50){
-    val_scale[2] <- 100
-  } else if (val_scale[2]<=20){
-    val_scale[2] <- 20
-  } else {
-    val_scale[2] <- 50
+  order_magnitude <- order_of_magnitude(max(data[,val_col]))
+  val_scale <- c(0,ceiling(max(data[,val_col])/order_magnitude)*order_magnitude)
+  
+  if (n_flag==TRUE){
+    val_scale <- c(0,100)
   }
-  if (bilateral_flag==TRUE){
-    val_scale[2] <- 50
-  }
+
   n_points <- table(data[,group_col])
   group_terms <- unique(data[,group_col])
-  group_terms_wn <- sapply(group_terms, function(x){paste0(x, "\nn=",n_points[x])})
+  if (n_flag==T){
+    group_terms_wn <- sapply(group_terms, function(x){paste0(x, "\nn=",n_points[x])})
+  } else {
+    group_terms_wn <- group_terms
+  }
   x_scale_length <- length(group_terms)
-  x_scale <- c(0.5,x_scale_length+1)
+  x_scale <- c(0.5,x_scale_length+0.5)
   
   
   # Calculate dynamic spacing and offsets
   group_spacing <- 1  # Distance between group centers
   box_width <- 0.2 * group_spacing  # Box width is 50% of spacing
   whisker_cap_width <- 0.15 * group_spacing  # Whisker cap width is 15% of spacing
-  text_offset_x <- 0.5 * group_spacing  # Text offset from box center
+  text_offset_x <- 0.425 * group_spacing  # Text offset from box center
   
-  pushViewport(plotViewport(c(4,3,1,1),xscale=x_scale,yscale=val_scale))
+  cat(val_scale[2])
+  pushViewport(plotViewport(c(2,2,2,1),xscale=x_scale,yscale=val_scale))
   # X AXIS
   for (i in 1:x_scale_length){
     grid.text(group_terms_wn[i],x=i,y=-7.5*y_factor, default.units = 'native',
               gp=gpar(fontsize=8))
   }
-  # Y AXIS
-  #for (i in seq(0,40,10)){
-   # grid.text(i,x=0.35,y=i, default.units = 'native',gp=gpar(fontsize=8))
-  #}
-  
-  grid.yaxis(gp=gpar(fontsize=8,col='black'))
+  y_axis_locations <- axisTicks(val_scale,log=FALSE)
+  y_axis_labels <- sapply(y_axis_locations,function(x){get_formatted_number(x)})
+
   #grid.xaxis(gp=gpar(fontsize=6,col='black'),at = c(0,seq(1:x_scale_length),x_scale_length+1),
              #label = c(" ",group_terms_wn," "))
+  # Y AXIS
+  #if (!plot_name %in% c('b) UMIC','c) HIC')){
+    grid.yaxis(at = y_axis_locations, label = y_axis_labels, gp=gpar(fontsize=8,col='black'))
+  #}
+  # for (i in 1:length(y_axis_locations)){
+  #  grid.text(y_axis_labels[i],x=0.35,y=y_axis_locations[i], default.units = 'native',gp=gpar(fontsize=8))
+  # }
+  #grid.yaxis(gp=gpar(fontsize=8))
+  
   grid.text(y_axis_name
             ,gp=gpar(fontsize=8,fontface='bold'),
             x = unit(0,'npc')+unit(-3,'lines'),
             rot=90)
   grid.text(x_axis_name
             ,gp=gpar(fontsize=8,fontface='bold'),
-            y = unit(0,'npc')+unit(26,'lines'))
+            y = unit(0,'npc')+unit(-3,'lines'))
   for(i in 1:x_scale_length){
     grp <- group_terms[i]
     sub_data <- data[data[,group_col]==grp,val_col]
     min_val <- min(sub_data)
+    median_val <- median(sub_data)
     max_val <- max(sub_data)
     first_q <- quantile(sub_data,probs = 0.25)
     third_q <- quantile(sub_data,probs = 0.75)
@@ -83,33 +89,36 @@ get_box_plot <- function(data, group_col, val_col, y_axis_name, x_axis_name,
       grid.points(x=rep(i,length(outliers)),y=outliers,default.units='native',
                  gp=gpar(col='black',lwd=1,cex=0.4),pch = 16)
     }
+    grid.text(get_formatted_number(median_val), x = i + text_offset_x,
+              y = median_val, default.units = 'native',
+              gp = gpar(fontsize = 8, fontface = 'italic'))
     if (length(sub_data)!=1){
-      if (min_val==max_val){
-        grid.text(paste0("Min, Median, \nMax: ",get_2dp(min_val)),
-                  x=i+text_offset_x,y=min_val, 
-                  default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
-      } else if (min_val==median_val){
-        grid.text(paste0("Min, Median:\n",get_2dp(min_val)),
-                  x=i+text_offset_x,y=min_val-y_factor, 
-                  default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
-        grid.text(paste0("Max: ",get_2dp(max_val)),
-                  x=i+text_offset_x,y=max_val+y_factor, 
-                  default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
-      } else if (max_val==median_val){
-        grid.text(paste0("Median, Max:\n",get_2dp(max_val)),
-                  x=i+text_offset_x,y=max_val+y_factor, 
-                  default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
-        grid.text(paste0("Min: ",get_2dp(min_val)),
-                  x=i+text_offset_x,y=min_val-y_factor, 
-                  default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
-      } else{
-        grid.text(paste0("Min: ",get_2dp(min_val)),
-                  x=i+text_offset_x,y=min_val-y_factor, 
-                  default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
-        grid.text(paste0("Max: ",get_2dp(max_val)),
-                  x=i+text_offset_x,y=max_val+y_factor, 
-                  default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
-      }
+      # if (min_val==max_val){
+      #   grid.text(paste0("Min, Median, \nMax: ",get_formatted_number(min_val)),
+      #             x=i+text_offset_x,y=min_val, 
+      #             default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
+      # } else if (min_val==median_val){
+      #   grid.text(paste0("Min, Median:\n",get_formatted_number(min_val)),
+      #             x=i+text_offset_x,y=min_val-y_factor, 
+      #             default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
+      #   grid.text(paste0("Max: ",get_formatted_number(max_val)),
+      #             x=i+text_offset_x,y=max_val+y_factor, 
+      #             default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
+      # } else if (max_val==median_val){
+      #   grid.text(paste0("Median, Max:\n",get_formatted_number(max_val)),
+      #             x=i+text_offset_x,y=max_val+y_factor, 
+      #             default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
+      #   grid.text(paste0("Min: ",get_formatted_number(min_val)),
+      #             x=i+text_offset_x,y=min_val-y_factor, 
+      #             default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
+      # } else{
+      #   grid.text(paste0("Min: ",get_formatted_number(min_val)),
+      #             x=i+text_offset_x,y=min_val-y_factor, 
+      #             default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
+      #   grid.text(paste0("Max: ",get_formatted_number(max_val)),
+      #             x=i+text_offset_x,y=max_val+y_factor, 
+      #             default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
+      # }
     }
       grid.polygon(y = c(first_q,third_q,
                          rev(c(first_q,third_q))),
@@ -120,13 +129,18 @@ get_box_plot <- function(data, group_col, val_col, y_axis_name, x_axis_name,
                  x = c(i-box_width,i+box_width),
                  default.units = 'native',gp=gpar(col='black',lwd=1))
       if (min_val!=median_val & max_val!=median_val){
-        grid.text(paste0("Median: ",get_2dp(median_val)),x=i+text_offset_x*0.95,y=median_val, 
-                  default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
+        # grid.text(paste0("Median: ",get_formatted_number(median_val)),x=i+text_offset_x*0.95,y=median_val, 
+        #           default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
       }
       if(length(sub_data)==1){
-        grid.text(paste0("Min, Median\nMax: ",get_2dp(median_val)),x=i+text_offset_x,y=median_val, 
-                  default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
+        # grid.text(paste0("Min, Median\nMax: ",get_formatted_number(median_val)),x=i+text_offset_x,y=median_val, 
+        #           default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
     }
-    }
+  }
+  if (!is.na(plot_name)){
+    grid.text(plot_name,x = unit(0,'npc')+unit(1.5,'lines'),
+              y = unit(0,'npc')+unit(24.5,'lines'),
+              gp = gpar(fontsize=8,fontface='bold'))
+  }
   popViewport()
 }

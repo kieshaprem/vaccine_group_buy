@@ -1,43 +1,22 @@
-source('scripts/mi4a_boxplot_wrapper_functions.R')
-
-vaccine_prices_updated[vaccine_prices_updated$Manufacturer==
-                         'Beijing Institute of Biological Products Co., Ltd. (CNBG Subsidiary)',]$Manufacturer <- 'BIBP'
-vaccine_prices_updated[vaccine_prices_updated$Manufacturer=='Serum Institute of India Pvt. Ltd.',]$Manufacturer <- 'SII'
-vaccine_prices_updated[vaccine_prices_updated$Manufacturer=='Janssen Vaccines Corp.',]$Manufacturer <- 'Janssen'
-vaccine_prices_updated[vaccine_prices_updated$Manufacturer=='Gamaleya Research Institute',]$Manufacturer <- 'Gamaleya'
-vaccine_prices_updated[vaccine_prices_updated$Manufacturer=='Sinovac Biotech Co. Ltd',]$Manufacturer <- 'Sinovac'
-vaccine_prices_updated[vaccine_prices_updated$Manufacturer=='',]$Manufacturer <- 'Unknown'
-vaccine_prices_updated[vaccine_prices_updated$Manufacturer=='Unknown',]$Manufacturer <- 'Blank'
-vaccine_prices_updated[vaccine_prices_updated$Manufacturer=='Center for Genetic Engineering and Biotechnology',]$Manufacturer <- 'ICGEB'
-
-vaccine_prices_updated[vaccine_prices_updated$Procurement.Mechanism=='COVAX',]$Procurement.Mechanism <- 'Covax'
-vaccine_prices_updated[vaccine_prices_updated$Procurement.Mechanism=='',]$Procurement.Mechanism <- 'Blank'
+source('scripts/0_load_mi4a_data.R')
+source('scripts/plotting/mi4a_boxplot_wrapper_functions.R')
 
 covid_wpro_searo <- vaccine_prices_updated[vaccine_prices_updated$Vaccine=='COVID-19' &
                                              vaccine_prices_updated$Region %in% c('SEARO','WPRO'),]
 covid_wpro_searo_noblanks <- covid_wpro_searo[covid_wpro_searo$Price.per.Dose.in.USD!="",]
 covid_wpro_searo_numeric <- make_price_numeric(covid_wpro_searo_noblanks)
-
-covid_rm_pfizer_moderna <- covid_wpro_searo_numeric[!covid_wpro_searo_numeric$Manufacturer %in% c('Pfizer','Moderna'),]
+covid_wpro_searo_numeric[covid_wpro_searo_numeric$Procurement.Mechanism=='Other',]$Procurement.Mechanism <- 'Bilateral'
 
 hic_only <- covid_wpro_searo_numeric[covid_wpro_searo_numeric$Income.Group=='HIC',]
 umic_only <- covid_wpro_searo_numeric[covid_wpro_searo_numeric$Income.Group=='UMIC',]
 lmic_only <- covid_wpro_searo_numeric[covid_wpro_searo_numeric$Income.Group=='LMIC',]
 
-hic_bilateral <- hic_only[hic_only$Procurement.Mechanism=='Bilateral',]
-umic_bilateral <- umic_only[umic_only$Procurement.Mechanism=='Bilateral',]
-lmic_bilateral <- lmic_only[lmic_only$Procurement.Mechanism=='Bilateral',]
+hic_bilateral <- hic_only[hic_only$Procurement.Mechanism %in% c('Bilateral','Other',
+                                                                'Self-procurement'),]
+umic_bilateral <- umic_only[umic_only$Procurement.Mechanism %in% c('Bilateral','Other'),]
+lmic_bilateral <- lmic_only[lmic_only$Procurement.Mechanism %in% c('Bilateral','Other'),]
 
 bilateral_only <- covid_wpro_searo_numeric[covid_wpro_searo_numeric$Procurement.Mechanism=='Bilateral',]
-bilateral_all_regions <- vaccine_prices_updated[vaccine_prices_updated$Vaccine=='COVID-19' &
-                                                  vaccine_prices_updated$Price.per.Dose.in.USD!='' &
-                                                  vaccine_prices_updated$Procurement.Mechanism=='Bilateral',]
-bilateral_all_regions_numeric <- make_price_numeric(bilateral_all_regions)
-
-hic_bilateral_all <- bilateral_all_regions_numeric[bilateral_all_regions_numeric$Income.Group=='HIC',]
-umic_bilateral_all <- bilateral_all_regions_numeric[bilateral_all_regions_numeric$Income.Group=='UMIC',]
-lmic_bilateral_all <- bilateral_all_regions_numeric[bilateral_all_regions_numeric$Income.Group=='LMIC',]
-lic_bilateral_all <- bilateral_all_regions_numeric[bilateral_all_regions_numeric$Income.Group=='LIC',]
 
 
 library(ggplot2)
@@ -88,7 +67,6 @@ vaccine_prices_all <- make_price_numeric(vaccine_prices_all)
 vaccine_prices_all <- vaccine_prices_all[!is.na(vaccine_prices_all$Price.per.Dose.in.USD),]
 ## WPRO & SEARO ################################################################
 
-summary(all_covax$Price.per.Dose.in.USD)
 plot_boxplot_price(filename = 'incomegrponly',input_data = covid_wpro_searo_numeric,
                    input_group_col = "Income.Group")
 plot_boxplot_price(filename = 'incomegrponly_all',input_data = vaccine_prices_all,
@@ -101,8 +79,8 @@ plot_boxplot_price(filename = 'manufacturer_all',input_data = vaccine_prices_all
 
 plot_boxplot_price(filename = 'procurementonly',input_data = covid_wpro_searo_numeric,
                    input_group_col = "Procurement.Mechanism")
-plot_boxplot_price(filename = 'procurement_all',input_data = vaccine_prices_all,
-                   input_group_col = "Procurement.Mechanism")
+# plot_boxplot_price(filename = 'procurement_all',input_data = vaccine_prices_all,
+#                    input_group_col = "Procurement.Mechanism")
 # plot_boxplot_price(filename = 'manufacturer_exclude_pfizer_moderna',
 #                    input_data = covid_rm_pfizer_moderna,
 #                    input_group_col = "Manufacturer")
@@ -160,7 +138,7 @@ wrapper_3layer(filename = 'incomegrp_procurement_manufacturer',
               first_var = 'Income.Group',second_var = 'Procurement.Mechanism',
               input_data = covid_wpro_searo_numeric, input_group_col = 'Manufacturer')
 
-
+plot_compare_ig_procurementmech('full')
 
 
 
