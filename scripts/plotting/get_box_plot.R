@@ -31,7 +31,7 @@ get_box_plot <- function(data, group_col, val_col, y_axis_name, x_axis_name,
   text_offset_x <- 0.425 * group_spacing  # Text offset from box center
   
   cat(val_scale[2])
-  pushViewport(plotViewport(c(2,2,2,1),xscale=x_scale,yscale=val_scale))
+  pushViewport(plotViewport(c(2,4,1,1),xscale=x_scale,yscale=val_scale))
   # X AXIS
   for (i in 1:x_scale_length){
     grid.text(group_terms_wn[i],x=i,y=-7.5*y_factor, default.units = 'native',
@@ -50,11 +50,11 @@ get_box_plot <- function(data, group_col, val_col, y_axis_name, x_axis_name,
   #  grid.text(y_axis_labels[i],x=0.35,y=y_axis_locations[i], default.units = 'native',gp=gpar(fontsize=8))
   # }
   #grid.yaxis(gp=gpar(fontsize=8))
-  
+  print(y_axis_name)
   grid.text(y_axis_name
             ,gp=gpar(fontsize=8,fontface='bold'),
-            x = unit(0,'npc')+unit(-3,'lines'),
-            rot=90)
+            ,x = unit(0,'npc')+unit(-5,'lines'),
+            y = unit(0,'npc')+unit(11,'lines'),rot =90)
   grid.text(x_axis_name
             ,gp=gpar(fontsize=8,fontface='bold'),
             y = unit(0,'npc')+unit(-3,'lines'))
@@ -92,34 +92,7 @@ get_box_plot <- function(data, group_col, val_col, y_axis_name, x_axis_name,
     grid.text(get_formatted_number(median_val), x = i + text_offset_x,
               y = median_val, default.units = 'native',
               gp = gpar(fontsize = 8, fontface = 'italic'))
-    if (length(sub_data)!=1){
-      # if (min_val==max_val){
-      #   grid.text(paste0("Min, Median, \nMax: ",get_formatted_number(min_val)),
-      #             x=i+text_offset_x,y=min_val, 
-      #             default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
-      # } else if (min_val==median_val){
-      #   grid.text(paste0("Min, Median:\n",get_formatted_number(min_val)),
-      #             x=i+text_offset_x,y=min_val-y_factor, 
-      #             default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
-      #   grid.text(paste0("Max: ",get_formatted_number(max_val)),
-      #             x=i+text_offset_x,y=max_val+y_factor, 
-      #             default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
-      # } else if (max_val==median_val){
-      #   grid.text(paste0("Median, Max:\n",get_formatted_number(max_val)),
-      #             x=i+text_offset_x,y=max_val+y_factor, 
-      #             default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
-      #   grid.text(paste0("Min: ",get_formatted_number(min_val)),
-      #             x=i+text_offset_x,y=min_val-y_factor, 
-      #             default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
-      # } else{
-      #   grid.text(paste0("Min: ",get_formatted_number(min_val)),
-      #             x=i+text_offset_x,y=min_val-y_factor, 
-      #             default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
-      #   grid.text(paste0("Max: ",get_formatted_number(max_val)),
-      #             x=i+text_offset_x,y=max_val+y_factor, 
-      #             default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
-      # }
-    }
+
       grid.polygon(y = c(first_q,third_q,
                          rev(c(first_q,third_q))),
                    x = c(i-box_width,i-box_width,i+box_width,i+box_width),
@@ -128,18 +101,11 @@ get_box_plot <- function(data, group_col, val_col, y_axis_name, x_axis_name,
       grid.lines(y=c(median_val,median_val),
                  x = c(i-box_width,i+box_width),
                  default.units = 'native',gp=gpar(col='black',lwd=1))
-      if (min_val!=median_val & max_val!=median_val){
-        # grid.text(paste0("Median: ",get_formatted_number(median_val)),x=i+text_offset_x*0.95,y=median_val, 
-        #           default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
-      }
-      if(length(sub_data)==1){
-        # grid.text(paste0("Min, Median\nMax: ",get_formatted_number(median_val)),x=i+text_offset_x,y=median_val, 
-        #           default.units = 'native',gp=gpar(fontsize=6,fontface='italic'))
-    }
+
   }
   if (!is.na(plot_name)){
-    grid.text(plot_name,x = unit(0,'npc')+unit(1.5,'lines'),
-              y = unit(0,'npc')+unit(24.5,'lines'),
+    grid.text(plot_name,x = unit(0,'npc')+unit(3,'lines'),
+              y = unit(0,'npc')+unit(25,'lines'),
               gp = gpar(fontsize=8,fontface='bold'))
   }
   popViewport()

@@ -33,32 +33,36 @@ unaffordability_plot <- function(mechanism, spline_df_bilateral,
     # gdppc_spline_max <- spline_gdppc_percent_chepc_max
   }
   
-  pushViewport(plotViewport(c(2,3,2,1),
+  pushViewport(plotViewport(c(2,1,1,3),
                             xscale=c(min(log(x=bilateral[,wealth_measure],base=10)),
                                      max(log(x=bilateral[,wealth_measure],base=10))),
                             yscale=c(min(y_axis_loc),max(y_axis_loc))))
-  grid.rect()
   
   if (mechanism=="bilateral"){
-    grid.text(paste0('Price of 1 dose\nas % of ',affordability_metric_name),x = unit(0,'npc')+unit(-4.2,'lines'),rot=90,
-              gp = gpar(fontsize=6,fontface='bold',col = 'black'))
+       # grid.text(paste0('Price of 1 dose\nas % of ',affordability_metric_name),x = unit(0,'npc')+unit(-4.2,'lines'),rot=90,
+    #           gp = gpar(fontsize=6,fontface='bold',col = 'black'))
     if (affordability_metric=='perdose_gdppc_percent'){
       text <- 'e)'
     }
     if (affordability_metric=='perdose_chepc_percent'){
       text <- 'm)'
     }
-    grid.text(text,x = unit(0,'npc')+unit(0.1,'lines'),y = unit(0,'npc')+unit(19,'lines'),gp = gpar(fontsize=6,fontface='bold'))
+    grid.text(text,x = unit(0,'npc')+unit(0.1,'lines'),y = unit(0,'npc')+unit(12,'lines'),gp = gpar(fontsize=6,fontface='bold'))
+    #   } else {
+    # pushViewport(plotViewport(c(4,3,1,1),
+    #                           xscale=c(min(log(x=bilateral[,wealth_measure],base=10)),
+    #                                    max(log(x=bilateral[,wealth_measure],base=10))),
+    #                           yscale=c(min(y_axis_loc),max(y_axis_loc))))
   }
-  grid.xaxis(at=x_axis_loc, 
-             label=x_axis_labels,
-             gp=gpar(fontsize=5))
+grid.xaxis(at=x_axis_loc,
+           label=x_axis_labels,
+           gp=gpar(fontsize=5))
   grid.yaxis(at=y_axis_loc,label = y_axis_labels,
-             gp=gpar(fontsize=5))
+             gp=gpar(fontsize=5),main = F)
    
-  grid.text(paste0(affordability_metric_name,
-                   ' in 2023, log10 scale'),y = unit(0,'npc')+unit(-2.5,'lines'),
-            gp = gpar(fontsize=6,fontface='bold',col = 'black'))
+  # grid.text(paste0(affordability_metric_name,
+  #                  ' in 2023, log10 scale'),y = unit(0,'npc')+unit(-2.5,'lines'),
+  #           gp = gpar(fontsize=6,fontface='bold',col = 'black'))
 
   x_curve_bilateral <- spline_df_bilateral$x
   y_curve_bilateral<- spline_df_bilateral$y
@@ -71,9 +75,9 @@ unaffordability_plot <- function(mechanism, spline_df_bilateral,
     if (affordability_metric=='perdose_chepc_percent'){
       text <- 'n)'
     }
-    grid.text(paste0("Uniform pricing (CI = ",CI_val,")"), x=0.39,y=0.90,gp=gpar(fontsize=4))
+    grid.text(paste0("Uniform pricing (CI = ",CI_val,")"), x=0.41,y=0.90,gp=gpar(fontsize=4))
     color <- "blue"
-    grid.text(text,x = unit(0,'npc')+unit(0.1,'lines'),y = unit(0,'npc')+unit(19,'lines'),gp = gpar(fontsize=6,fontface='bold'))
+    grid.text(text,x = unit(0,'npc')+unit(0.1,'lines'),y = unit(0,'npc')+unit(12,'lines'),gp = gpar(fontsize=6,fontface='bold'))
   }
   
   if (mechanism=="gdp_adj"){
@@ -83,10 +87,10 @@ unaffordability_plot <- function(mechanism, spline_df_bilateral,
     if (affordability_metric=='perdose_chepc_percent'){
       text <- 'o)'
     }
-    grid.text(paste0("GDPPC-adjusted, \n(CI = ",CI_val,")       "),x=0.27,y=0.88,gp=gpar(fontsize=4))
-    grid.text(as.expression(bquote(alpha == 10)), x=0.52,y=0.905,gp=gpar(fontsize=4))
+    grid.text(paste0("GDPPC-adjusted, \n(CI = ",CI_val,")       "),x=0.30,y=0.86,gp=gpar(fontsize=4))
+    grid.text(as.expression(bquote(alpha == 10)), x=0.63,y=0.9,gp=gpar(fontsize=4))
     color <- "orange"
-    grid.text(text,x = unit(0,'npc')+unit(0.1,'lines'),y = unit(0,'npc')+unit(19,'lines'),gp = gpar(fontsize=6,fontface='bold'))
+    grid.text(text,x = unit(0,'npc')+unit(0.1,'lines'),y = unit(0,'npc')+unit(12,'lines'),gp = gpar(fontsize=6,fontface='bold'))
     }
   if (mechanism=="chepc_adj"){
     if (affordability_metric=='perdose_gdppc_percent'){
@@ -95,17 +99,17 @@ unaffordability_plot <- function(mechanism, spline_df_bilateral,
     if (affordability_metric=='perdose_chepc_percent'){
       text <- 'p)'
     }
-    grid.text(paste0("CHEPC-adjusted, \n(CI = ",CI_val,")       "),x=0.27,y=0.88,gp=gpar(fontsize=4))
-    grid.text(as.expression(bquote(alpha == 10)), x=0.52,y=0.905,gp=gpar(fontsize=4))
+    grid.text(paste0("CHEPC-adjusted, \n(CI = ",CI_val,")       "),x=0.30,y=0.86,gp=gpar(fontsize=4))
+    grid.text(as.expression(bquote(alpha == 10)), x=0.62,y=0.9,gp=gpar(fontsize=4))
     color <- "green"
-    grid.text(text,x = unit(0,'npc')+unit(0.1,'lines'),y = unit(0,'npc')+unit(19,'lines'),gp = gpar(fontsize=6,fontface='bold'))
+    grid.text(text,x = unit(0,'npc')+unit(0.1,'lines'),y = unit(0,'npc')+unit(12,'lines'),gp = gpar(fontsize=6,fontface='bold'))
    }
   
   # legend
   vax_0_box <- rectGrob(x = 0.05, y = 0.965, width = 0.025, height = 0.0125,
                         gp = gpar(col = "grey50", fill = "grey50", alpha=0.5, lty = 1, lwd=0.8))
   grid.draw(vax_0_box)
-  grid.text(paste0("Bilateral pricing (CI = ",CI_val_bilateral,")"), x=0.4,y=0.96,gp=gpar(fontsize=4))
+  grid.text(paste0("Bilateral pricing (CI = ",CI_val_bilateral,")"), x=0.41,y=0.96,gp=gpar(fontsize=4))
 
   x_line <- seq(min(log(x=bilateral[,wealth_measure],base=10)),
                 max(log(x=bilateral[,wealth_measure],base=10)),

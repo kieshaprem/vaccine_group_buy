@@ -12,7 +12,7 @@ oop_all_countries_2021 = oop_all_countries_2021[oop_all_countries_2021[,2]!=".."
 oop_all_countries_2021[,2] = as.numeric(oop_all_countries_2021[,2])
 
 
-asean_iso = vgb$`ISO3C Code`
+asean_iso = c(vgb$`ISO3C Code`,'TLS')
 
 max(log(x=oop_all_countries_2021[,2], base=2))
 min(log(x=oop_all_countries_2021[,2], base=2))
@@ -52,7 +52,7 @@ model_oops <- lm(log(x=OOP_2021,base=10)~log(x=GDP_2022,base=10), data = gdp_oop
 model_exp <- lm(log(x=EXP_2021,base=10)~log(x=GDP_2022,base=10), data = gdp_oop_exp)
 
 
-png(paste0("output/plots/plot_gdp_oop_exp_all.png"),height=8,width=12,units='cm',res=700,pointsize=10)
+png(paste0("output/plots/final_paper/plot_gdp_oop_exp_all.png"),height=8,width=12,units='cm',res=700,pointsize=10)
 if(1)
 {
   pushViewport(plotViewport(c(4,5,1,2),xscale=c(2,6),yscale=c(0,5)))#)NEW

@@ -15,29 +15,29 @@ get_prices_val <- function(df,measure){
   }
 
 get_psa_summary <- function(coverage){
-  price_filename <- paste0('output/intermediate/psa_mat_alpha_empirical_others.rdata')
+  price_filename <- 'output/intermediate/psa_mat_alpha_empirical_wassumption2.rdata'
   load(price_filename) # object name is psa_mat
   
   if (coverage == 'full'){
-    outcomes_filename <- paste0('output/intermediate/psa_outcomes_empirical_other.rdata')
+    outcomes_filename <- paste0('output/intermediate/psa_outcomes_empirical_wassumption2.rdata')
     load(outcomes_filename) #object name is full_outcome_base
     psa_outcomes_matrix <- full_outcome_base
   } else {
-    outcomes_filename <- paste0('output/intermediate/psa_outcomes_empirical_other_real.rdata')
+    outcomes_filename <- paste0('output/intermediate/psa_outcomes_empirical_wassumption2_real.rdata')
     load(outcomes_filename) #object name is real_outcome_base
     psa_outcomes_matrix <- real_outcome_base
   }
-  psa_mat <- psa_mat[1:4,]
-  psa_summary <- data.frame(array(dim=c(30,3)))
+  psa_mat <- psa_mat[1:5,]
+  psa_summary <- data.frame(array(dim=c(31,3)))
   rownames(psa_summary) <- c(rownames(psa_mat),rownames(psa_outcomes_matrix))
   colnames(psa_summary) <- c('2.5%','50%','97.5%')
   
   for (var in 1:length(rownames(psa_summary))){
     varname <-  rownames(psa_summary)[var]
-    if (var<=4){
+    if (var<=5){
       psa_summary[varname,] <- get_prices_val(psa_mat, measure = varname)
     } else {
-      psa_summary[varname,] <- get_prices_val(full_outcome_base, measure = varname)
+      psa_summary[varname,] <- get_prices_val(psa_outcomes_matrix, measure = varname)
     }
   }
   return(psa_summary)
@@ -72,10 +72,10 @@ get_psa_summary_country_level <- function(country_level_psa){
 
 get_country_level_psa_summary_all <- function(coverage){
   if (coverage == 'full'){
-    load('output/intermediate/psa_country_level_empirical_other.rdata')
+    load('output/intermediate/psa_country_level_empirical_other2.rdata')
   }
   if (coverage == 'real'){
-    load('output/intermediate/psa_country_level_empirical_other_real.rdata')
+    load('output/intermediate/psa_country_level_empirical_wassumption2_real.rdata')
   }
   bilateral_country_summary <- get_psa_summary_country_level(country_level_psa$bilateral)
   uniform_country_summary <- get_psa_summary_country_level(country_level_psa$uniform)

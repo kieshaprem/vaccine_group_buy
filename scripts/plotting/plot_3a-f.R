@@ -169,7 +169,7 @@ get_plot_3af_bilateral <- function(affordability_measure){
 
 get_plot_3af_fullpage <- function(coverage){
   png(paste0('output/plots/final_paper/equity/noother_fullpage_',coverage,'.png'),
-      height=24,width=18,res=600, units='cm',pointsize=8)
+      height=18,width=18,res=600, units='cm',pointsize=8)
   pushViewport(plotViewport(c(1,1,1,1)))
   pushViewport(viewport(layout=grid.layout(nrow=2,ncol=1)))
   

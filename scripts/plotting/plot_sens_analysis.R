@@ -5,7 +5,7 @@ percent_share <- function(){
                                  origin='iso3c',destination = 'iso2c')
   order_magnitude <- order_of_magnitude(max(percent_share_df[,'97.5%']))
   val_scale <- c(-1,ceiling(max(percent_share_df[,'97.5%'])/order_magnitude)*order_magnitude)
-  pushViewport(plotViewport(c(1,2,1,1),xscale=c(0.5,12.5),yscale=val_scale))
+  pushViewport(plotViewport(c(1,2,2,1),xscale=c(0.5,12.5),yscale=val_scale))
   grid.rect()
   
   # grid.yaxis(at=c(0,10,20,30,40,50,60), 
@@ -18,11 +18,7 @@ percent_share <- function(){
   grid.xaxis(at=seq(1,11), 
              label=c(bilateral$iso2c),gp=gpar(fontsize=6))
   
-  grid.text('g) Percentage share',x = unit(0,'npc')+unit(3.4,'lines'),
-            y = unit(0,'npc')+unit(61.3,'lines'),
-            gp = gpar(fontsize=6,fontface='bold'))
-  
-  for (i in 1:length(bilateral$Country)){
+    for (i in 1:length(bilateral$Country)){
     # gdppc_adj
     grid.lines(x=c(i,i),y=c(adj_gdppc_min$percent_share[i],
                             adj_gdppc_max$percent_share[i]),
@@ -39,9 +35,9 @@ percent_share <- function(){
     grid.points(seq(1,11), adj_gdppc$percent_share, default.units = "native",
                 gp=gpar(col="orange", cex=0.45,alpha=0.5),pch=16)
     
-    grid.text('GDPPC-adj',x = unit(0,'npc')+unit(4.5,'lines'),
-              y = unit(0,'npc')+unit(37,'lines'),
+      grid.text('GDPPC-adjusted',x=3,y=63,default.units = 'native',
               gp = gpar(fontsize=5))
+    
     grid.polygon(x = c(0.7,1,1,0.7),
                  y = c(62.7,62.7,63.2,63.2),
                  default.units = 'native',
@@ -65,8 +61,7 @@ percent_share <- function(){
     grid.points(seq(1.1,11.1), adj_chepc$percent_share, default.units = "native",
                 gp=gpar(col="green", cex=0.45,alpha=0.5),pch=16)
     
-    grid.text('CHEPC-adj',x = unit(0,'npc')+unit(4.5,'lines'),
-              y = unit(0,'npc')+unit(35.5,'lines'),
+    grid.text('CHEPC-adjusted',x=3,y=60.7,default.units = 'native',
               gp = gpar(fontsize=5))
     grid.polygon(x = c(0.7,1,1,0.7),
                  y = c(60.2,60.2,60.7,60.7),
@@ -84,7 +79,7 @@ percent_share <- function(){
                y = c(67.7,67.7,68.2,68.2),
                default.units = 'native',
                gp = gpar(col = 'grey50', fill = 'grey50'))
-  grid.text("Bilateral",x = unit(0,'npc')+unit(4.5,'lines'),y = unit(0,'npc')+unit(40,'lines'),
+  grid.text("Bilateral",x=2,y=68,default.units = 'native',
             gp = gpar(fontsize=5))
   
   
@@ -94,12 +89,16 @@ percent_share <- function(){
                y = c(65.2,65.2,65.7,65.7),
                default.units = 'native',
                gp = gpar(col = 'blue', fill = 'blue'))
-    grid.text("Uniform",x = unit(0,'npc')+unit(4.5,'lines'),y = unit(0,'npc')+unit(38.5,'lines'),
+    grid.text("Fixed",x=1.8,y=65.5,default.units = 'native',
             gp = gpar(fontsize=5))
-
-    grid.text("d) Percent share",x = unit(0,'npc')+unit(3,'lines'),
-              y = unit(0,'npc')+unit(26.8,'lines'),
+    
+    grid.text("g) ",x=0,y=75,default.units = 'native',
               gp = gpar(fontsize=8,fontface='bold'))  
+    
+    # grid.text("h) % Share (All pricing mechanisms)",x=10,y=75,default.units = 'native',
+    #           gp = gpar(fontsize=8,fontface='bold'))  
+    grid.text("% Share of Total Expenditure of SEA",x=-2,default.units = 'native',
+              rot = 90, gp = gpar(fontsize=8,fontface='bold'))  
   
   popViewport()
 }

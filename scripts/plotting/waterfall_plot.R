@@ -4,8 +4,7 @@ library(countrycode)
 
 waterfall_plot <- function(mechanism, dataset, affordability_metric){
   dataset$iso2c <- countrycode(dataset$iso3c, origin='iso3c', destination = 'iso2c')
-  pushViewport(plotViewport(c(1,3,2,1),xscale=c(0.5,11.5),yscale=c(0,50)))
-  grid.rect()
+  #grid.rect()
   
   if (mechanism == "bilateral"){
       # legend
@@ -30,8 +29,12 @@ waterfall_plot <- function(mechanism, dataset, affordability_metric){
     grid.text(paste0('Price of 1 dose'),x = unit(0,'npc')+unit(-4.2,'lines'),rot=90,
               gp = gpar(fontsize=6,fontface='bold',col = 'black'))
     
-    grid.text(paste0('% of ',affordability_metric_name),x = unit(0,'npc')+unit(7,'lines'),y = unit(0,'npc')+unit(22,'lines'),gp = gpar(fontsize=5))
+    grid.text(paste0('% of ',affordability_metric_name),x = unit(0,'npc')+unit(7,'lines'),rot=90,
+              y = unit(0,'npc')+unit(22,'lines'),gp = gpar(fontsize=5))
+    pushViewport(plotViewport(c(1,4,1,1),xscale=c(0.5,11.5),yscale=c(0,50)))
     
+  } else {
+    pushViewport(plotViewport(c(1,3,1,1),xscale=c(0.5,11.5),yscale=c(0,50)))
   }
   
   if (mechanism == "bilateral" & affordability_metric == 'perdose_gdppc_percent'){

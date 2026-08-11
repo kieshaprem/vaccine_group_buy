@@ -54,6 +54,7 @@ adj_chepc <- adj_chepc_output$calc_output
 compile_base_results(coverage = 'real')
 
 mode = 'output_psa'
+coverage = 'real'
 compile_psa_results('real')
 
 #################################################################################

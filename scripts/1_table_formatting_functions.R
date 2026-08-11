@@ -227,7 +227,7 @@ compile_psa_results <- function(coverage){
                                    bilateral_max = bilateral_sheet$third_q)
   write_xlsx(list('bilateral'=bilateral_sheet$ranges_sheet,'uniform'=uniform_sheet$ranges_sheet,
                   'adj_gdppc'=adj_gdppc_sheet$ranges_sheet,'adj_chepc'=adj_chepc_sheet$ranges_sheet),
-             path = paste0('output/final_output/',coverage,'_base_psa_empirical_quantiles_other_test_function.xlsx'))
+             path = paste0('output/final_output/',coverage,'_base_psa_empirical_quantiles_other_wassumption.xlsx'))
   
 }
 

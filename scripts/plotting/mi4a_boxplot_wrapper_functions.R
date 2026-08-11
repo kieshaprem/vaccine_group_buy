@@ -2,6 +2,7 @@ source('scripts/plotting/get_box_plot.R')
 source('scripts/plotting/general_helper_plotting_functions.R')
 
 plot_boxplot_price <- function(input_data, input_group_col, plot_name=NA){
+  print(plot_name)
   unique_x <- unique(input_data[,input_group_col])
   if (input_group_col=="Income.Group"){
     if (length(unique(input_data[,input_group_col]))==4){
@@ -36,8 +37,9 @@ plot_boxplot_price <- function(input_data, input_group_col, plot_name=NA){
  input_data <- get_selected_grp_order(data = input_data,
                                        group_col = input_group_col,
                                        desired_order = ordering)
-  if (plot_name=='LMIC'){
+  if (plot_name=='a) Lower-middle income countries'){
     y_axis_name = "Price per dose (US$)"
+    x_name <- ''
   } else {
     y_axis_name <- ''
     x_name <- ''
@@ -87,11 +89,13 @@ plot_compare_ig_procurementmech <- function(coverage){
   pushViewport(plotViewport(c(1,1,1,1)))
   pushViewport(viewport(layout=grid.layout(nrow=1,ncol=3)))
   income_grps <- c('LMIC','UMIC','HIC')
+  proper_names <- c('a) Lower-middle income countries','b) Upper-middle income countries',
+                    'c) High-income countries')
   for (column in (1:3)){
     curr_ig <- income_grps[column]
     ig_subdata <- covid_wpro_searo_numeric[covid_wpro_searo_numeric$Income.Group==curr_ig,]
     paneller_mi4a(income_grp = curr_ig,col = column, subdata = ig_subdata, 
-                  plot_name = paste0(prefix[column],curr_ig))
+                  plot_name = proper_names[column])
   }  
   dev.off()
 }

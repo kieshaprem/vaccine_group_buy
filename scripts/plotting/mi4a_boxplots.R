@@ -5,7 +5,7 @@ covid_wpro_searo <- vaccine_prices_updated[vaccine_prices_updated$Vaccine=='COVI
                                              vaccine_prices_updated$Region %in% c('SEARO','WPRO'),]
 covid_wpro_searo_noblanks <- covid_wpro_searo[covid_wpro_searo$Price.per.Dose.in.USD!="",]
 covid_wpro_searo_numeric <- make_price_numeric(covid_wpro_searo_noblanks)
-covid_wpro_searo_numeric[covid_wpro_searo_numeric$Procurement.Mechanism=='Other',]$Procurement.Mechanism <- 'Bilateral'
+#covid_wpro_searo_numeric[covid_wpro_searo_numeric$Procurement.Mechanism=='Other',]$Procurement.Mechanism <- 'Bilateral'
 
 hic_only <- covid_wpro_searo_numeric[covid_wpro_searo_numeric$Income.Group=='HIC',]
 umic_only <- covid_wpro_searo_numeric[covid_wpro_searo_numeric$Income.Group=='UMIC',]
