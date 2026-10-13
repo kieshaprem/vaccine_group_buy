@@ -1,6 +1,6 @@
 library(countrycode)
-source('scripts/function_format_table.R')
-source('scripts/1_helper_examine_psa_results.R')
+source('scripts/helper_format_table_all.R')
+source('scripts/helper_examine_psa_results.R')
 # ------------------------------------------------------------------------------
 # Function to compile results for base analysis, producing Table 2a-b 
 # in the Main Paper
@@ -16,7 +16,7 @@ compile_base_results <- function(coverage){
                                             mechanism = 'adj_chepc')
   write_xlsx(list('bilateral'=bilateral_sheet, 'uniform' = uniform_sheet,
                   'adj_gdppc'=adj_gdppc_sheet, 'adj_chepc' = adj_chepc_sheet),
-             path = paste0('output/final_output/base_analysis_empirical_other_',coverage,'.xlsx'))
+             path = paste0('output/final_output/base_analysis_',coverage,'.xlsx'))
 }
 
 # ------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ compile_psa_results <- function(coverage){
                                    bilateral_max = bilateral_sheet$third_q)
   write_xlsx(list('bilateral'=bilateral_sheet$ranges_sheet,'uniform'=uniform_sheet$ranges_sheet,
                   'adj_gdppc'=adj_gdppc_sheet$ranges_sheet,'adj_chepc'=adj_chepc_sheet$ranges_sheet),
-             path = paste0('output/final_output/',coverage,'_base_psa_empirical_quantiles_other_wassumption.xlsx'))
+             path = paste0('output/final_output/psa_analysis_',coverage,'.xlsx'))
   
 }
 
@@ -142,7 +142,7 @@ compile_sheet_alpha <- function(coverage){
                                            name = 'adj_chepc')
   
   write_xlsx(list('adj_gdppc'=adj_gdppc_sheet,'adj_chepc'=adj_chepc_sheet),
-             path = paste0('output/final_output/',coverage,'_others_base_alpha.xlsx'))
+             path = paste0('output/final_output/alpha_',coverage,'.xlsx'))
 }
 
 

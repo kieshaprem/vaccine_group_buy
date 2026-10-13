@@ -1,7 +1,8 @@
-source('scripts/1_helper_calculation_function.R')
-source('scripts/1_helper_examine_psa_results.R')
-source('scripts/1_table_formatting_functions.R')
-source('scripts/1_helper_run_scenarios.R')
+source('scripts/helper_calculation_function.R')
+source('scripts/helper_examine_psa_results.R')
+source('scripts/helper_format_table_all.R')
+source('scripts/helper_format_table_scenario.R')
+source('scripts/helper_run_scenarios.R')
 
 options(scipen=999)
 
@@ -29,7 +30,7 @@ load('output/final_output/adj_chepc_full_base.rdata')
 adj_chepc <- adj_chepc_output$calc_output
 
 compile_base_results(coverage = 'full')
-# produces output/final_output/base_analysis_empirical_other_full.xlsx
+# produces output/final_output/base_analysis_full.xlsx
 
 
 

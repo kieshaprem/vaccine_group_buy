@@ -1,7 +1,7 @@
 load('output/intermediate/main_data.rdata')
 source('scripts/0_process_calculations.R')
 source('scripts/0_load_mi4a_data.R')
-source('scripts/1_helper_get_prices.R')
+source('scripts/helper_get_prices.R')
 #source('scripts/1_examine_psa_results.R')
 
 library(dplyr)
@@ -118,15 +118,6 @@ get_overall_region_data <- function(dataset,bilateral_dataset=NA,
       new_row_2[col_id] <- round(sum(as.numeric(dataset$total_savings_perdose))*100/
                                    sum(as.numeric(bilateral_dataset$total_perdose)),2)
     } else {
-      # flipping the order so makes numerical sense
-      # if (psa_summary_index=='2.5%'){
-      #   psa_summary_index <- '97.5%'
-      # } else if (psa_summary_index=='97.5%'){
-      #   psa_summary_index <- '2.5%'
-      # } else {
-      #   psa_summary_index <- '50%'
-      # }
-      
       mechanism_name <- paste0('savings_',mechanism)
       new_row[col_id] <- psa_summary[mechanism_name,psa_summary_index]
       mechanism_name <- paste0('savings_',mechanism,'_percent')
