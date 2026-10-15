@@ -1,5 +1,10 @@
 library(grid)
 library(rineq)
+# if not done yet,# install econocharts)
+#install.packages("devtools")
+#devtools::install_github("R-CoderDotCom/econocharts")
+library(econocharts)
+
 source('scripts/plotting/waterfall_plot.R')
 source('scripts/plotting/5_unaffordability_index_plot.R')
 source('scripts/0_process_calculations.R')
@@ -168,7 +173,7 @@ get_plot_3af_bilateral <- function(affordability_measure){
 }
 
 get_plot_3af_fullpage <- function(coverage){
-  png(paste0('output/plots/final_paper/equity/noother_fullpage_',coverage,'.png'),
+  png(paste0('output/plots/final_paper/3ap_',coverage,'.png'),
       height=18,width=18,res=600, units='cm',pointsize=8)
   pushViewport(plotViewport(c(1,1,1,1)))
   pushViewport(viewport(layout=grid.layout(nrow=2,ncol=1)))

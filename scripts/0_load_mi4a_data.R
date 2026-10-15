@@ -82,4 +82,4 @@ wpro_lmic_prices <- get_vaccine_price_value(wpro_lmic)
 #                                             vaccine_prices_updated$Price.per.Dose.in.USD!="",]$Price.per.Dose.in.USD
 # wpro_searo_lmic_prices <- get_vaccine_price_value(wpro_searo_lmic)
 
-rm(vaccine_prices_bilateral,vaccine_prices_bilateral_base, vaccine_prices_updated, wpro_lmic)
+rm(vaccine_prices_bilateral,vaccine_prices_bilateral_base,wpro_lmic)

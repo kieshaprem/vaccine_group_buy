@@ -1,7 +1,5 @@
-#bilateral <- bilateral[order(-dataset$`GDP per capita (2022)`),]
 library(grid)
-library(econocharts)
-#png(paste0("output/plots/plot_unaffordability_index_bilateral.png"),height=8,width=8,units='cm',res=700,pointsize=10)
+
 unaffordability_plot <- function(mechanism, spline_df_bilateral, 
                                  spline_df_main, CI_val, CI_val_bilateral,
                                  affordability_metric){
@@ -13,11 +11,7 @@ unaffordability_plot <- function(mechanism, spline_df_bilateral,
                        expression(paste(10^"4.5")))
     y_axis_loc <- c(0,0.2,0.4,0.6,0.8,1)
     y_axis_labels <- c("0.0%","0.2%","0.4%","0.6%","0.8%","1.0%")
-    # chepc_spline_min <- spline_chepc_percent_gdppc_min
-    # chepc_spline_max <- spline_chepc_percent_gdppc_max
-    # gdppc_spline_min <- spline_gdppc_percent_gdppc_min
-    # gdppc_spline_max <- spline_gdppc_percent_gdppc_max
-  }
+    }
   
   if (affordability_metric=='perdose_chepc_percent'){
     wealth_measure <- 'chepc'
@@ -27,11 +21,7 @@ unaffordability_plot <- function(mechanism, spline_df_bilateral,
                        expression(paste(10^"3")))
     y_axis_loc <- c(0,10,20,30,40,50)
     y_axis_labels <- c("0%","10%","20%","30%","40%","50%")
-    # chepc_spline_min <- spline_chepc_percent_chepc_min
-    # chepc_spline_max <- spline_chepc_percent_chepc_max
-    # gdppc_spline_min <- spline_gdppc_percent_chepc_min
-    # gdppc_spline_max <- spline_gdppc_percent_chepc_max
-  }
+    }
   
   pushViewport(plotViewport(c(2,1,1,3),
                             xscale=c(min(log(x=bilateral[,wealth_measure],base=10)),
@@ -39,31 +29,20 @@ unaffordability_plot <- function(mechanism, spline_df_bilateral,
                             yscale=c(min(y_axis_loc),max(y_axis_loc))))
   
   if (mechanism=="bilateral"){
-       # grid.text(paste0('Price of 1 dose\nas % of ',affordability_metric_name),x = unit(0,'npc')+unit(-4.2,'lines'),rot=90,
-    #           gp = gpar(fontsize=6,fontface='bold',col = 'black'))
-    if (affordability_metric=='perdose_gdppc_percent'){
+        if (affordability_metric=='perdose_gdppc_percent'){
       text <- 'e)'
     }
     if (affordability_metric=='perdose_chepc_percent'){
       text <- 'm)'
     }
     grid.text(text,x = unit(0,'npc')+unit(0.1,'lines'),y = unit(0,'npc')+unit(12,'lines'),gp = gpar(fontsize=6,fontface='bold'))
-    #   } else {
-    # pushViewport(plotViewport(c(4,3,1,1),
-    #                           xscale=c(min(log(x=bilateral[,wealth_measure],base=10)),
-    #                                    max(log(x=bilateral[,wealth_measure],base=10))),
-    #                           yscale=c(min(y_axis_loc),max(y_axis_loc))))
-  }
+      }
 grid.xaxis(at=x_axis_loc,
            label=x_axis_labels,
            gp=gpar(fontsize=5))
   grid.yaxis(at=y_axis_loc,label = y_axis_labels,
              gp=gpar(fontsize=5),main = F)
    
-  # grid.text(paste0(affordability_metric_name,
-  #                  ' in 2023, log10 scale'),y = unit(0,'npc')+unit(-2.5,'lines'),
-  #           gp = gpar(fontsize=6,fontface='bold',col = 'black'))
-
   x_curve_bilateral <- spline_df_bilateral$x
   y_curve_bilateral<- spline_df_bilateral$y
   x_curve_main <- spline_df_main$x

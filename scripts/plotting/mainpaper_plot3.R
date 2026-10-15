@@ -3,8 +3,9 @@ source('scripts/plotting/5_unaffordability_index_plot.R')
 library(countrycode)
 library(grid)
 library(rineq)
+coverage = 'full'
 
-png(paste0('output/plots/final_paper/equity/noother_fullpage_',coverage,'.png'),
+png(paste0('output/plots/final_paper/3ap_',coverage,'.png'),
     height=18,width=18,res=600, units='cm',pointsize=8)
 grid.newpage()
 pushViewport(plotViewport(c(1,1,1,1)))

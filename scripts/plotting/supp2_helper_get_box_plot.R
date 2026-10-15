@@ -1,7 +1,9 @@
 library(grid)
 source('scripts/plotting/general_helper_plotting_functions.R')
 
-# get basic box plot
+# ------------------------------------------------------------------------------
+# Function to create a boxplot
+# ------------------------------------------------------------------------------
 get_box_plot <- function(data, group_col, val_col, y_axis_name, x_axis_name,
                          group_order_col, bar_colour, line_colour, y_factor, 
                          n_flag, plot_name){
@@ -9,24 +11,24 @@ get_box_plot <- function(data, group_col, val_col, y_axis_name, x_axis_name,
   order_magnitude <- order_of_magnitude(max(data[,val_col]))
   val_scale <- c(0,ceiling(max(data[,val_col])/order_magnitude)*order_magnitude)
   
+  # flag to determine whether to display sample size of not
   if (n_flag==TRUE){
     val_scale <- c(0,100)
   }
-
   n_points <- table(data[,group_col])
   group_terms <- unique(data[,group_col])
   if (n_flag==T){
-    group_terms_wn <- sapply(group_terms, function(x){paste0(x, "\nn=",n_points[x])})
+    group_terms_wn <- sapply(group_terms, function(x){paste0(x, "\nn=",
+                                                             n_points[x])})
   } else {
     group_terms_wn <- group_terms
   }
   x_scale_length <- length(group_terms)
   x_scale <- c(0.5,x_scale_length+0.5)
   
-  
   # Calculate dynamic spacing and offsets
   group_spacing <- 1  # Distance between group centers
-  box_width <- 0.2 * group_spacing  # Box width is 50% of spacing
+  box_width <- 0.2 * group_spacing  # Box width is 20% of spacing
   whisker_cap_width <- 0.15 * group_spacing  # Whisker cap width is 15% of spacing
   text_offset_x <- 0.425 * group_spacing  # Text offset from box center
   
@@ -40,17 +42,8 @@ get_box_plot <- function(data, group_col, val_col, y_axis_name, x_axis_name,
   y_axis_locations <- axisTicks(val_scale,log=FALSE)
   y_axis_labels <- sapply(y_axis_locations,function(x){get_formatted_number(x)})
 
-  #grid.xaxis(gp=gpar(fontsize=6,col='black'),at = c(0,seq(1:x_scale_length),x_scale_length+1),
-             #label = c(" ",group_terms_wn," "))
-  # Y AXIS
-  #if (!plot_name %in% c('b) UMIC','c) HIC')){
-    grid.yaxis(at = y_axis_locations, label = y_axis_labels, gp=gpar(fontsize=8,col='black'))
-  #}
-  # for (i in 1:length(y_axis_locations)){
-  #  grid.text(y_axis_labels[i],x=0.35,y=y_axis_locations[i], default.units = 'native',gp=gpar(fontsize=8))
-  # }
-  #grid.yaxis(gp=gpar(fontsize=8))
-  print(y_axis_name)
+  grid.yaxis(at = y_axis_locations, label = y_axis_labels, 
+             gp=gpar(fontsize=8,col='black'))
   grid.text(y_axis_name
             ,gp=gpar(fontsize=8,fontface='bold'),
             ,x = unit(0,'npc')+unit(-5,'lines'),
@@ -84,7 +77,8 @@ get_box_plot <- function(data, group_col, val_col, y_axis_name, x_axis_name,
                x = c(i-(whisker_cap_width),i+(whisker_cap_width)),
                      default.units = 'native',gp=gpar(col='black',lwd=1))
     grid.lines(y=c(upper_whisker,upper_whisker),
-               x = c(i-(whisker_cap_width),i+(whisker_cap_width)),default.units = 'native',gp=gpar(col='black',lwd=1))
+               x = c(i-(whisker_cap_width),i+(whisker_cap_width)),
+               default.units = 'native',gp=gpar(col='black',lwd=1))
     if (length(outliers)>0){
       grid.points(x=rep(i,length(outliers)),y=outliers,default.units='native',
                  gp=gpar(col='black',lwd=1,cex=0.4),pch = 16)

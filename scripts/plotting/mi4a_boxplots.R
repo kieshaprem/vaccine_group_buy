@@ -1,5 +1,5 @@
 source('scripts/0_load_mi4a_data.R')
-source('scripts/plotting/mi4a_boxplot_wrapper_functions.R')
+source('scripts/plotting/supp2_mi4a_boxplot_wrapper_functions.R')
 
 covid_wpro_searo <- vaccine_prices_updated[vaccine_prices_updated$Vaccine=='COVID-19' &
                                              vaccine_prices_updated$Region %in% c('SEARO','WPRO'),]
@@ -18,53 +18,41 @@ lmic_bilateral <- lmic_only[lmic_only$Procurement.Mechanism %in% c('Bilateral','
 
 bilateral_only <- covid_wpro_searo_numeric[covid_wpro_searo_numeric$Procurement.Mechanism=='Bilateral',]
 
+#lmic_covax <- lmic_only[lmic_only$Procurement.Mechanism=='Covax',]
+#umic_covax <- umic_only[umic_only$Procurement.Mechanism=='Covax',]
+#hic_covax <- hic_only[hic_only$Procurement.Mechanism=='Covax',]
 
-library(ggplot2)
-ggplot(bilateral_all_regions_numeric,
-       aes(x=Income.Group,y=Price.per.Dose.in.USD))+
-  geom_boxplot()
-boxplot(Price.per.Dose.in.USD~Income.Group,data = bilateral_all_regions_numeric)
-summary(bilateral_all_regions_numeric[bilateral_all_regions_numeric$Income.Group=='HIC',]$Price.per.Dose.in.USD)
-summary(bilateral_all_regions_numeric[bilateral_all_regions_numeric$Income.Group=='LIC',]$Price.per.Dose.in.USD)
-summary(bilateral_all_regions_numeric[bilateral_all_regions_numeric$Income.Group=='LMIC',]$Price.per.Dose.in.USD)
-summary(bilateral_all_regions_numeric[bilateral_all_regions_numeric$Income.Group=='UMIC',]$Price.per.Dose.in.USD)
-
-
-lmic_covax <- lmic_only[lmic_only$Procurement.Mechanism=='Covax',]
-umic_covax <- umic_only[umic_only$Procurement.Mechanism=='Covax',]
-hic_covax <- hic_only[hic_only$Procurement.Mechanism=='Covax',]
-
-all_covax <- covid_wpro_searo_numeric[covid_wpro_searo_numeric$Procurement.Mechanism=='Covax',]
-all_countries_covax <- unique(all_covax$Country.alias.2025) # 13 countries, 8 of which are LMICs
-unique(hic_bilateral[hic_bilateral$Country.alias.2025 %in% all_countries_covax,]$Country.alias.2025) 
-#all unique HICs which purchased the vaccine by bilateral also did so by Covax
-unique(lmic_bilateral[lmic_bilateral$Country.alias.2025 %in% all_countries_covax,]$Country.alias.2025) 
-#1 unique lmic which purchased the vaccine by bilateral also did so by Covax
-unique(umic_bilateral[umic_bilateral$Country.alias.2025 %in% all_countries_covax,]$Country.alias.2025) 
-#1 unique umic which purchased the vaccine by bilateral also did so by Covax
-
-all_regions_covax <-  vaccine_prices_updated[vaccine_prices_updated$Vaccine=='COVID-19' &
-                                               vaccine_prices_updated$Price.per.Dose.in.USD!='' &
-                                               vaccine_prices_updated$Procurement.Mechanism=='Covax',]
-all_regions_covax_numeric <- make_price_numeric(all_regions_covax)
-all_country_initials <- unique(vaccine_prices_updated$Country.alias.2025)
-for (i in (1:length(all_country_initials))){
-  all_ig <- all_regions_covax_numeric[all_regions_covax_numeric$Country.alias.2025==all_country_initials[i],]$Income.Group
-  if (length(unique(all_ig))>1){
-    print(paste0(">1 classification: ",all_country_initials[i]))
-  }
-} ## both are between LMIC & UMIC
-unique(all_regions_covax_numeric[all_regions_covax_numeric$Income.Group=='LIC',]$Country.alias.2025)
-unique(all_regions_covax_numeric[all_regions_covax_numeric$Income.Group=='LMIC',]$Country.alias.2025)
-unique(all_regions_covax_numeric[all_regions_covax_numeric$Income.Group=='UMIC',]$Country.alias.2025)
-#vaccine_prices_updated[vaccine_prices_updated$Country.alias.2025=='LMIC7252',]$Region
-View(vaccine_prices_updated[vaccine_prices_updated$Country.alias.2025=='UMIC7347',]) #wpro
-View(covid_wpro_searo_numeric[covid_wpro_searo_numeric$Country.alias.2025=='UMIC7347',])
-
-vaccine_prices_all <- vaccine_prices_updated[vaccine_prices_updated$Price.per.Dose.in.USD!='' &
-                                               vaccine_prices_updated$Vaccine=='COVID-19',]
-vaccine_prices_all <- make_price_numeric(vaccine_prices_all)
-vaccine_prices_all <- vaccine_prices_all[!is.na(vaccine_prices_all$Price.per.Dose.in.USD),]
+# all_covax <- covid_wpro_searo_numeric[covid_wpro_searo_numeric$Procurement.Mechanism=='Covax',]
+# all_countries_covax <- unique(all_covax$Country.alias.2025) # 13 countries, 8 of which are LMICs
+# unique(hic_bilateral[hic_bilateral$Country.alias.2025 %in% all_countries_covax,]$Country.alias.2025) 
+# #all unique HICs which purchased the vaccine by bilateral also did so by Covax
+# unique(lmic_bilateral[lmic_bilateral$Country.alias.2025 %in% all_countries_covax,]$Country.alias.2025) 
+# #1 unique lmic which purchased the vaccine by bilateral also did so by Covax
+# unique(umic_bilateral[umic_bilateral$Country.alias.2025 %in% all_countries_covax,]$Country.alias.2025) 
+# #1 unique umic which purchased the vaccine by bilateral also did so by Covax
+# 
+# all_regions_covax <-  vaccine_prices_updated[vaccine_prices_updated$Vaccine=='COVID-19' &
+#                                                vaccine_prices_updated$Price.per.Dose.in.USD!='' &
+#                                                vaccine_prices_updated$Procurement.Mechanism=='Covax',]
+# all_regions_covax_numeric <- make_price_numeric(all_regions_covax)
+# all_country_initials <- unique(vaccine_prices_updated$Country.alias.2025)
+# for (i in (1:length(all_country_initials))){
+#   all_ig <- all_regions_covax_numeric[all_regions_covax_numeric$Country.alias.2025==all_country_initials[i],]$Income.Group
+#   if (length(unique(all_ig))>1){
+#     print(paste0(">1 classification: ",all_country_initials[i]))
+#   }
+# } ## both are between LMIC & UMIC
+# unique(all_regions_covax_numeric[all_regions_covax_numeric$Income.Group=='LIC',]$Country.alias.2025)
+# unique(all_regions_covax_numeric[all_regions_covax_numeric$Income.Group=='LMIC',]$Country.alias.2025)
+# unique(all_regions_covax_numeric[all_regions_covax_numeric$Income.Group=='UMIC',]$Country.alias.2025)
+# #vaccine_prices_updated[vaccine_prices_updated$Country.alias.2025=='LMIC7252',]$Region
+# View(vaccine_prices_updated[vaccine_prices_updated$Country.alias.2025=='UMIC7347',]) #wpro
+# View(covid_wpro_searo_numeric[covid_wpro_searo_numeric$Country.alias.2025=='UMIC7347',])
+# 
+# vaccine_prices_all <- vaccine_prices_updated[vaccine_prices_updated$Price.per.Dose.in.USD!='' &
+#                                                vaccine_prices_updated$Vaccine=='COVID-19',]
+# vaccine_prices_all <- make_price_numeric(vaccine_prices_all)
+# vaccine_prices_all <- vaccine_prices_all[!is.na(vaccine_prices_all$Price.per.Dose.in.USD),]
 ## WPRO & SEARO ################################################################
 
 plot_boxplot_price(filename = 'incomegrponly',input_data = covid_wpro_searo_numeric,
@@ -121,14 +109,10 @@ wrapper_2layer(filename = 'incomegrp_manufacturer',base_var = 'Income.Group',
 wrapper_2layer(filename = 'incomegrp_procurementmech',base_var = 'Income.Group',
                input_data = covid_wpro_searo_numeric,input_group_col = 'Procurement.Mechanism')
 
-
-
 wrapper_2layer(filename = 'ig_manuf_all',base_var = 'Income.Group',
                input_data = vaccine_prices_all,input_group_col = 'Manufacturer')
 wrapper_2layer(filename = 'ig_procure_all',base_var = 'Income.Group',
                input_data = vaccine_prices_all,input_group_col = 'Procurement.Mechanism')
-
-
 
 
 wrapper_2layer(filename = 'manufacturer_procurementmech',base_var = 'Manufacturer',
@@ -138,7 +122,6 @@ wrapper_3layer(filename = 'incomegrp_procurement_manufacturer',
               first_var = 'Income.Group',second_var = 'Procurement.Mechanism',
               input_data = covid_wpro_searo_numeric, input_group_col = 'Manufacturer')
 
-plot_compare_ig_procurementmech('full')
 
 
 

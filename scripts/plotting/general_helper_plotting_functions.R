@@ -28,6 +28,12 @@ order_of_magnitude <- function(x) {
   return(10^magnitude)
 }
 
+get_formatted_number_millions <- function(x,others=NA){
+  options(scipen=999)
+  output_text <- paste0(x/1e6,'M')
+  return (prettyNum(output_text, big.mark = ",", preserve.width = "none",nsmall=2))
+}
+
 get_formatted_number <- function(x,others=NA){
   options(scipen=999)
   order_magnitude <- order_of_magnitude(x)

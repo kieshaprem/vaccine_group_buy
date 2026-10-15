@@ -4,8 +4,7 @@ library(countrycode)
 
 waterfall_plot <- function(mechanism, dataset, affordability_metric){
   dataset$iso2c <- countrycode(dataset$iso3c, origin='iso3c', destination = 'iso2c')
-  #grid.rect()
-  
+
   if (mechanism == "bilateral"){
       # legend
     grid.polygon(x = c(1.2,1.6,1.6,1.2),
@@ -71,8 +70,7 @@ waterfall_plot <- function(mechanism, dataset, affordability_metric){
     grid.text(paste0('l)'),x = unit(0,'npc')+unit(0.1,'lines'),y = unit(0,'npc')+unit(20,'lines'),gp = gpar(fontsize=6,fontface='bold'))
   }
   
-  #grid.text(paste0('ASEAN Countries ordered by GDP per capita'),x = unit(0,'npc')+unit(7.9,'lines'),y = unit(0,'npc')+unit(-2.8,'lines'),gp = gpar(fontsize=6,fontface='bold'))
-   
+
   # bar chart
   for (i in (1:11)){
     grid.polygon(x = c(i+c(-0.4,0.4),rev(i+c(-0.4,0.4))),
@@ -86,12 +84,7 @@ waterfall_plot <- function(mechanism, dataset, affordability_metric){
     grid.yaxis(at=c(0,10,20,30,40,50), 
                label=c("0.0%","0.2%","0.4%","0.6%","0.8%","1.0%"),gp=gpar(fontsize=5),main=FALSE)
   }
-  # if (affordability_metric=='perdose_gov_exp_percent'){
-  #   y_vals <- dataset[,affordability_metric]*0.3764531
-  #   grid.yaxis(at=c(0,15,30,45,60), 
-  #              label=c("0%","40%","80%","120%","160%"),gp=gpar(fontsize=5),main=FALSE)
-  # }
-  if (affordability_metric=='perdose_chepc_percent'){
+   if (affordability_metric=='perdose_chepc_percent'){
     y_vals <- dataset[,affordability_metric]
     grid.yaxis(at=c(0,10,20,30,40,50), 
                label=c("0%","10%","20%","30%","40%","50%"),gp=gpar(fontsize=5),main=FALSE)

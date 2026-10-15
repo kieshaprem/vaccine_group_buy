@@ -18,20 +18,13 @@ percent_share <- function(){
   grid.xaxis(at=seq(1,11), 
              label=c(bilateral$iso2c),gp=gpar(fontsize=6))
   
-    for (i in 1:length(bilateral$Country)){
+    for (i in 1:nrow(bilateral)){
+      print(i)
     # gdppc_adj
     grid.lines(x=c(i,i),y=c(adj_gdppc_min$percent_share[i],
                             adj_gdppc_max$percent_share[i]),
                gp=gpar(col="orange",lwd=1),
                default.units = 'native')
-    # grid.lines(x=c(i-0.1,i+0.1),y=c(adj_gdppc_min$percent_share[i],
-    #                                   adj_gdppc_min$percent_share[i]),
-    #            gp=gpar(col="orange",lwd=1),
-    #            default.units = 'native')
-    # grid.lines(x=c(i-0.1,i+0.1),y=c(adj_gdppc_max$percent_share[i],
-    #                                   adj_gdppc_max$percent_share[i]),
-    #            gp=gpar(col="orange",lwd=1),
-    #            default.units = 'native')
     grid.points(seq(1,11), adj_gdppc$percent_share, default.units = "native",
                 gp=gpar(col="orange", cex=0.45,alpha=0.5),pch=16)
     
@@ -49,15 +42,6 @@ percent_share <- function(){
                gp=gpar(col="green",lwd=1),
                default.units = 'native')
     
-    # grid.lines(x=c(i,i+0.2),y=c(adj_chepc_min$percent_share[i],
-    #                             adj_chepc_min$percent_share[i]),
-    #            gp=gpar(col="green",lwd=1),
-    #            default.units = 'native')
-    # grid.lines(x=c(i,i+0.2),y=c(adj_chepc_max$percent_share[i],
-    #                             adj_chepc_max$percent_share[i]),
-    #            gp=gpar(col="green",lwd=1),
-    #            default.units = 'native')
-    # 
     grid.points(seq(1.1,11.1), adj_chepc$percent_share, default.units = "native",
                 gp=gpar(col="green", cex=0.45,alpha=0.5),pch=16)
     
@@ -70,6 +54,7 @@ percent_share <- function(){
     grid.lines(x=c(i+0.15,i+0.15), y =c(percent_share_df[i,'2.5%'],
                                         percent_share_df[i,'97.5%']),default.units = "native",
                 gp=gpar(col="grey50", cex=0.45,alpha=0.5))
+    print(paste0('i at the end: ',i))
      }
   
   grid.points(seq(1.15,11.15), percent_share_df[,'50%'], default.units = "native",

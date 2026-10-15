@@ -21,11 +21,11 @@ get_adjusted_price <- function(relative_country_income,p_min,alpha){
   return(round(p_min*(1+alpha*relative_country_income),2))
 }
 
-# calculate savings per dose
-# get_savings_per_dose <- function(alternate_pricing_df, bilateral_pricing_df){
-#   alternate_pricing_df$savings_perdose <- bilateral_pricing_df$perdose - alternate_pricing_df$perdose
-#   return(alternate_pricing_df)
-# }
+# calculate savings per dose; used for plots
+get_savings_per_dose <- function(alternate_pricing_df, bilateral_pricing_df){
+  alternate_pricing_df$savings_perdose <- bilateral_pricing_df$perdose - alternate_pricing_df$perdose
+  return(alternate_pricing_df)
+}
 
 # run calculations for expenditure & savings of the region, 
 # and % share of each country

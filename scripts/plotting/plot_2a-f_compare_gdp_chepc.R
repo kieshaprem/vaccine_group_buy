@@ -29,7 +29,7 @@ paneller_compare=function(row,plot_type,price_adjustment=NA,col)
 
 
 plot_compare_gdp_chepc_3rows <- function(coverage){
-  png(paste0('output/plots/final_paper/country_expenditure/complete_',coverage,'.png'),
+  png(paste0('output/plots/final_paper/2ag_',coverage,'.png'),
       height=18,width=18,res=600, units='cm',pointsize=10)
   pushViewport(plotViewport(c(1,1,1,1)))
   pushViewport(viewport(layout=grid.layout(nrow=3,ncol=3)))
