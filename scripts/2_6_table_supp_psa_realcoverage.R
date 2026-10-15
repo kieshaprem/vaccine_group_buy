@@ -12,4 +12,4 @@ options(scipen=999)
 # CHE per capita scenarios, applying real vaccination coverage
 # ------------------------------------------------------------------------------
 compile_psa_results('real')
-# produces output/final_output/psa_analysis_real.xlsx
+# produces output/tables/compiled/psa_analysis_real.xlsx

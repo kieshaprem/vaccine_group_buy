@@ -17,16 +17,16 @@ run_scenario(coverage = 'full',mode = 'base')
 # adj_gdppc_full_base.rdata
 # adj_chepc_full_base.rdata
 
-load('output/final_output/bilateral_full_base.rdata')
+load('output/tables/specific/bilateral_full_base.rdata')
 bilateral <- bilateral_output$calc_output
 
-load('output/final_output/uniform_full_base.rdata')
+load('output/tables/specific/uniform_full_base.rdata')
 uniform <- uniform_output$calc_output
 
-load('output/final_output/adj_gdppc_full_base.rdata')
+load('output/tables/specific/adj_gdppc_full_base.rdata')
 adj_gdppc <- adj_gdppc_output$calc_output
 
-load('output/final_output/adj_chepc_full_base.rdata')
+load('output/tables/specific/adj_chepc_full_base.rdata')
 adj_chepc <- adj_chepc_output$calc_output
 
 compile_base_results(coverage = 'full')

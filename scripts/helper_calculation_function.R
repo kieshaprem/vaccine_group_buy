@@ -8,11 +8,10 @@ library(dplyr)
 library(countrycode)
 library(writexl)
 
-# objective:
-# 0. select mechanism (bilateral, uniform, or tiered), coverage (100% or real) & mode (base or PSA)
-# 1. get df for mechanism with all calculated values
-# 2. output table in pretty format
-
+# ------------------------------------------------------------------------------
+# Function returns df with price values according to specific mechanism.
+# If in PSA mode (psa_summary_index!=NA), reads in price values from psa_mat
+# ------------------------------------------------------------------------------
 get_prices <- function(mechanism, mode, psa_number = NA, psa_summary = NA,
                        psa_summary_index = NA, alpha = NA){
   df <- main_data
@@ -40,6 +39,10 @@ get_prices <- function(mechanism, mode, psa_number = NA, psa_summary = NA,
   return(prices)
 }
 
+# ------------------------------------------------------------------------------
+# Function is a wrapper for functions to run calculations on expenditure, savings,
+# and percent share based on selected coverage and pricing mechanism
+# ------------------------------------------------------------------------------
 calc <- function(df,coverage,comparator,mechanism){
   if (coverage == 'full'){
     # input pop_covered = pop_size
@@ -56,6 +59,23 @@ calc <- function(df,coverage,comparator,mechanism){
   return (df)
 }
 
+# ------------------------------------------------------------------------------
+# Function retrieves values from country_level_psa_summary for 95% UI ranges on
+# expenditure, savings and % share
+# ------------------------------------------------------------------------------
+
+# to extract % share ranges from country_level_psa_summary
+get_data <- function(summary_df, psa_index, data_type){
+  row_id <- which(sapply(rownames(summary_df),function(x){substr(x,5,nchar(x))})==data_type)
+  return(summary_df[row_id,psa_index])
+}
+
+
+# ------------------------------------------------------------------------------
+# Function is a wrapper for functions to select price and run calculations on 
+# expenditure, savings,and percent share based on selected coverage and 
+# pricing mechanism
+# ------------------------------------------------------------------------------
 prices_calc <- function(mechanism, coverage, mode, comparator = NA, psa_number=NA, psa_summary = NA,
                         psa_summary_index = NA, psa_country_level_summary=NA,alpha=10){
     prices <- get_prices(mechanism = mechanism, mode = mode, psa_number = psa_number,
@@ -77,12 +97,11 @@ prices_calc <- function(mechanism, coverage, mode, comparator = NA, psa_number=N
     return (output)
 }
 
-# to extract % share ranges from country_level_psa_summary
-get_data <- function(summary_df, psa_index, data_type){
-  row_id <- which(sapply(rownames(summary_df),function(x){substr(x,5,nchar(x))})==data_type)
-  return(summary_df[row_id,psa_index])
-}
 
+# ------------------------------------------------------------------------------
+# Function calculates total expenditure, total savings in expenditure and 
+# % savings in expenditure to be displayed in table
+# ------------------------------------------------------------------------------
 
 # get regional data
 get_overall_region_data <- function(dataset,bilateral_dataset=NA,

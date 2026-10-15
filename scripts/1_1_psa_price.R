@@ -16,38 +16,59 @@ for (i in (1:10000)){
   
   hic_i <- sample(hic_prices, 1, replace = TRUE)
   psa_mat[rownames(psa_mat)=='HIC',i] <- hic_i
+  
+  # apply assumption that UMIC price < HIC price
   umic_distribution <- umic_prices[umic_prices<hic_i]
   if (length(umic_distribution)>1){
     umic_i <- sample(umic_distribution, 1, replace = TRUE)
   } else {
         diff <- base_hic - base_umic
+        # if sampled HIC price is low and no possible value from 
+        # empirical distribution of UMIC price is available,
+        # apply the proportion of value difference b/w
+        # HIC and UMIC, then scale using sampled HIC price
         umic_i <- round(hic_i-hic_i*diff/base_hic,2)
   }
   psa_mat[rownames(psa_mat)=='UMIC',i] <- umic_i
   
+  # apply assumption that LMIC price < UMIC price
   lmic_distribution <- lmic_prices[which(lmic_prices<umic_i)]
   if (length(lmic_distribution)>1){
     lmic_i <- sample(lmic_distribution, 1, replace = TRUE)
   } else {
     diff <- base_umic - base_lmic
+    # if sampled UMIC price is low and no possible value from 
+    # empirical distribution of LMIC price is available,
+    # apply the proportion of value difference b/w
+    # UMIC and LMIC, then scale using sampled UMIC price
     lmic_i <- round(umic_i-umic_i*diff/base_umic,2)
   }
   psa_mat[rownames(psa_mat)=='LMIC',i] <- lmic_i
   
+  # apply assumption that uniform price < LMIC price
   uniform_distribution <- wpro_lmic_prices[which(wpro_lmic_prices<lmic_i)]
   if (length(uniform_distribution)>1){
     uniform_i <- sample(uniform_distribution, 1, replace = TRUE)
   } else {
     diff <- base_lmic - base_uniform
+    # if sampled LMIC price is low and no possible value from 
+    # empirical distribution for uniform price is available,
+    # apply the proportion of value difference b/w
+    # LMIC and uniform price, then scale using sampled LMIC price
     uniform_i <- round(lmic_i-lmic_i*diff/base_lmic,2)
   }
   psa_mat[rownames(psa_mat)=='Uniform',i] <- uniform_i
   
+  # apply assumption that Pmin < uniform price
   adj_distribution <- wpro_lmic_prices[which(wpro_lmic_prices<uniform_i)]
   if (length(adj_distribution)>1){
     adj_i <- sample(adj_distribution, 1, replace = TRUE)
   } else {
         diff <- base_uniform - base_pmin
+        # if sampled uniform price is low and no possible value from 
+        # empirical distribution for Pmin is available,
+        # apply the proportion of value difference b/w
+        # uniform price and Pmin, then scale using sampled uniform price
         adj_i <- round(uniform_i-uniform_i*diff/base_uniform,2)
   }
   psa_mat[rownames(psa_mat)=='Pmin',i] <- adj_i

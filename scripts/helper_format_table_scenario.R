@@ -16,7 +16,7 @@ compile_base_results <- function(coverage){
                                             mechanism = 'adj_chepc')
   write_xlsx(list('bilateral'=bilateral_sheet, 'uniform' = uniform_sheet,
                   'adj_gdppc'=adj_gdppc_sheet, 'adj_chepc' = adj_chepc_sheet),
-             path = paste0('output/final_output/base_analysis_',coverage,'.xlsx'))
+             path = paste0('output/tables/compiled/base_analysis_',coverage,'.xlsx'))
 }
 
 # ------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ compile_psa_results <- function(coverage){
                                    bilateral_max = bilateral_sheet$third_q)
   write_xlsx(list('bilateral'=bilateral_sheet$ranges_sheet,'uniform'=uniform_sheet$ranges_sheet,
                   'adj_gdppc'=adj_gdppc_sheet$ranges_sheet,'adj_chepc'=adj_chepc_sheet$ranges_sheet),
-             path = paste0('output/final_output/psa_analysis_',coverage,'.xlsx'))
+             path = paste0('output/tables/compiled/psa_analysis_',coverage,'.xlsx'))
   
 }
 
@@ -142,7 +142,7 @@ compile_sheet_alpha <- function(coverage){
                                            name = 'adj_chepc')
   
   write_xlsx(list('adj_gdppc'=adj_gdppc_sheet,'adj_chepc'=adj_chepc_sheet),
-             path = paste0('output/final_output/alpha_',coverage,'.xlsx'))
+             path = paste0('output/tables/compiled/alpha_',coverage,'.xlsx'))
 }
 
 

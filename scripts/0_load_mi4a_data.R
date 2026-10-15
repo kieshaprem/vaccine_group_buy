@@ -1,3 +1,21 @@
+# ------------------------------------------------------------------------------
+# The script reads prices from MI4A database and extracts relevant price for
+# COVID-19 vaccination under each required category:
+# HIC, UMIC, LMIC prices for WPRO & SEARO under bilateral mechanism
+# LMIC prices for WPRO (for uniform pricing)
+# ------------------------------------------------------------------------------
+# Input: 
+# data/who-mi4a-dataset-final-september-2025(Vaccine purchase database).csv
+# ------------------------------------------------------------------------------
+# Output: 
+## Used in base analysis for bilateral mechanism: 
+### hic_prices_bilateral, umic_prices_bilateral, lmic_prices_bilateral
+## Used in PSA for bilateral mechanism: 
+### hic_prices, umic_prices, lmic_prices
+## Used in  both base analysis and PSA for uniform and tiered pricing:
+### wpro_lmic_prices
+# ------------------------------------------------------------------------------
+
 source('scripts/0_process_calculations.R')
 
 # recoding manufacturer names to short form
@@ -57,11 +75,11 @@ wpro_lmic <- vaccine_prices_updated[vaccine_prices_updated$Region=='WPRO' &
                                       vaccine_prices_updated$Vaccine=='COVID-19' &
                                       vaccine_prices_updated$Price.per.Dose.in.USD!="",]$Price.per.Dose.in.USD
 wpro_lmic_prices <- get_vaccine_price_value(wpro_lmic)
+# 
+# wpro_searo_lmic <- vaccine_prices_updated[vaccine_prices_updated$Region %in% c("WPRO","SEARO") & 
+#                                             vaccine_prices_updated$Income.Group=="LMIC" &
+#                                             vaccine_prices_updated$Vaccine=='COVID-19' &
+#                                             vaccine_prices_updated$Price.per.Dose.in.USD!="",]$Price.per.Dose.in.USD
+# wpro_searo_lmic_prices <- get_vaccine_price_value(wpro_searo_lmic)
 
-wpro_searo_lmic <- vaccine_prices_updated[vaccine_prices_updated$Region %in% c("WPRO","SEARO") & 
-                                            vaccine_prices_updated$Income.Group=="LMIC" &
-                                            vaccine_prices_updated$Vaccine=='COVID-19' &
-                                            vaccine_prices_updated$Price.per.Dose.in.USD!="",]$Price.per.Dose.in.USD
-wpro_searo_lmic_prices <- get_vaccine_price_value(wpro_searo_lmic)
-
-rm(vaccine_prices_bilateral,wpro_lmic,wpro_searo_lmic)
+rm(vaccine_prices_bilateral,vaccine_prices_bilateral_base, vaccine_prices_updated, wpro_lmic)
