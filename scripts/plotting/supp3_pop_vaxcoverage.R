@@ -42,7 +42,7 @@ text_offset_x <- 0.425 * group_spacing  # Text offset from box center
 
 library(grid)
 
-png(paste0('output/plots/final_paper/supp3_pop_covered.png'),
+png(paste0('output/plots/supp3_pop_covered.png'),
   height=10,width=10,res=300, units='cm',pointsize=10)
 grid.newpage()
 pushViewport(plotViewport(c(2,5,2,4),xscale=x_scale,yscale=val_scale))

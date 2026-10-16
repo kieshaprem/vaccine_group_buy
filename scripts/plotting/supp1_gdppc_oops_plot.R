@@ -52,7 +52,7 @@ model_exp <- lm(log(x=EXP_2021,base=10)~log(x=GDP_2022,base=10),
                 data = gdp_oop_exp)
 
 
-png("output/plots/final_paper/supp1_gdp_oops_che_all.png",height=8,width=12,
+png("output/plots/supp1_gdp_oops_che_all.png",height=8,width=12,
     units='cm',res=700,pointsize=10)
 if(1)
 {

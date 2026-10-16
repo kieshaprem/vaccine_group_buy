@@ -32,7 +32,6 @@ get_box_plot <- function(data, group_col, val_col, y_axis_name, x_axis_name,
   whisker_cap_width <- 0.15 * group_spacing  # Whisker cap width is 15% of spacing
   text_offset_x <- 0.425 * group_spacing  # Text offset from box center
   
-  cat(val_scale[2])
   pushViewport(plotViewport(c(2,4,1,1),xscale=x_scale,yscale=val_scale))
   # X AXIS
   for (i in 1:x_scale_length){
