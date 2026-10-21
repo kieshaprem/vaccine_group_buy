@@ -1,15 +1,15 @@
 # Helper script that runs additional data needed for Main paper plot 2
-source('scripts/plotting/mainpaper_plot2_helper.R')
+source('scripts/4_plotting/mainpaper_plot2_helper.R')
 
 # Scripts for plotting functions relevant to each panel
 # Function name: watervolume_volume_per_dose
-source('scripts/plotting/mainpaper_plot2a-c.R') 
+source('scripts/4_plotting/mainpaper_plot2a-c.R') 
 # Function name: watervolume_volume_total_per_dose
-source('scripts/plotting/mainpaper_plot2d-f.R')
+source('scripts/4_plotting/mainpaper_plot2d-f.R')
 # Function name: percent_share
-source('scripts/plotting/mainpaper_plot2g.R')
+source('scripts/4_plotting/mainpaper_plot2g.R')
 # Function name: get_exp_across
-source('scripts/plotting/mainpaper_plot2h.R')
+source('scripts/4_plotting/mainpaper_plot2h.R')
 
 # Create plot
 library(grid)

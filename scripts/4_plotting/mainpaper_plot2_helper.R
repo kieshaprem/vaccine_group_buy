@@ -1,4 +1,4 @@
-# Script runs code to load additional datasets needed for Figure 2 in Main Paper
+# Script runs code to load additional datasets needed for Figure  in Main Paper
 
 # ------------------------------------------------------------------------------
 # For 2a-c 
@@ -53,8 +53,8 @@ adj_chepc_max <- adj_chepc_output$calc_output
 # For 2h: Comparing the region's total expenditure across all pricing mechanisms
 # accounting for uncertainty in vaccine price per dose
 # ------------------------------------------------------------------------------
-source('scripts/helper_format_table_scenario.R')
-source('scripts/helper_calculation_function.R')
+source('scripts/0_helper_functions/helper_format_table_scenario.R')
+source('scripts/0_helper_functions/helper_calculation_function.R')
 
 # Get df for summarised regional outcomes
 outcomes_summary <- get_psa_summary('full')

@@ -4,7 +4,7 @@
 # Read in data for plotting
 # ------------------------------------------------------------------------------
 library(countrycode)
-source('scripts/plotting/general_helper_plotting_functions.R')
+source('scripts/4_plotting/helper_plotting.R')
 load('output/intermediate/main_data.rdata')
 
 data = main_data[,c('iso3c','population_size','coverage_covid_1dose_percent')]

@@ -1,4 +1,4 @@
-source('scripts/0_load_mi4a_data.R')
+source('scripts/1_data_preparation/get_mi4a_data.R')
 load( 'output/intermediate/psa_price_base.rdata')
 
 

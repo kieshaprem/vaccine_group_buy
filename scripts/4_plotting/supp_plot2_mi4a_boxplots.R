@@ -3,12 +3,11 @@
 # ------------------------------------------------------------------------------
 # Read in data for plotting
 # ------------------------------------------------------------------------------
-source('scripts/0_load_mi4a_data.R')
-source('scripts/plotting/supp2_helper_get_box_plot.R')
+source('scripts/1_data_preparation/get_mi4a_data.R')
+source('scripts/4_plotting/helper_boxplot.R')
 
-covid_wpro_searo <- vaccine_prices_updated[vaccine_prices_updated$Vaccine=='COVID-19' &
-                                             vaccine_prices_updated$Region %in% 
-                                             c('SEARO','WPRO'),]
+covid_wpro_searo <- vax_prices[vax_prices$Vaccine=='COVID-19' &
+                                vax_prices$Region %in% c('SEARO','WPRO'),]
 covid_wpro_searo_noblanks <- covid_wpro_searo[covid_wpro_searo$Price.per.Dose.in.USD!="",]
 covid_wpro_searo_numeric <- make_price_numeric(covid_wpro_searo_noblanks)
 

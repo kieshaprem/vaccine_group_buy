@@ -1,6 +1,6 @@
 library(countrycode)
-source('scripts/helper_format_table_all.R')
-source('scripts/helper_examine_psa_results.R')
+source('scripts/0_helper_functions/helper_format_table_all.R')
+source('scripts/0_helper_functions/helper_examine_psa_results.R')
 # ------------------------------------------------------------------------------
 # Function to compile results for base analysis, producing Table 2a-b 
 # in the Main Paper

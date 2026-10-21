@@ -62,17 +62,6 @@ main_data <- merge(main_data, vax_coverage, by.x = 'Country.Name', by.y='Country
 main_data <- main_data[,-1]
 main_data <- main_data[order(main_data$gdppc),]
 
-# 
-# # GHE per capita
-# # ghepc <- read.csv('data/API_SH.XPD.GHED.PC.CD_DS2_en_csv_v2_8655/API_SH.XPD.GHED.PC.CD_DS2_en_csv_v2_8655.csv',skip=4)
-# # sea_ghepc <- ghepc[ghepc$Country.Code %in% main_data$iso3c,]
-# # sea_ghepc <- ghepc[,c('Country.Code','X2023')]
-# # names(sea_ghepc)[2] <- 'ghepc'
-# # main_data <- merge(main_data,sea_ghepc,by.x = 'iso3c',by.y = 'Country.Code')
-# 
-# # order so it looks nice
-# main_data <- main_data[,c(1,6,2:5,12,7:(ncol(main_data)-1))]
-
 save(main_data, file = 'output/intermediate/main_data.rdata')
 rm(chepc,gdp_2023,income_grp_database,pop_2023,sea_gdp_2023,
    sea_income_grp,sea_pop_2023,vax_coverage)

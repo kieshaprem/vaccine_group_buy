@@ -1,8 +1,8 @@
 load('output/intermediate/main_data.rdata')
-source('scripts/0_process_calculations.R')
-source('scripts/0_load_mi4a_data.R')
-source('scripts/helper_get_prices.R')
-#source('scripts/1_examine_psa_results.R')
+source('scripts/0_helper_functions/helper_process_calculations.R')
+source('scripts/0_helper_functions/helper_get_prices.R')
+source('scripts/1_data_preparation/get_mi4a_data.R')
+
 
 library(dplyr)
 library(countrycode)
@@ -18,22 +18,26 @@ get_prices <- function(mechanism, mode, psa_number = NA, psa_summary = NA,
   if (mechanism == 'bilateral'){
     # input bilateral price
     prices <- get_bilateral(df = df, mode = mode, psa_number = psa_number,
-                            psa_summary = psa_summary, psa_summary_index = psa_summary_index)
+                            psa_summary = psa_summary, 
+                            psa_summary_index = psa_summary_index)
   } else if (mechanism == 'uniform'){
     # input uniform price
     prices <- get_uniform(df = df, mode = mode, psa_number = psa_number,
-                          psa_summary = psa_summary, psa_summary_index = psa_summary_index)
+                          psa_summary = psa_summary, 
+                          psa_summary_index = psa_summary_index)
   } else if (mechanism == 'adj_gdppc'){
     # input adj_gdppc price
     prices <- get_tiered(df = df, adj = 'gdppc', 
                          mode = mode, psa_number = psa_number,
-                         psa_summary = psa_summary, psa_summary_index = psa_summary_index,
+                         psa_summary = psa_summary, 
+                         psa_summary_index = psa_summary_index,
                          alpha = alpha)
   } else {
     # input adj_chepc price
     prices <- get_tiered(df = df, adj = 'chepc', 
                          mode = mode, psa_number = psa_number,
-                         psa_summary = psa_summary, psa_summary_index = psa_summary_index,
+                         psa_summary = psa_summary, 
+                         psa_summary_index = psa_summary_index,
                          alpha = alpha)
   }
   return(prices)
@@ -66,7 +70,8 @@ calc <- function(df,coverage,comparator,mechanism){
 
 # to extract % share ranges from country_level_psa_summary
 get_data <- function(summary_df, psa_index, data_type){
-  row_id <- which(sapply(rownames(summary_df),function(x){substr(x,5,nchar(x))})==data_type)
+  row_id <- which(sapply(rownames(summary_df),
+                         function(x){substr(x,5,nchar(x))})==data_type)
   return(summary_df[row_id,psa_index])
 }
 
@@ -76,21 +81,28 @@ get_data <- function(summary_df, psa_index, data_type){
 # expenditure, savings,and percent share based on selected coverage and 
 # pricing mechanism
 # ------------------------------------------------------------------------------
-prices_calc <- function(mechanism, coverage, mode, comparator = NA, psa_number=NA, psa_summary = NA,
-                        psa_summary_index = NA, psa_country_level_summary=NA,alpha=10){
-    prices <- get_prices(mechanism = mechanism, mode = mode, psa_number = psa_number,
-                         psa_summary = psa_summary, psa_summary_index = psa_summary_index,
+prices_calc <- function(mechanism, coverage, mode, comparator = NA, psa_number=NA, 
+                        psa_summary = NA, psa_summary_index = NA, 
+                        psa_country_level_summary=NA,alpha=10){
+    prices <- get_prices(mechanism = mechanism, mode = mode, 
+                         psa_number = psa_number,
+                         psa_summary = psa_summary, 
+                         psa_summary_index = psa_summary_index,
                          alpha = alpha)
     output <- list()
     price <- prices[['df']]
-    output_df <- calc(df = price, coverage = coverage, comparator = comparator, mechanism= mechanism)
+    output_df <- calc(df = price, coverage = coverage, comparator = comparator, 
+                      mechanism= mechanism)
     if (mode == 'output_psa'){
       output_df$percent_share <- get_data(summary_df = psa_country_level_summary[[mechanism]],
-                                                  psa_index = psa_summary_index,data_type = 'percent')
+                                          psa_index = psa_summary_index,
+                                          data_type = 'percent')
       output_df$total_perdose <- get_data(summary_df = psa_country_level_summary[[mechanism]],
-                                                  psa_index = psa_summary_index, data_type = 'total')
+                                          psa_index = psa_summary_index,
+                                          data_type = 'total')
       output_df$total_savings_perdose <- get_data(summary_df = psa_country_level_summary[[mechanism]],
-                                                  psa_index = psa_summary_index, data_type = 'savings')
+                                                  psa_index = psa_summary_index, 
+                                                  data_type = 'savings')
       
     }
     output[['calc_output']] <- output_df
@@ -135,7 +147,7 @@ get_overall_region_data <- function(dataset,bilateral_dataset=NA,
     if (!is.data.frame(psa_summary)){
       new_row[col_id] <- sum(as.numeric(dataset$total_savings_perdose))
       new_row_2[col_id] <- round(sum(as.numeric(dataset$total_savings_perdose))*100/
-                                   sum(as.numeric(bilateral_dataset$total_perdose)),2)
+                                  sum(as.numeric(bilateral_dataset$total_perdose)),2)
     } else {
       mechanism_name <- paste0('savings_',mechanism)
       new_row[col_id] <- psa_summary[mechanism_name,psa_summary_index]

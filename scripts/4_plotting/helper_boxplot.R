@@ -1,5 +1,5 @@
 library(grid)
-source('scripts/plotting/general_helper_plotting_functions.R')
+source('scripts/4_plotting/helper_plotting.R')
 
 # ------------------------------------------------------------------------------
 # Function to create a boxplot

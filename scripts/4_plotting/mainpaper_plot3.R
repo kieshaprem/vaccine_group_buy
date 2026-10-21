@@ -1,12 +1,12 @@
 # Helper script that runs additional data needed for Main paper plot 3
-source('scripts/plotting/mainpaper_plot3_helper.R')
+source('scripts/4_plotting/mainpaper_plot3_helper.R')
 
 # Script to aid some calculations needed for the plot
-source('scripts/0_process_calculations.R')
+source('scripts/0_helper_functions/helper_process_calculations.R')
 
 # Scripts for plotting functions relevant to each panel
-source('scripts/plotting/mainpaper_plot3a-d_i-l.R')
-source('scripts/plotting/mainpaper_plot3e-h_m-p.R')
+source('scripts/4_plotting/mainpaper_plot3a-d_i-l.R')
+source('scripts/4_plotting/mainpaper_plot3e-h_m-p.R')
 
 library(countrycode)
 library(grid)
