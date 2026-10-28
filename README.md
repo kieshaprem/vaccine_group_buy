@@ -1,19 +1,10 @@
-# Pricing COVID-19 Vaccines in Southeast Asia: retrospective modelling to inform prospective negotiations
+# vaccine_group_buy
 
 ## Overview
 
-This repository contains the R code used to conduct the analyses presented in the manuscript:
+This repository contains the R code used to conduct the analyses presented in the manuscript by Rahman-Shepherd et al. "Pricing COVID-19 Vaccines in Southeast Asia: retrospective modelling to inform prospective negotiations" [insert link]
 
-**Title:** Pricing COVID-19 Vaccines in Southeast Asia: retrospective modelling to inform prospective negotiations
-
-**Authors:** Afifah Rahman-Shepherd, Dorothy Boyle, Benjamin Coghlan, Mutiara Indriani, Bryan Mercurio, Jeremy Turner-Gorospe, Nakorn Premsri, Justin Wong, Kiesha Prem
-
-**Journal:** BMJ Public Health  
-
-**DOI:** [Manuscript DOI, if available]
-
-The study aimed to illustrate the potential economic and equity impact of regional pooled procurement by modelling 3 post-hoc scenarios of COVID-19 vaccine procurement in ASEAN: bilateral procurement scenario, uniform price procurement scenario, and tiered price procurement scenario. The tiered price mechanism proposed involves price adjustment by a measure of country economic capacity. In this analysis, we present tiered price by gross domestic product (GDP) per capita and tiered price by current health expenditure (CHE) per capita.
-
+**** 
 The code is provided to support research transparency and reproducibility.
 
 ## 1. Repository structure
@@ -57,9 +48,8 @@ The analyses require the following R packages:
 |---|---|
 | `countrycode` | Labelling iso3code for countries |
 | `econocharts` | Assists plotting for equity outcomes |
-| `grid` | Plotting |
+| `grid` | Assists general plotting |
 | `rineq` | Calculating concentration index (equity outcome) |
-| `[package]` | [Purpose] |
 
 The package versions used in the analyses are documented in `renv.lock`.
 
