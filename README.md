@@ -1,11 +1,6 @@
 # vaccine_group_buy
 
-## Overview
-
-This repository contains the R code used to conduct the analyses presented in the manuscript by Rahman-Shepherd et al. "Pricing COVID-19 Vaccines in Southeast Asia: retrospective modelling to inform prospective negotiations" [insert link]
-
-**** 
-The code is provided to support research transparency and reproducibility.
+This repository contains the R code used to conduct the analyses presented in the manuscript by Rahman-Shepherd et al. "Pricing COVID-19 Vaccines in Southeast Asia: retrospective modelling to inform prospective negotiations"
 
 ## 1. Repository structure
 
@@ -28,19 +23,19 @@ vaccine_group_buy/
 ├── README.md
 ```
 
-The R scripts perform the following tasks:
+R scripts in the respective directories perform the following tasks:
 
 | Directory | Description |
 |---|---|
-| `0_helper_functions/` | Helper functions |
-| `1_data_preparation/` | Preparation of datasets used in the analysis |
-| `2_psa/` | Sampling from empirical distribution and running outcomes for PSA  |
-| `3_tables/` | Running pricing scenarios, generating tables in manuscript |
-| `4_plotting/` | Generation of plots presented in the manuscript |
+| `scripts/0_helper_functions/` | Helper functions |
+| `scripts/1_data_preparation/` | Preparation of datasets used in the analysis |
+| `scripts/2_psa/` | Sampling from empirical distribution and running outcomes for PSA  |
+| `scripts/3_tables/` | Running pricing scenarios, generating tables in manuscript |
+| `scripts/4_plotting/` | Generation of plots presented in the manuscript |
 
 ## 2. Software requirements
 
-All analyses were conducted using **R version [4.5.3]**.
+All analyses were conducted using **R version 4.5.3**.
 
 The analyses require the following R packages:
 
@@ -72,11 +67,11 @@ To reproduce the analyses:
 2. Open `vaccine_group_buy.Rproj` in RStudio.
 3. Restore the R package environment using `renv::restore()`.
 4. Execute the R scripts in the following order:
-   - `1_data_preparation/get_main_data.R`
-   - `1_data_preparation/get_mi4a_data.R`
-   - `2_psa/psa_main_script.R`
-   - `3_tables/run_all_tables.R`
-   - `4_plotting/run_all_plots.R`
+   - `scripts/1_data_preparation/get_main_data.R`
+   - `scripts/1_data_preparation/get_mi4a_data.R`
+   - `scripts/2_psa/psa_main_script.R`
+   - `scripts/3_tables/run_all_tables.R`
+   - `scripts/4_plotting/run_all_plots.R`
 5. Review the generated outputs in the `outputs/` directory.
 
 All file paths are relative to the project directory.
@@ -85,17 +80,17 @@ All file paths are relative to the project directory.
 
 | Manuscript component | R script |
 |---|---|
-| Table 2a-b: Vaccine price per dose and expenditure under bilateral, fixed and tiered (adjusted by GDP and CHE per capita) pricing scenarios | `3_tables/table2ab_base_fullcoverage.R` |
-| Figure 2a-h: Vaccine price per dose, country-level and regional expenditure under the pricing scenarios | `4_plotting/mainpaper_plot2.R` |
-| Figure 3a-p: Equity of vaccine pricing burden in terms of share of GDP per capita and CHE per capita incurred  | `4_plotting/mainpaper_plot3.R` |
-| Supplementary Figure 1: Health expenditure and out-of-pocket spending in health plotted against GDP per capita | `4_plotting/supp_plot1_gdppc_oops_plot` |
-| Supplementary Table 1a-b: Varying $\alpha$ in tiered pricing | `3_tables/supptable1ab_alpha_fullcoverage.R` |
-| Supplementary Figure 2: Distribution of vaccine price per dose for WHO WPRO and SEARO according to MI4A database | `4_plotting/supp_plot2_mi4a_boxplots.R` |
-| Supplementary Table 2a-d: Outcome ranges from probabilistic sensitivity analysis (PSA) for the pricing scenarios | `3_tables/supptable2a-d_psa_fullcoverage.R` |
-| Supplementary Figure 3: Total population vs population covered by 1 dose of COVID-19 vaccine as of 31 Dec 2023 | `4_plotting/supp_plot3_pop_vaxcoverage.R` |
-| Supplementary Table 3a-d: Expenditure outcomes for the pricing scenarios with real vaccination coverage | `3_tables/supptable3a-d_base_realcoverage.R` |
-| Supplementary Table 4a-b: Varying $\alpha$ in tiered pricing with real vaccination coverage | `3_tables/supptable4ab_alpha_realcoverage.R` |
-| Supplementary Table 5a-d: Outcome ranges from PSA for the pricing scenarios with real vaccination coverage  | `3_tables/supptable5a-d_supp_psa_realcoverage.R` |
+| Table 2a-b: Vaccine price per dose and expenditure under bilateral, fixed and tiered (adjusted by GDP and CHE per capita) pricing scenarios | `scripts/3_tables/table2ab_base_fullcoverage.R` |
+| Figure 2a-h: Vaccine price per dose, country-level and regional expenditure under the pricing scenarios | `scripts/4_plotting/mainpaper_plot2.R` |
+| Figure 3a-p: Equity of vaccine pricing burden in terms of share of GDP per capita and CHE per capita incurred  | `scripts/4_plotting/mainpaper_plot3.R` |
+| Supplementary Figure 1: Health expenditure and out-of-pocket spending in health plotted against GDP per capita | `scripts/4_plotting/supp_plot1_gdppc_oops_plot` |
+| Supplementary Table 1a-b: Varying $\alpha$ in tiered pricing | `scripts/3_tables/supptable1ab_alpha_fullcoverage.R` |
+| Supplementary Figure 2: Distribution of vaccine price per dose for WHO WPRO and SEARO according to MI4A database | `scripts/4_plotting/supp_plot2_mi4a_boxplots.R` |
+| Supplementary Table 2a-d: Outcome ranges from probabilistic sensitivity analysis (PSA) for the pricing scenarios | `scripts/3_tables/supptable2a-d_psa_fullcoverage.R` |
+| Supplementary Figure 3: Total population vs population covered by 1 dose of COVID-19 vaccine as of 31 Dec 2023 | `scripts/4_plotting/supp_plot3_pop_vaxcoverage.R` |
+| Supplementary Table 3a-d: Expenditure outcomes for the pricing scenarios with real vaccination coverage | `scripts/3_tables/supptable3a-d_base_realcoverage.R` |
+| Supplementary Table 4a-b: Varying $\alpha$ in tiered pricing with real vaccination coverage | `scripts/3_tables/supptable4ab_alpha_realcoverage.R` |
+| Supplementary Table 5a-d: Outcome ranges from PSA for the pricing scenarios with real vaccination coverage  | `scripts/3_tables/supptable5a-d_supp_psa_realcoverage.R` |
 
 All analyses correspond to the methods and results reported in the manuscript.
 
@@ -122,23 +117,16 @@ As our base analysis assumes 100% vaccination coverage, we also considered how o
 
 ## 7. Reproducibility notes
 
-- The code was developed using R version [4.5.3] in RStudio version [2026.1.2.418] on Windows.
+- The code was developed using R version 4.5.3 in RStudio version 2026.1.2.418 on Windows.
 - Package dependencies are documented in `renv.lock`.
 - Random seeds were specified for analyses involving stochastic procedures, where applicable.
-- The scripts were tested in [describe testing environment].
-- [Describe any known limitations affecting reproducibility.]
 
-## 8. Citation
 
-If you use or adapt the code, please cite:
-
-Afifah Rahman-Shepherd, Dorothy Boyle, Benjamin Coghlan, Mutiara Indriani, Bryan Mercurio, Jeremy Turner-Gorospe, Nakorn Premsri, Justin Wong, Kiesha Prem. Pricing COVID-19 Vaccines in Southeast Asia: retrospective modelling to inform prospective negotiations. *BMJ Public Health*. [Year];[Volume]:[Article number]. DOI: [DOI].
-
-## 9. License
+## 8. License
 
 This repository is distributed under the GNU General Public license. See the `LICENSE` file for details.
 
-## 10. Contact
+## 9. Contact
 
 For questions regarding the code or analyses, please contact:
 
