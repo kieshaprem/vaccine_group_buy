@@ -65,7 +65,7 @@ To reproduce the analyses:
 
 1. Download or clone this repository.
 2. Open `vaccine_group_buy.Rproj` in RStudio.
-3. Restore the R package environment using `renv::restore()`.
+3. Load package dependencies using `scripts/0_helper_functions/load_dependencies.R`.
 4. Execute the R scripts in the following order:
    - `scripts/1_data_preparation/get_main_data.R`
    - `scripts/1_data_preparation/get_mi4a_data.R`
@@ -117,8 +117,7 @@ As our base analysis assumes 100% vaccination coverage, we also considered how o
 
 ## 7. Reproducibility notes
 
-- The code was developed using R version 4.5.3 in RStudio version 2026.1.2.418 on Windows.
-- Package dependencies are documented in `renv.lock`.
+- The code was developed using R version 4.5.3 in RStudio version 2026.1.2.418
 - Random seeds were specified for analyses involving stochastic procedures, where applicable.
 
 
