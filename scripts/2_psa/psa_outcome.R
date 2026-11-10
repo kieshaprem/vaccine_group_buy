@@ -1,6 +1,6 @@
-source('scripts/helper_calculation_function.R')
-source('scripts/helper_run_scenarios.R')
-source('scripts/helper_examine_psa_results.R')
+source('scripts/0_helper_functions/helper_calculation_function.R')
+source('scripts/0_helper_functions/helper_run_scenarios.R')
+source('scripts/0_helper_functions/helper_examine_psa_results.R')
 load('output/intermediate/psa_price_base.rdata')
 options(scipen=999)
 

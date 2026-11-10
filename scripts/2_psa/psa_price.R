@@ -1,4 +1,4 @@
-source('scripts/0_get_mi4a_data.R')
+source('scripts/1_data_preparation/get_mi4a_data.R')
 set.seed(123)
 
 # sampling from empirical distribution with assumption that 
